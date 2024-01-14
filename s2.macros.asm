@@ -1,17 +1,4 @@
 ; ---------------------------------------------------------------------------
-; Align and pad
-; input: length to align to, value to use as padding (default is 0)
-; ---------------------------------------------------------------------------
-
-align:	macro
-	if (narg=1)
-	dcb.b (\1-(*%\1))%\1,0
-	else
-	dcb.b (\1-(*%\1))%\1,\2
-	endc
-	endm
-
-; ---------------------------------------------------------------------------
 ; stop the Z80
 ; ---------------------------------------------------------------------------
 
@@ -24,7 +11,7 @@ stopZ80:	macro
 ; ---------------------------------------------------------------------------
 
 waitZ80:	macro
-	.wait:	btst	#0,(z80_bus_request).l
+.wait:		btst	#0,(z80_bus_request).l
 		bne.s	.wait
 		endm
 
@@ -63,3 +50,10 @@ disable_ints:	macro
 enable_ints:	macro
 		move	#$2300,sr
 		endm
+		
+; ---------------------------------------------------------------------------
+; turn a sample rate into a djnz loop counter
+; ---------------------------------------------------------------------------
+
+pcmLoopCounter function sampleRate,baseCycles, 1+(53693175/15/(sampleRate)-(baseCycles)+(13/2))/13
+dpcmLoopCounter function sampleRate, pcmLoopCounter(sampleRate,301/2) ; 301 is the number of cycles zPlayPCMLoop takes.
