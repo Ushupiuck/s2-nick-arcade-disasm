@@ -68,6 +68,28 @@ objoff_3F:	equ $3F
 object_size_bits:	equ 6
 object_size:	equ 1<<object_size_bits
 
+; ---------------------------------------------------------------------------
+; Controller Buttons
+;
+; Buttons bit numbers
+button_up:			EQU	0
+button_down:			EQU	1
+button_left:			EQU	2
+button_right:			EQU	3
+button_B:			EQU	4
+button_C:			EQU	5
+button_A:			EQU	6
+button_start:			EQU	7
+; Buttons masks (1 << x == pow(2, x))
+button_up_mask:			EQU	1<<button_up	; $01
+button_down_mask:		EQU	1<<button_down	; $02
+button_left_mask:		EQU	1<<button_left	; $04
+button_right_mask:		EQU	1<<button_right	; $08
+button_B_mask:			EQU	1<<button_B	; $10
+button_C_mask:			EQU	1<<button_C	; $20
+button_A_mask:			EQU	1<<button_A	; $40
+button_start_mask:		EQU	1<<button_start	; $80
+
 Size_of_SegaPCM:	equ $6978
 Size_of_DAC_driver_guess:	equ $1760
 
@@ -132,29 +154,34 @@ TrackSz:	equ $30
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
-; some variables and functions to help define those constants (redefined before a new set of IDs)
 ; V-Int routines
+offset :=	Vint_SwitchTbl
+ptrsize :=	1
+idstart :=	0
 
-VintID_Lag:			equ Vint_Lag_ptr-Vint_SwitchTbl ; 0
-VintID_SEGA:			equ Vint_SEGA_ptr-Vint_SwitchTbl ; 2
-VintID_Title:			equ Vint_Title_ptr-Vint_SwitchTbl ; 4
-VintID_Unused6:			equ Vint_Unused6_ptr-Vint_SwitchTbl ; 6
-VintID_Level:			equ Vint_Level_ptr-Vint_SwitchTbl ; 8
-VintID_S1SS:			equ Vint_S1SS_ptr-Vint_SwitchTbl ; $A
-VintID_TitleCard:		equ Vint_TitleCard_ptr-Vint_SwitchTbl ; $C
-VintID_UnusedE:			equ Vint_UnusedE_ptr-Vint_SwitchTbl ; $E
-VintID_Pause:			equ Vint_Pause_ptr-Vint_SwitchTbl ; $10
-VintID_Fade:			equ Vint_Fade_ptr-Vint_SwitchTbl ; $12
-VintID_PCM:			equ Vint_PCM_ptr-Vint_SwitchTbl ; $14
-VintID_SSResults:		equ Vint_SSResults_ptr-Vint_SwitchTbl ; $16
-VintID_TitleCard2:		equ Vint_TitleCard2_ptr-Vint_SwitchTbl ; $18
+VintID_Lag =			id(Vint_Lag_ptr)	; 0
+VintID_SEGA =			id(Vint_SEGA_ptr)	; 2
+VintID_Title =			id(Vint_Title_ptr)	; 4
+VintID_Unused6 =		id(Vint_Unused6_ptr)	; 6
+VintID_Level =			id(Vint_Level_ptr)	; 8
+VintID_S1SS =			id(Vint_S1SS_ptr)	; $A
+VintID_TitleCard =		id(Vint_TitleCard_ptr)	; $C
+VintID_UnusedE =		id(Vint_UnusedE_ptr)	; $E
+VintID_Pause =			id(Vint_Pause_ptr)	; $10
+VintID_Fade =			id(Vint_Fade_ptr)	; $12
+VintID_PCM =			id(Vint_PCM_ptr)	; $14
+VintID_SSResults =		id(Vint_SSResults_ptr)	; $16
+VintID_TitleCard2 =		id(Vint_TitleCard2_ptr)	; $18
 
 ; Game modes
-GameModeID_SegaScreen:		equ GameMode_SegaScreen-GameModeArray ; 0
-GameModeID_TitleScreen:		equ GameMode_TitleScreen-GameModeArray ; 4
-GameModeID_Demo:		equ GameMode_Demo-GameModeArray ; 8
-GameModeID_Level:		equ GameMode_Level-GameModeArray ; $C
-GameModeID_SpecialStage:	equ GameMode_SpecialStage-GameModeArray ; $10
+offset :=	GameModeArray
+ptrsize :=	1
+idstart :=	0
+GameModeID_SegaScreen =		id(GameMode_SegaScreen)	; 0
+GameModeID_TitleScreen =	id(GameMode_TitleScreen) ; 4
+GameModeID_Demo =		id(GameMode_Demo)	; 8
+GameModeID_Level =		id(GameMode_Level)	; $C
+GameModeID_SpecialStage =	id(GameMode_SpecialStage) ; $10
 GameModeID_ContinueScreen:	equ $14			; $14 ; referenced despite it not existing
 GameModeID_S1Ending:		equ $18			; $18 ; referenced despite it not existing
 GameModeID_S1Credits:		equ $1C			; $1C ; referenced despite it not existing
@@ -781,92 +808,108 @@ HW_Expansion_RxData:		equ $A1001D
 HW_Expansion_SCtrl:		equ $A1001F
 
 ; Background music
-bgm__First:	equ $81
-bgm_GHZ:	equ ((ptr_mus81-MusicIndex)/4)+bgm__First
-bgm_LZ:		equ ((ptr_mus82-MusicIndex)/4)+bgm__First
-bgm_MZ:		equ ((ptr_mus83-MusicIndex)/4)+bgm__First
-bgm_SLZ:	equ ((ptr_mus84-MusicIndex)/4)+bgm__First
-bgm_SYZ:	equ ((ptr_mus85-MusicIndex)/4)+bgm__First
-bgm_SBZ:	equ ((ptr_mus86-MusicIndex)/4)+bgm__First
-bgm_Invincible:	equ ((ptr_mus87-MusicIndex)/4)+bgm__First
-bgm_ExtraLife:	equ ((ptr_mus88-MusicIndex)/4)+bgm__First
-bgm_SS:		equ ((ptr_mus89-MusicIndex)/4)+bgm__First
-bgm_Title:	equ ((ptr_mus8A-MusicIndex)/4)+bgm__First
-bgm_Ending:	equ ((ptr_mus8B-MusicIndex)/4)+bgm__First
-bgm_Boss:	equ ((ptr_mus8C-MusicIndex)/4)+bgm__First
-bgm_FZ:		equ ((ptr_mus8D-MusicIndex)/4)+bgm__First
-bgm_GotThrough:	equ ((ptr_mus8E-MusicIndex)/4)+bgm__First
-bgm_GameOver:	equ ((ptr_mus8F-MusicIndex)/4)+bgm__First
-bgm_Continue:	equ ((ptr_mus90-MusicIndex)/4)+bgm__First
-bgm_Credits:	equ ((ptr_mus91-MusicIndex)/4)+bgm__First
-bgm_Drowning:	equ ((ptr_mus92-MusicIndex)/4)+bgm__First
-bgm_Emerald:	equ ((ptr_mus93-MusicIndex)/4)+bgm__First
-bgm__Last:	equ ((ptr_musend-MusicIndex-4)/4)+bgm__First
+offset :=	MusicIndex
+ptrsize :=	4
+idstart :=	$81
+
+bgm__First =	idstart
+bgm_GHZ =	id(ptr_mus81)
+bgm_LZ =	id(ptr_mus82)
+bgm_MZ =	id(ptr_mus83)
+bgm_SLZ =	id(ptr_mus84)
+bgm_SYZ =	id(ptr_mus85)
+bgm_SBZ =	id(ptr_mus86)
+bgm_Invincible =	id(ptr_mus87)
+bgm_ExtraLife =	id(ptr_mus88)
+bgm_SS =	id(ptr_mus89)
+bgm_Title =	id(ptr_mus8A)
+bgm_Ending =	id(ptr_mus8B)
+bgm_Boss =	id(ptr_mus8C)
+bgm_FZ =	id(ptr_mus8D)
+bgm_GotThrough =	id(ptr_mus8E)
+bgm_GameOver =	id(ptr_mus8F)
+bgm_Continue =	id(ptr_mus90)
+bgm_Credits =	id(ptr_mus91)
+bgm_Drowning =	id(ptr_mus92)
+bgm_Emerald =	id(ptr_mus93)
+bgm__Last =	id(ptr_musend)-1
 
 ; Sound effects
-sfx__First:	equ $A0
-sfx_Jump:	equ ((ptr_sndA0-SoundIndex)/4)+sfx__First
-sfx_Lamppost:	equ ((ptr_sndA1-SoundIndex)/4)+sfx__First
-sfx_A2:		equ ((ptr_sndA2-SoundIndex)/4)+sfx__First
-sfx_Death:	equ ((ptr_sndA3-SoundIndex)/4)+sfx__First
-sfx_Skid:	equ ((ptr_sndA4-SoundIndex)/4)+sfx__First
-sfx_A5:		equ ((ptr_sndA5-SoundIndex)/4)+sfx__First
-sfx_HitSpikes:	equ ((ptr_sndA6-SoundIndex)/4)+sfx__First
-sfx_Push:	equ ((ptr_sndA7-SoundIndex)/4)+sfx__First
-sfx_SSGoal:	equ ((ptr_sndA8-SoundIndex)/4)+sfx__First
-sfx_SSItem:	equ ((ptr_sndA9-SoundIndex)/4)+sfx__First
-sfx_Splash:	equ ((ptr_sndAA-SoundIndex)/4)+sfx__First
-sfx_AB:		equ ((ptr_sndAB-SoundIndex)/4)+sfx__First
-sfx_HitBoss:	equ ((ptr_sndAC-SoundIndex)/4)+sfx__First
-sfx_Bubble:	equ ((ptr_sndAD-SoundIndex)/4)+sfx__First
-sfx_Fireball:	equ ((ptr_sndAE-SoundIndex)/4)+sfx__First
-sfx_Shield:	equ ((ptr_sndAF-SoundIndex)/4)+sfx__First
-sfx_Saw:	equ ((ptr_sndB0-SoundIndex)/4)+sfx__First
-sfx_Electric:	equ ((ptr_sndB1-SoundIndex)/4)+sfx__First
-sfx_Drown:	equ ((ptr_sndB2-SoundIndex)/4)+sfx__First
-sfx_Flamethrower:equ ((ptr_sndB3-SoundIndex)/4)+sfx__First
-sfx_Bumper:	equ ((ptr_sndB4-SoundIndex)/4)+sfx__First
-sfx_Ring:	equ ((ptr_sndB5-SoundIndex)/4)+sfx__First
-sfx_SpikesMove:	equ ((ptr_sndB6-SoundIndex)/4)+sfx__First
-sfx_Rumbling:	equ ((ptr_sndB7-SoundIndex)/4)+sfx__First
-sfx_B8:		equ ((ptr_sndB8-SoundIndex)/4)+sfx__First
-sfx_Collapse:	equ ((ptr_sndB9-SoundIndex)/4)+sfx__First
-sfx_SSGlass:	equ ((ptr_sndBA-SoundIndex)/4)+sfx__First
-sfx_Door:	equ ((ptr_sndBB-SoundIndex)/4)+sfx__First
-sfx_Teleport:	equ ((ptr_sndBC-SoundIndex)/4)+sfx__First
-sfx_ChainStomp:	equ ((ptr_sndBD-SoundIndex)/4)+sfx__First
-sfx_Roll:	equ ((ptr_sndBE-SoundIndex)/4)+sfx__First
-sfx_Continue:	equ ((ptr_sndBF-SoundIndex)/4)+sfx__First
-sfx_Basaran:	equ ((ptr_sndC0-SoundIndex)/4)+sfx__First
-sfx_BreakItem:	equ ((ptr_sndC1-SoundIndex)/4)+sfx__First
-sfx_Warning:	equ ((ptr_sndC2-SoundIndex)/4)+sfx__First
-sfx_GiantRing:	equ ((ptr_sndC3-SoundIndex)/4)+sfx__First
-sfx_Bomb:	equ ((ptr_sndC4-SoundIndex)/4)+sfx__First
-sfx_Cash:	equ ((ptr_sndC5-SoundIndex)/4)+sfx__First
-sfx_RingLoss:	equ ((ptr_sndC6-SoundIndex)/4)+sfx__First
-sfx_ChainRise:	equ ((ptr_sndC7-SoundIndex)/4)+sfx__First
-sfx_Burning:	equ ((ptr_sndC8-SoundIndex)/4)+sfx__First
-sfx_Bonus:	equ ((ptr_sndC9-SoundIndex)/4)+sfx__First
-sfx_EnterSS:	equ ((ptr_sndCA-SoundIndex)/4)+sfx__First
-sfx_WallSmash:	equ ((ptr_sndCB-SoundIndex)/4)+sfx__First
-sfx_Spring:	equ ((ptr_sndCC-SoundIndex)/4)+sfx__First
-sfx_Switch:	equ ((ptr_sndCD-SoundIndex)/4)+sfx__First
-sfx_RingLeft:	equ ((ptr_sndCE-SoundIndex)/4)+sfx__First
-sfx_Signpost:	equ ((ptr_sndCF-SoundIndex)/4)+sfx__First
-sfx__Last:	equ ((ptr_sndend-SoundIndex-4)/4)+sfx__First
+offset :=	SoundIndex
+ptrsize :=	4
+idstart :=	$A0
+
+sfx__First =	idstart
+sfx_Jump =	id(ptr_sndA0)
+sfx_Lamppost =	id(ptr_sndA1)
+sfx_A2 =	id(ptr_sndA2)
+sfx_Death =	id(ptr_sndA3)
+sfx_Skid =	id(ptr_sndA4)
+sfx_A5 =	id(ptr_sndA5)
+sfx_HitSpikes =	id(ptr_sndA6)
+sfx_Push =	id(ptr_sndA7)
+sfx_SSGoal =	id(ptr_sndA8)
+sfx_SSItem =	id(ptr_sndA9)
+sfx_Splash =	id(ptr_sndAA)
+sfx_AB =	id(ptr_sndAB)
+sfx_HitBoss =	id(ptr_sndAC)
+sfx_Bubble =	id(ptr_sndAD)
+sfx_Fireball =	id(ptr_sndAE)
+sfx_Shield =	id(ptr_sndAF)
+sfx_Saw =	id(ptr_sndB0)
+sfx_Electric =	id(ptr_sndB1)
+sfx_Drown =	id(ptr_sndB2)
+sfx_Flamethrower =	id(ptr_sndB3)
+sfx_Bumper =	id(ptr_sndB4)
+sfx_Ring =	id(ptr_sndB5)
+sfx_SpikesMove =	id(ptr_sndB6)
+sfx_Rumbling =	id(ptr_sndB7)
+sfx_B8 =	id(ptr_sndB8)
+sfx_Collapse =	id(ptr_sndB9)
+sfx_SSGlass =	id(ptr_sndBA)
+sfx_Door =	id(ptr_sndBB)
+sfx_Teleport =	id(ptr_sndBC)
+sfx_ChainStomp =	id(ptr_sndBD)
+sfx_Roll =	id(ptr_sndBE)
+sfx_Continue =	id(ptr_sndBF)
+sfx_Basaran =	id(ptr_sndC0)
+sfx_BreakItem =	id(ptr_sndC1)
+sfx_Warning =	id(ptr_sndC2)
+sfx_GiantRing =	id(ptr_sndC3)
+sfx_Bomb =	id(ptr_sndC4)
+sfx_Cash =	id(ptr_sndC5)
+sfx_RingLoss =	id(ptr_sndC6)
+sfx_ChainRise =	id(ptr_sndC7)
+sfx_Burning =	id(ptr_sndC8)
+sfx_Bonus =	id(ptr_sndC9)
+sfx_EnterSS =	id(ptr_sndCA)
+sfx_WallSmash =	id(ptr_sndCB)
+sfx_Spring =	id(ptr_sndCC)
+sfx_Switch =	id(ptr_sndCD)
+sfx_RingLeft =	id(ptr_sndCE)
+sfx_Signpost =	id(ptr_sndCF)
+sfx__Last =	id(ptr_sndend)-1
 
 ; Special sound effects
-spec__First:	equ $D0
-sfx_Waterfall:	equ ((ptr_sndD0-SpecSoundIndex)/4)+spec__First
-spec__Last:	equ ((ptr_specend-SpecSoundIndex-4)/4)+spec__First
+offset :=	SpecSoundIndex
+ptrsize :=	4
+idstart :=	$D0
 
-flg__First:	equ $E0
-bgm_Fade:	equ ((ptr_flgE0-Sound_ExIndex)/4)+flg__First
-sfx_Sega:	equ ((ptr_flgE1-Sound_ExIndex)/4)+flg__First
-bgm_Speedup:	equ ((ptr_flgE2-Sound_ExIndex)/4)+flg__First
-bgm_Slowdown:	equ ((ptr_flgE3-Sound_ExIndex)/4)+flg__First
-bgm_Stop:	equ ((ptr_flgE4-Sound_ExIndex)/4)+flg__First
-flg__Last:	equ ((ptr_flgend-Sound_ExIndex-4)/4)+flg__First
+spec__First =	idstart
+sfx_Waterfall =	id(ptr_sndD0)
+spec__Last =	id(ptr_specend)-1
+
+offset :=	Sound_ExIndex
+ptrsize :=	4
+idstart :=	$E0
+
+flg__First =	idstart
+bgm_Fade =	id(ptr_flgE0)
+sfx_Sega =	id(ptr_flgE1)
+bgm_Speedup =	id(ptr_flgE2)
+bgm_Slowdown =	id(ptr_flgE3)
+bgm_Stop =	id(ptr_flgE4)
+flg__Last =	id(ptr_flgend)-1
 
 
 ; Tile VRAM Locations

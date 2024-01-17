@@ -150,3 +150,11 @@ planeLoc function width,col,line,(((width * line) + col) * 2)
 
 pcmLoopCounter function sampleRate,baseCycles, 1+(53693175/15/(sampleRate)-(baseCycles)+(13/2))/13
 dpcmLoopCounter function sampleRate, pcmLoopCounter(sampleRate,301/2) ; 301 is the number of cycles zPlayPCMLoop takes.
+
+; some variables and functions to help define those constants (redefined before a new set of IDs)
+offset :=	0					; this is the start of the pointer table
+ptrsize :=	1					; this is the size of a pointer (should be 1 if the ID is a multiple of the actual size)
+idstart :=	0					; value to add to all IDs
+
+; function using these variables
+id function ptr,((ptr-offset)/ptrsize+idstart)
