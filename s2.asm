@@ -107,8 +107,6 @@ Z80InitLoop:
 
 ClearRAMLoop:
 		move.l	d0,-(a6)
-
-loc_264:
 		dbf	d6,ClearRAMLoop
 		move.l	(a5)+,(a4)
 		move.l	(a5)+,(a4)
@@ -611,8 +609,6 @@ Vint_Level:
 loc_D24:
 		lea	(vdp_control_port).l,a5
 		move.l	#$94009340,(a5)
-
-loc_D30:
 		move.l	#$96FD9540,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
@@ -624,8 +620,6 @@ loc_D48:
 		move.w	#$8230,(vdp_control_port).l
 		lea	(vdp_control_port).l,a5
 		move.l	#$940193C0,(a5)
-
-loc_D60:
 		move.l	#$96F09500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
@@ -728,8 +722,6 @@ Vint_TitleCard:
 
 loc_EE4:
 		lea	(vdp_control_port).l,a5
-
-loc_EEA:
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9540,(a5)
 		move.w	#$977F,(a5)
