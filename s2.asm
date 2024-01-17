@@ -1016,8 +1016,6 @@ VDP_WaitDMA:
 		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	VDP_WaitDMA
-
-loc_12FE:
 		move.w	#$8F02,(a5)
 		move.l	(sp)+,d1
 		rts
@@ -1072,24 +1070,10 @@ ClearScreen_DMAWait2:
 		btst	#1,d1
 		bne.s	ClearScreen_DMAWait2
 		move.w	#$8F02,(a5)
-
-loc_1388:
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
-		lea	(Sprite_Table).w,a1
-		moveq	#0,d0
-		move.w	#($280/4),d1
-
-ClearScreen_ClearBuffer1:
-		move.l	d0,(a1)+
-		dbf	d1,ClearScreen_ClearBuffer1
-		lea	(v_hscrolltablebuffer).w,a1
-		moveq	#0,d0
-		move.w	#((v_hscrolltablebuffer_end_padded-v_hscrolltablebuffer)/4),d1
-
-ClearScreen_ClearBuffer2:
-		move.l	d0,(a1)+
-		dbf	d1,ClearScreen_ClearBuffer2
+		clearRAM Sprite_Table,Sprite_Table_End+4
+		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded+4
 		rts
 ; End of function ClearScreen
 
