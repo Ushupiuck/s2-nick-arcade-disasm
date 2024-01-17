@@ -707,6 +707,7 @@ v_ani3_buf:		ds.w	1			; synchronised sprite animation 3 - info buffer
 v_limittopdb:		ds.w	1			; level upper boundary, buffered for debug mode
 v_limitbtmdb:		ds.w	1			; level bottom boundary, buffered for debug mode
 			ds.b	$8C			; unused
+v_timingvariables_end:
 
 v_levseldelay:		ds.w	1			; level select - time until change when up/down is held
 v_levselitem:		ds.w	1			; level select - item selected
