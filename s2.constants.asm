@@ -178,8 +178,10 @@ v_ngfx_buffer:		ds.b	$200			; Nemesis graphics decompression buffer
 v_ngfx_buffer_end:
 
 v_spritequeue:		ds.b	$400			; sprite display queue, in order of priority
+v_spritequeue_end:
 
 v_objspace:		ds.b	object_size*$80		; object variable space ($40 bytes per object)
+v_objspace_end:
 
 v_colladdr1:	ds.b	$600
 v_colladdr2:	ds.b	$600
@@ -611,6 +613,8 @@ f_switch:		ds.b	$10			; flags set when Sonic stands on a switch
 
 Anim_Counters:		ds.b	$10
 
+v_levelvariables_end:
+
 Sprite_Table:		ds.b	$280			; Sprite attribute table buffer
 Sprite_Table_End:
 v_pal_water_dup = Sprite_Table_End-$80			; duplicate underwater palette, used for transitions ($80 bytes)
@@ -862,3 +866,9 @@ bgm_Speedup:	equ ((ptr_flgE2-Sound_ExIndex)/4)+flg__First
 bgm_Slowdown:	equ ((ptr_flgE3-Sound_ExIndex)/4)+flg__First
 bgm_Stop:	equ ((ptr_flgE4-Sound_ExIndex)/4)+flg__First
 flg__Last:	equ ((ptr_flgend-Sound_ExIndex-4)/4)+flg__First
+
+
+; Tile VRAM Locations
+
+; Font
+ArtTile_Credits_Font:		equ $5A0

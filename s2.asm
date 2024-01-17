@@ -2657,41 +2657,11 @@ TitleScreen:						; CODE XREF: ROM:000003A0j
 		clr.b	(f_wtr_state).w
 		move.w	#$8C81,(a6)
 		bsr.w	ClearScreen
-		lea	(v_spritequeue).w,a1
-		moveq	#0,d0
-		move.w	#$FF,d1
-
-loc_3230:						; CODE XREF: ROM:00003232j
-		move.l	d0,(a1)+
-		dbf	d1,loc_3230
-		lea	(v_objspace).w,a1
-		moveq	#0,d0
-		move.w	#$7FF,d1
-
-loc_3240:						; CODE XREF: ROM:00003242j
-		move.l	d0,(a1)+
-		dbf	d1,loc_3240
-		lea	(v_levelvariables).w,a1
-		moveq	#0,d0
-		move.w	#$3F,d1	
-
-loc_3250:						; CODE XREF: ROM:00003252j
-		move.l	d0,(a1)+
-		dbf	d1,loc_3250
-		lea	(Camera_RAM).w,a1
-		moveq	#0,d0
-		move.w	#$3F,d1	
-
-loc_3260:						; CODE XREF: ROM:00003262j
-		move.l	d0,(a1)+
-		dbf	d1,loc_3260
-		lea	(v_pal_dry_dup).w,a1
-		moveq	#0,d0
-		move.w	#$1F,d1
-
-loc_3270:						; CODE XREF: ROM:00003272j
-		move.l	d0,(a1)+
-		dbf	d1,loc_3270
+		clearRAM v_spritequeue,v_spritequeue_end
+		clearRAM v_objspace,v_objspace_end
+		clearRAM v_levelvariables,v_levelvariables_end
+		clearRAM Camera_RAM,Camera_RAM_End
+		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
 		moveq	#3,d0
 		bsr.w	PalLoad1
 		bsr.w	Pal_FadeFromBlack
@@ -2731,8 +2701,6 @@ loc_32C4:						; CODE XREF: ROM:000032C6j
 		lea	(v_startofram).l,a1
 		lea	(Eni_TitleBg1).l,a0
 		move.w	#0,d0
-
-loc_3330:
 		bsr.w	EniDec
 		lea	(v_startofram).l,a1
 		move.l	#$60000003,d0
