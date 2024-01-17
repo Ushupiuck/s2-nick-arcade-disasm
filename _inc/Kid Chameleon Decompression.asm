@@ -46,7 +46,7 @@ loc_1A62:
 		bcc.s	loc_1A78
 		move.b	(a6)+,(a2)+
 
-loc_1A78:				; CODE XREF: ChaDec+48j
+loc_1A78:						; CODE XREF: ChaDec+48j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		cmp.w	a2,d7
@@ -54,7 +54,7 @@ loc_1A78:				; CODE XREF: ChaDec+48j
 		bra.w	loc_1BD6
 ; ---------------------------------------------------------------------------
 
-loc_1A84:				; CODE XREF: ChaDec+40j
+loc_1A84:						; CODE XREF: ChaDec+40j
 		lsl.w	#3,d1
 		move.w	d1,d6
 		and.w	d4,d6
@@ -67,7 +67,7 @@ loc_1A84:				; CODE XREF: ChaDec+40j
 		bra.s	loc_1AB0
 ; ---------------------------------------------------------------------------
 
-loc_1A98:				; CODE XREF: ChaDec+64j
+loc_1A98:						; CODE XREF: ChaDec+64j
 		add.b	d1,d1
 		bcc.s	loc_1AAC
 		moveq	#0,d0
@@ -76,17 +76,17 @@ loc_1A98:				; CODE XREF: ChaDec+64j
 		subq.w	#6,d0
 		bmi.s	loc_1AC4
 
-loc_1AA6:				; CODE XREF: ChaDec+7Cj
+loc_1AA6:						; CODE XREF: ChaDec+7Cj
 		move.b	(a6)+,(a2)+
 		dbf	d0,loc_1AA6
 
-loc_1AAC:				; CODE XREF: ChaDec+6Ej
+loc_1AAC:						; CODE XREF: ChaDec+6Ej
 		move.b	(a6)+,(a2)+
 
-loc_1AAE:				; CODE XREF: ChaDec+68j
+loc_1AAE:						; CODE XREF: ChaDec+68j
 		move.b	(a6)+,(a2)+
 
-loc_1AB0:				; CODE XREF: ChaDec+6Aj
+loc_1AB0:						; CODE XREF: ChaDec+6Aj
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
@@ -95,34 +95,34 @@ loc_1AB0:				; CODE XREF: ChaDec+6Aj
 		bra.w	loc_1DCC
 ; ---------------------------------------------------------------------------
 
-loc_1ABE:				; CODE XREF: ChaDec+74j
+loc_1ABE:						; CODE XREF: ChaDec+74j
 		move.w	#0,d0
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1AC4:				; CODE XREF: ChaDec+78j
+loc_1AC4:						; CODE XREF: ChaDec+78j
 		move.w	#$FFFF,d0
 		moveq	#1,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1ACC:				; CODE XREF: ChaDec+52j
+loc_1ACC:						; CODE XREF: ChaDec+52j
 		move.w	#1,d0
 		moveq	#5,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1AD4:				; CODE XREF: ChaDec+8Cj
+loc_1AD4:						; CODE XREF: ChaDec+8Cj
 		move.w	#1,d0
 		moveq	#1,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1ADC:				; CODE XREF: ChaDec+3Aj
+loc_1ADC:						; CODE XREF: ChaDec+3Aj
 		move.b	(a1)+,(a2)+
 
-loc_1ADE:				; CODE XREF: ChaDec+32j
-					; ChaDec+186j ...
+loc_1ADE:						; CODE XREF: ChaDec+32j
+							; ChaDec+186j ...
 		add.b	d1,d1
 		bcs.s	loc_1B56
 		movea.l	a2,a6
@@ -134,7 +134,7 @@ loc_1ADE:				; CODE XREF: ChaDec+32j
 		bcc.s	loc_1AF2
 		move.b	(a6)+,(a2)+
 
-loc_1AF2:				; CODE XREF: ChaDec+C2j
+loc_1AF2:						; CODE XREF: ChaDec+C2j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		cmp.w	a2,d7
@@ -142,7 +142,7 @@ loc_1AF2:				; CODE XREF: ChaDec+C2j
 		bra.w	loc_1C52
 ; ---------------------------------------------------------------------------
 
-loc_1AFE:				; CODE XREF: ChaDec+BAj
+loc_1AFE:						; CODE XREF: ChaDec+BAj
 		lsl.w	#3,d1
 		move.w	d1,d6
 		and.w	d4,d6
@@ -155,7 +155,7 @@ loc_1AFE:				; CODE XREF: ChaDec+BAj
 		bra.s	loc_1B2A
 ; ---------------------------------------------------------------------------
 
-loc_1B12:				; CODE XREF: ChaDec+DEj
+loc_1B12:						; CODE XREF: ChaDec+DEj
 		add.b	d1,d1
 		bcc.s	loc_1B26
 		moveq	#0,d0
@@ -164,17 +164,17 @@ loc_1B12:				; CODE XREF: ChaDec+DEj
 		subq.w	#6,d0
 		bmi.s	loc_1B3E
 
-loc_1B20:				; CODE XREF: ChaDec+F6j
+loc_1B20:						; CODE XREF: ChaDec+F6j
 		move.b	(a6)+,(a2)+
 		dbf	d0,loc_1B20
 
-loc_1B26:				; CODE XREF: ChaDec+E8j
+loc_1B26:						; CODE XREF: ChaDec+E8j
 		move.b	(a6)+,(a2)+
 
-loc_1B28:				; CODE XREF: ChaDec+E2j
+loc_1B28:						; CODE XREF: ChaDec+E2j
 		move.b	(a6)+,(a2)+
 
-loc_1B2A:				; CODE XREF: ChaDec+E4j
+loc_1B2A:						; CODE XREF: ChaDec+E4j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
@@ -183,34 +183,34 @@ loc_1B2A:				; CODE XREF: ChaDec+E4j
 		bra.w	loc_1A62
 ; ---------------------------------------------------------------------------
 
-loc_1B38:				; CODE XREF: ChaDec+EEj
+loc_1B38:						; CODE XREF: ChaDec+EEj
 		move.w	#0,d0
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1B3E:				; CODE XREF: ChaDec+F2j
+loc_1B3E:						; CODE XREF: ChaDec+F2j
 		move.w	#$FFFF,d0
 		moveq	#0,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1B46:				; CODE XREF: ChaDec+CCj
+loc_1B46:						; CODE XREF: ChaDec+CCj
 		move.w	#1,d0
 		moveq	#4,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1B4E:				; CODE XREF: ChaDec+106j
+loc_1B4E:						; CODE XREF: ChaDec+106j
 		move.w	#1,d0
 		moveq	#0,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1B56:				; CODE XREF: ChaDec+B4j
+loc_1B56:						; CODE XREF: ChaDec+B4j
 		move.b	(a1)+,(a2)+
 
-loc_1B58:				; CODE XREF: ChaDec+2Cj
-					; ChaDec+202j ...
+loc_1B58:						; CODE XREF: ChaDec+2Cj
+							; ChaDec+202j ...
 		add.b	d1,d1
 		bcs.s	loc_1BD4
 		movea.l	a2,a6
@@ -222,7 +222,7 @@ loc_1B58:				; CODE XREF: ChaDec+2Cj
 		bcc.s	loc_1B6C
 		move.b	(a6)+,(a2)+
 
-loc_1B6C:				; CODE XREF: ChaDec+13Cj
+loc_1B6C:						; CODE XREF: ChaDec+13Cj
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		cmp.w	a2,d7
@@ -230,7 +230,7 @@ loc_1B6C:				; CODE XREF: ChaDec+13Cj
 		bra.w	loc_1CD0
 ; ---------------------------------------------------------------------------
 
-loc_1B78:				; CODE XREF: ChaDec+134j
+loc_1B78:						; CODE XREF: ChaDec+134j
 		lsl.w	#3,d1
 		move.w	d1,d6
 		and.w	d4,d6
@@ -244,7 +244,7 @@ loc_1B78:				; CODE XREF: ChaDec+134j
 		bra.s	loc_1BA8
 ; ---------------------------------------------------------------------------
 
-loc_1B8E:				; CODE XREF: ChaDec+158j
+loc_1B8E:						; CODE XREF: ChaDec+158j
 		move.b	(a0)+,d1
 		add.b	d1,d1
 		bcc.s	loc_1BA4
@@ -254,17 +254,17 @@ loc_1B8E:				; CODE XREF: ChaDec+158j
 		subq.w	#6,d0
 		bmi.s	loc_1BBC
 
-loc_1B9E:				; CODE XREF: ChaDec+174j
+loc_1B9E:						; CODE XREF: ChaDec+174j
 		move.b	(a6)+,(a2)+
 		dbf	d0,loc_1B9E
 
-loc_1BA4:				; CODE XREF: ChaDec+166j
+loc_1BA4:						; CODE XREF: ChaDec+166j
 		move.b	(a6)+,(a2)+
 
-loc_1BA6:				; CODE XREF: ChaDec+15Ej
+loc_1BA6:						; CODE XREF: ChaDec+15Ej
 		move.b	(a6)+,(a2)+
 
-loc_1BA8:				; CODE XREF: ChaDec+160j
+loc_1BA8:						; CODE XREF: ChaDec+160j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
@@ -273,34 +273,34 @@ loc_1BA8:				; CODE XREF: ChaDec+160j
 		bra.w	loc_1ADE
 ; ---------------------------------------------------------------------------
 
-loc_1BB6:				; CODE XREF: ChaDec+16Cj
+loc_1BB6:						; CODE XREF: ChaDec+16Cj
 		move.w	#0,d0
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1BBC:				; CODE XREF: ChaDec+170j
+loc_1BBC:						; CODE XREF: ChaDec+170j
 		move.w	#$FFFF,d0
 		moveq	#7,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1BC4:				; CODE XREF: ChaDec+146j
+loc_1BC4:						; CODE XREF: ChaDec+146j
 		move.w	#1,d0
 		moveq	#3,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1BCC:				; CODE XREF: ChaDec+184j
+loc_1BCC:						; CODE XREF: ChaDec+184j
 		move.w	#1,d0
 		moveq	#7,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1BD4:				; CODE XREF: ChaDec+12Ej
+loc_1BD4:						; CODE XREF: ChaDec+12Ej
 		move.b	(a1)+,(a2)+
 
-loc_1BD6:				; CODE XREF: ChaDec+26j
-					; ChaDec+54j ...
+loc_1BD6:						; CODE XREF: ChaDec+26j
+							; ChaDec+54j ...
 		add.b	d1,d1
 		bcs.s	loc_1C50
 		movea.l	a2,a6
@@ -312,7 +312,7 @@ loc_1BD6:				; CODE XREF: ChaDec+26j
 		bcc.s	loc_1BEA
 		move.b	(a6)+,(a2)+
 
-loc_1BEA:				; CODE XREF: ChaDec+1BAj
+loc_1BEA:						; CODE XREF: ChaDec+1BAj
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		cmp.w	a2,d7
@@ -320,7 +320,7 @@ loc_1BEA:				; CODE XREF: ChaDec+1BAj
 		bra.w	loc_1D4E
 ; ---------------------------------------------------------------------------
 
-loc_1BF6:				; CODE XREF: ChaDec+1B2j
+loc_1BF6:						; CODE XREF: ChaDec+1B2j
 		lsl.w	#3,d1
 		move.b	(a0)+,d1
 		move.w	d1,d6
@@ -334,7 +334,7 @@ loc_1BF6:				; CODE XREF: ChaDec+1B2j
 		bra.s	loc_1C24
 ; ---------------------------------------------------------------------------
 
-loc_1C0C:				; CODE XREF: ChaDec+1D8j
+loc_1C0C:						; CODE XREF: ChaDec+1D8j
 		add.b	d1,d1
 		bcc.s	loc_1C20
 		moveq	#0,d0
@@ -343,17 +343,17 @@ loc_1C0C:				; CODE XREF: ChaDec+1D8j
 		subq.w	#6,d0
 		bmi.s	loc_1C38
 
-loc_1C1A:				; CODE XREF: ChaDec+1F0j
+loc_1C1A:						; CODE XREF: ChaDec+1F0j
 		move.b	(a6)+,(a2)+
 		dbf	d0,loc_1C1A
 
-loc_1C20:				; CODE XREF: ChaDec+1E2j
+loc_1C20:						; CODE XREF: ChaDec+1E2j
 		move.b	(a6)+,(a2)+
 
-loc_1C22:				; CODE XREF: ChaDec+1DCj
+loc_1C22:						; CODE XREF: ChaDec+1DCj
 		move.b	(a6)+,(a2)+
 
-loc_1C24:				; CODE XREF: ChaDec+1DEj
+loc_1C24:						; CODE XREF: ChaDec+1DEj
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
@@ -362,18 +362,18 @@ loc_1C24:				; CODE XREF: ChaDec+1DEj
 		bra.w	loc_1B58
 ; ---------------------------------------------------------------------------
 
-loc_1C32:				; CODE XREF: ChaDec+1E8j
+loc_1C32:						; CODE XREF: ChaDec+1E8j
 		move.w	#0,d0
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1C38:				; CODE XREF: ChaDec+1ECj
+loc_1C38:						; CODE XREF: ChaDec+1ECj
 		move.w	#$FFFF,d0
 		moveq	#6,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1C40:				; CODE XREF: ChaDec+1C4j
+loc_1C40:						; CODE XREF: ChaDec+1C4j
 		move.w	#1,d0
 		moveq	#2,d2
 		rts
@@ -456,29 +456,29 @@ loc_1CB0:
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1CB6:				; CODE XREF: ChaDec+26Aj
+loc_1CB6:						; CODE XREF: ChaDec+26Aj
 		move.w	#$FFFF,d0
 		moveq	#5,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1CBE:				; CODE XREF: ChaDec+240j
+loc_1CBE:						; CODE XREF: ChaDec+240j
 		move.w	#1,d0
 		moveq	#1,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1CC6:				; CODE XREF: ChaDec+27Ej
+loc_1CC6:						; CODE XREF: ChaDec+27Ej
 		move.w	#1,d0
 		moveq	#5,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1CCE:				; CODE XREF: ChaDec+228j
+loc_1CCE:						; CODE XREF: ChaDec+228j
 		move.b	(a1)+,(a2)+
 
-loc_1CD0:				; CODE XREF: ChaDec+1Aj
-					; ChaDec+148j ...
+loc_1CD0:						; CODE XREF: ChaDec+1Aj
+							; ChaDec+148j ...
 		add.b	d1,d1
 		bcs.s	loc_1D4C
 		movea.l	a2,a6
@@ -490,7 +490,7 @@ loc_1CD0:				; CODE XREF: ChaDec+1Aj
 		bcc.s	loc_1CE4
 		move.b	(a6)+,(a2)+
 
-loc_1CE4:				; CODE XREF: ChaDec+2B4j
+loc_1CE4:						; CODE XREF: ChaDec+2B4j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		cmp.w	a2,d7
@@ -498,7 +498,7 @@ loc_1CE4:				; CODE XREF: ChaDec+2B4j
 		bra.w	loc_1A62
 ; ---------------------------------------------------------------------------
 
-loc_1CF0:				; CODE XREF: ChaDec+2ACj
+loc_1CF0:						; CODE XREF: ChaDec+2ACj
 		add.w	d1,d1
 		move.b	(a0)+,d1
 		lsl.w	#2,d1
@@ -513,7 +513,7 @@ loc_1CF0:				; CODE XREF: ChaDec+2ACj
 		bra.s	loc_1D20
 ; ---------------------------------------------------------------------------
 
-loc_1D08:				; CODE XREF: ChaDec+2D4j
+loc_1D08:						; CODE XREF: ChaDec+2D4j
 		add.b	d1,d1
 		bcc.s	loc_1D1C
 		moveq	#0,d0
@@ -522,17 +522,17 @@ loc_1D08:				; CODE XREF: ChaDec+2D4j
 		subq.w	#6,d0
 		bmi.s	loc_1D34
 
-loc_1D16:				; CODE XREF: ChaDec+2ECj
+loc_1D16:						; CODE XREF: ChaDec+2ECj
 		move.b	(a6)+,(a2)+
 		dbf	d0,loc_1D16
 
-loc_1D1C:				; CODE XREF: ChaDec+2DEj
+loc_1D1C:						; CODE XREF: ChaDec+2DEj
 		move.b	(a6)+,(a2)+
 
-loc_1D1E:				; CODE XREF: ChaDec+2D8j
+loc_1D1E:						; CODE XREF: ChaDec+2D8j
 		move.b	(a6)+,(a2)+
 
-loc_1D20:				; CODE XREF: ChaDec+2DAj
+loc_1D20:						; CODE XREF: ChaDec+2DAj
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
@@ -541,34 +541,34 @@ loc_1D20:				; CODE XREF: ChaDec+2DAj
 		bra.w	loc_1C52
 ; ---------------------------------------------------------------------------
 
-loc_1D2E:				; CODE XREF: ChaDec+2E4j
+loc_1D2E:						; CODE XREF: ChaDec+2E4j
 		move.w	#0,d0
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1D34:				; CODE XREF: ChaDec+2E8j
+loc_1D34:						; CODE XREF: ChaDec+2E8j
 		move.w	#$FFFF,d0
 		moveq	#4,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1D3C:				; CODE XREF: ChaDec+2BEj
+loc_1D3C:						; CODE XREF: ChaDec+2BEj
 		move.w	#1,d0
 		moveq	#8,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1D44:				; CODE XREF: ChaDec+2FCj
+loc_1D44:						; CODE XREF: ChaDec+2FCj
 		move.w	#1,d0
 		moveq	#4,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1D4C:				; CODE XREF: ChaDec+2A6j
+loc_1D4C:						; CODE XREF: ChaDec+2A6j
 		move.b	(a1)+,(a2)+
 
-loc_1D4E:				; CODE XREF: ChaDec+14j
-					; ChaDec+1C6j ...
+loc_1D4E:						; CODE XREF: ChaDec+14j
+							; ChaDec+1C6j ...
 		add.b	d1,d1
 		bcs.s	loc_1DCA
 		movea.l	a2,a6
@@ -581,7 +581,7 @@ loc_1D4E:				; CODE XREF: ChaDec+14j
 		bcc.s	loc_1D64
 		move.b	(a6)+,(a2)+
 
-loc_1D64:				; CODE XREF: ChaDec+334j
+loc_1D64:						; CODE XREF: ChaDec+334j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		cmp.w	a2,d7
@@ -589,7 +589,7 @@ loc_1D64:				; CODE XREF: ChaDec+334j
 		bra.w	loc_1ADE
 ; ---------------------------------------------------------------------------
 
-loc_1D70:				; CODE XREF: ChaDec+32Aj
+loc_1D70:						; CODE XREF: ChaDec+32Aj
 		move.b	(a0)+,d1
 		lsl.w	#3,d1
 		move.w	d1,d6
@@ -603,7 +603,7 @@ loc_1D70:				; CODE XREF: ChaDec+32Aj
 		bra.s	loc_1D9E
 ; ---------------------------------------------------------------------------
 
-loc_1D86:				; CODE XREF: ChaDec+352j
+loc_1D86:						; CODE XREF: ChaDec+352j
 		add.b	d1,d1
 		bcc.s	loc_1D9A
 		moveq	#0,d0
@@ -612,17 +612,17 @@ loc_1D86:				; CODE XREF: ChaDec+352j
 		subq.w	#6,d0
 		bmi.s	loc_1DB2
 
-loc_1D94:				; CODE XREF: ChaDec+36Aj
+loc_1D94:						; CODE XREF: ChaDec+36Aj
 		move.b	(a6)+,(a2)+
 		dbf	d0,loc_1D94
 
-loc_1D9A:				; CODE XREF: ChaDec+35Cj
+loc_1D9A:						; CODE XREF: ChaDec+35Cj
 		move.b	(a6)+,(a2)+
 
-loc_1D9C:				; CODE XREF: ChaDec+356j
+loc_1D9C:						; CODE XREF: ChaDec+356j
 		move.b	(a6)+,(a2)+
 
-loc_1D9E:				; CODE XREF: ChaDec+358j
+loc_1D9E:						; CODE XREF: ChaDec+358j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
@@ -631,30 +631,30 @@ loc_1D9E:				; CODE XREF: ChaDec+358j
 		bra.w	loc_1CD0
 ; ---------------------------------------------------------------------------
 
-loc_1DAC:				; CODE XREF: ChaDec+362j
+loc_1DAC:						; CODE XREF: ChaDec+362j
 		move.w	#0,d0
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1DB2:				; CODE XREF: ChaDec+366j
+loc_1DB2:						; CODE XREF: ChaDec+366j
 		move.w	#$FFFF,d0
 		moveq	#3,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1DBA:				; CODE XREF: ChaDec+33Ej
+loc_1DBA:						; CODE XREF: ChaDec+33Ej
 		move.w	#1,d0
 		moveq	#7,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1DC2:				; CODE XREF: ChaDec+37Aj
+loc_1DC2:						; CODE XREF: ChaDec+37Aj
 		move.w	#1,d0
 		moveq	#3,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1DCA:				; CODE XREF: ChaDec+324j
+loc_1DCA:						; CODE XREF: ChaDec+324j
 		move.b	(a1)+,(a2)+
 
 loc_1DCC:
@@ -670,7 +670,7 @@ loc_1DCC:
 		bcc.s	loc_1DE2
 		move.b	(a6)+,(a2)+
 
-loc_1DE2:				; CODE XREF: ChaDec+3B2j
+loc_1DE2:						; CODE XREF: ChaDec+3B2j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		cmp.w	a2,d7
@@ -678,7 +678,7 @@ loc_1DE2:				; CODE XREF: ChaDec+3B2j
 		bra.w	loc_1B58
 ; ---------------------------------------------------------------------------
 
-loc_1DEE:				; CODE XREF: ChaDec+3AAj
+loc_1DEE:						; CODE XREF: ChaDec+3AAj
 		lsl.w	#3,d1
 		move.w	d1,d6
 		and.w	d4,d6
@@ -691,7 +691,7 @@ loc_1DEE:				; CODE XREF: ChaDec+3AAj
 		bra.s	loc_1E1A
 ; ---------------------------------------------------------------------------
 
-loc_1E02:				; CODE XREF: ChaDec+3CEj
+loc_1E02:						; CODE XREF: ChaDec+3CEj
 		add.b	d1,d1
 		bcc.s	loc_1E16
 		moveq	#0,d0
@@ -700,17 +700,17 @@ loc_1E02:				; CODE XREF: ChaDec+3CEj
 		subq.w	#6,d0
 		bmi.s	loc_1E2E
 
-loc_1E10:				; CODE XREF: ChaDec+3E6j
+loc_1E10:						; CODE XREF: ChaDec+3E6j
 		move.b	(a6)+,(a2)+
 		dbf	d0,loc_1E10
 
-loc_1E16:				; CODE XREF: ChaDec+3D8j
+loc_1E16:						; CODE XREF: ChaDec+3D8j
 		move.b	(a6)+,(a2)+
 
-loc_1E18:				; CODE XREF: ChaDec+3D2j
+loc_1E18:						; CODE XREF: ChaDec+3D2j
 		move.b	(a6)+,(a2)+
 
-loc_1E1A:				; CODE XREF: ChaDec+3D4j
+loc_1E1A:						; CODE XREF: ChaDec+3D4j
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
 		move.b	(a6)+,(a2)+
@@ -719,30 +719,30 @@ loc_1E1A:				; CODE XREF: ChaDec+3D4j
 		bra.w	loc_1D4E
 ; ---------------------------------------------------------------------------
 
-loc_1E28:				; CODE XREF: ChaDec+3DEj
+loc_1E28:						; CODE XREF: ChaDec+3DEj
 		move.w	#0,d0
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1E2E:				; CODE XREF: ChaDec+3E2j
+loc_1E2E:						; CODE XREF: ChaDec+3E2j
 		move.w	#$FFFF,d0
 		moveq	#2,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1E36:				; CODE XREF: ChaDec+3BCj
+loc_1E36:						; CODE XREF: ChaDec+3BCj
 		move.w	#1,d0
 		moveq	#6,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1E3E:				; CODE XREF: ChaDec+3F6j
+loc_1E3E:						; CODE XREF: ChaDec+3F6j
 		move.w	#1,d0
 		moveq	#2,d2
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_1E46:				; CODE XREF: ChaDec+3A2j
+loc_1E46:						; CODE XREF: ChaDec+3A2j
 		move.b	(a1)+,(a2)+
 		bra.w	loc_1A62
 ; End of function KC_Dec
