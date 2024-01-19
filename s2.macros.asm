@@ -1,3 +1,8 @@
+; ---------------------------------------------------------------------------
+; I run the main 68k RAM addresses through this function
+; to let them work in both 16-bit and 32-bit addressing modes.
+ramaddr function x,-(-x)&$FFFFFFFF
+
 ; makes a VDP address difference
 vdpCommDelta function addr,((addr&$3FFF)<<16)|((addr&$C000)>>14)
 

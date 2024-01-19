@@ -190,7 +190,7 @@ GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 
 ; ---------------------------------------------------------------------------
 ; Main RAM
-	phase	$FFFF0000
+	phase	ramaddr($FFFF0000)
 v_startofram:
 v_128x128:	ds.b	$8000				; 128x128 tile mappings ($8000 bytes)
 v_128x128_end:
