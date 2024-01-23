@@ -1227,8 +1227,8 @@ PlaneMapToVRAM_H40_TileLoop:
 		rts
 ; End of function PlaneMapToVRAM_H40
 
-		include "_inc\DMA Queue.asm"
-		include "_inc\Nemesis Decompression.asm"
+		include "_inc/DMA Queue.asm"
+		include "_inc/Nemesis Decompression.asm"
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 ; ---------------------------------------------------------------------------
@@ -2319,46 +2319,8 @@ CalcSine:
 ; End of function CalcSine
 
 ; ===========================================================================
-Sine_Data:	dc.w	  0,	 6,    $C,   $12,   $19,   $1F,	  $25,	 $2B ; 0
-		dc.w	$31,   $38,   $3E,   $44,   $4A,   $50,	  $56,	 $5C ; 8
-		dc.w	$61,   $67,   $6D,   $73,   $78,   $7E,	  $83,	 $88 ; 16
-		dc.w	$8E,   $93,   $98,   $9D,   $A2,   $A7,	  $AB,	 $B0 ; 24
-		dc.w	$B5,   $B9,   $BD,   $C1,   $C5,   $C9,	  $CD,	 $D1 ; 32
-		dc.w	$D4,   $D8,   $DB,   $DE,   $E1,   $E4,	  $E7,	 $EA ; 40
-		dc.w	$EC,   $EE,   $F1,   $F3,   $F4,   $F6,	  $F8,	 $F9 ; 48
-		dc.w	$FB,   $FC,   $FD,   $FE,   $FE,   $FF,	  $FF,	 $FF ; 56
-		dc.w   $100,   $FF,   $FF,   $FF,   $FE,   $FE,	  $FD,	 $FC ; 64
-		dc.w	$FB,   $F9,   $F8,   $F6,   $F4,   $F3,	  $F1,	 $EE ; 72
-		dc.w	$EC,   $EA,   $E7,   $E4,   $E1,   $DE,	  $DB,	 $D8 ; 80
-		dc.w	$D4,   $D1,   $CD,   $C9,   $C5,   $C1,	  $BD,	 $B9 ; 88
-		dc.w	$B5,   $B0,   $AB,   $A7,   $A2,   $9D,	  $98,	 $93 ; 96
-		dc.w	$8E,   $88,   $83,   $7E,   $78,   $73,	  $6D,	 $67 ; 104
-		dc.w	$61,   $5C,   $56,   $50,   $4A,   $44,	  $3E,	 $38 ; 112
-		dc.w	$31,   $2B,   $25,   $1F,   $19,   $12,	   $C,	   6 ; 120
-		dc.w	  0,	-6,   -$C,  -$12,  -$19,  -$1F,	 -$25,	-$2B ; 128
-		dc.w   -$31,  -$38,  -$3E,  -$44,  -$4A,  -$50,	 -$56,	-$5C ; 136
-		dc.w   -$61,  -$67,  -$6D,  -$75,  -$78,  -$7E,	 -$83,	-$88 ; 144
-		dc.w   -$8E,  -$93,  -$98,  -$9D,  -$A2,  -$A7,	 -$AB,	-$B0 ; 152
-		dc.w   -$B5,  -$B9,  -$BD,  -$C1,  -$C5,  -$C9,	 -$CD,	-$D1 ; 160
-		dc.w   -$D4,  -$D8,  -$DB,  -$DE,  -$E1,  -$E4,	 -$E7,	-$EA ; 168
-		dc.w   -$EC,  -$EE,  -$F1,  -$F3,  -$F4,  -$F6,	 -$F8,	-$F9 ; 176
-		dc.w   -$FB,  -$FC,  -$FD,  -$FE,  -$FE,  -$FF,	 -$FF,	-$FF ; 184
-		dc.w  -$100,  -$FF,  -$FF,  -$FF,  -$FE,  -$FE,	 -$FD,	-$FC ; 192
-		dc.w   -$FB,  -$F9,  -$F8,  -$F6,  -$F4,  -$F3,	 -$F1,	-$EE ; 200
-		dc.w   -$EC,  -$EA,  -$E7,  -$E4,  -$E1,  -$DE,	 -$DB,	-$D8 ; 208
-		dc.w   -$D4,  -$D1,  -$CD,  -$C9,  -$C5,  -$C1,	 -$BD,	-$B9 ; 216
-		dc.w   -$B5,  -$B0,  -$AB,  -$A7,  -$A2,  -$9D,	 -$98,	-$93 ; 224
-		dc.w   -$8E,  -$88,  -$83,  -$7E,  -$78,  -$75,	 -$6D,	-$67 ; 232
-		dc.w   -$61,  -$5C,  -$56,  -$50,  -$4A,  -$44,	 -$3E,	-$38 ; 240
-		dc.w   -$31,  -$2B,  -$25,  -$1F,  -$19,  -$12,	  -$C,	  -6 ; 248
-		dc.w	  0,	 6,    $C,   $12,   $19,   $1F,	  $25,	 $2B ; 256
-		dc.w	$31,   $38,   $3E,   $44,   $4A,   $50,	  $56,	 $5C ; 264
-		dc.w	$61,   $67,   $6D,   $73,   $78,   $7E,	  $83,	 $88 ; 272
-		dc.w	$8E,   $93,   $98,   $9D,   $A2,   $A7,	  $AB,	 $B0 ; 280
-		dc.w	$B5,   $B9,   $BD,   $C1,   $C5,   $C9,	  $CD,	 $D1 ; 288
-		dc.w	$D4,   $D8,   $DB,   $DE,   $E1,   $E4,	  $E7,	 $EA ; 296
-		dc.w	$EC,   $EE,   $F1,   $F3,   $F4,   $F6,	  $F8,	 $F9 ; 304
-		dc.w	$FB,   $FC,   $FD,   $FE,   $FE,   $FF,	  $FF,	 $FF ; 312
+Sine_Data:	binclude "misc/sinewave.bin"
+		even
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to calculate arctangent of y/x
@@ -2428,39 +2390,7 @@ CalcAngle_Zero:
 ; End of function CalcAngle
 
 ; ===========================================================================
-AngleData:	dc.b   0,  0,  0,  0,  1,  1,  1,  1	; 0
-		dc.b   1,  1,  2,  2,  2,  2,  2,  2	; 8
-		dc.b   3,  3,  3,  3,  3,  3,  3,  4	; 16
-		dc.b   4,  4,  4,  4,  4,  5,  5,  5	; 24
-		dc.b   5,  5,  5,  6,  6,  6,  6,  6	; 32
-		dc.b   6,  6,  7,  7,  7,  7,  7,  7	; 40
-		dc.b   8,  8,  8,  8,  8,  8,  8,  9	; 48
-		dc.b   9,  9,  9,  9,  9, $A, $A, $A	; 56
-		dc.b  $A, $A, $A, $A, $B, $B, $B, $B	; 64
-		dc.b  $B, $B, $B, $C, $C, $C, $C, $C	; 72
-		dc.b  $C, $C, $D, $D, $D, $D, $D, $D	; 80
-		dc.b  $D, $E, $E, $E, $E, $E, $E, $E	; 88
-		dc.b  $F, $F, $F, $F, $F, $F, $F,$10	; 96
-		dc.b $10,$10,$10,$10,$10,$10,$11,$11	; 104
-		dc.b $11,$11,$11,$11,$11,$11,$12,$12	; 112
-		dc.b $12,$12,$12,$12,$12,$13,$13,$13	; 120
-		dc.b $13,$13,$13,$13,$13,$14,$14,$14	; 128
-		dc.b $14,$14,$14,$14,$14,$15,$15,$15	; 136
-		dc.b $15,$15,$15,$15,$15,$15,$16,$16	; 144
-		dc.b $16,$16,$16,$16,$16,$16,$17,$17	; 152
-		dc.b $17,$17,$17,$17,$17,$17,$17,$18	; 160
-		dc.b $18,$18,$18,$18,$18,$18,$18,$18	; 168
-		dc.b $19,$19,$19,$19,$19,$19,$19,$19	; 176
-		dc.b $19,$19,$1A,$1A,$1A,$1A,$1A,$1A	; 184
-		dc.b $1A,$1A,$1A,$1B,$1B,$1B,$1B,$1B	; 192
-		dc.b $1B,$1B,$1B,$1B,$1B,$1C,$1C,$1C	; 200
-		dc.b $1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C	; 208
-		dc.b $1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D	; 216
-		dc.b $1D,$1D,$1D,$1E,$1E,$1E,$1E,$1E	; 224
-		dc.b $1E,$1E,$1E,$1E,$1E,$1E,$1F,$1F	; 232
-		dc.b $1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F	; 240
-		dc.b $1F,$1F,$20,$20,$20,$20,$20,$20	; 248
-		dc.b $20				; 256
+AngleData:	binclude "misc/angles.bin"
 		even
 ; ===========================================================================
 		nop
@@ -3417,7 +3347,7 @@ loc_3E00:
 loc_3E78:
 		move.b	1(a1),(Demo_press_counter).w
 		subq.b	#1,(Demo_press_counter).w
-		lea	(Demo_2P).l,a1
+		lea	(Demo_EHZ_2P).l,a1
 		move.b	1(a1),(Demo_press_counter_2P).w
 		subq.b	#1,(Demo_press_counter_2P).w
 		move.w	#$668,(v_demolength).w
@@ -4084,7 +4014,7 @@ loc_450C:
 loc_453A:
 		cmpi.b	#3,(Current_Zone).w
 		bne.s	loc_4572
-		lea	(Demo_2P).l,a1
+		lea	(Demo_EHZ_2P).l,a1
 		move.w	(Demo_button_index_2P).w,d0
 		adda.w	d0,a1
 		move.b	(a1),d0
@@ -4363,93 +4293,23 @@ locret_47E2:
 ; End of function SignpostArtLoad
 
 ; ---------------------------------------------------------------------------
-Demo_EHZ:	dc.b   0,$44,  8,  0,$28,  5,  8,$59,$28,  4,  8,$35,$28,  6,  8,$42 ; 0
-		dc.b $28,  4,  8,$19,  0, $F,  8, $A,$28,  9,  8,$4A,$28,  9,  8,$10 ; 16
-		dc.b   0,  5,  4,$1B,  2,  0,  8,$4B,$28,$2D,  8,$55,$28,  9,  8,$26 ; 32
-		dc.b $28,$1C,  8,$19,$28,  8,  8,$FF,  8,$96,$28,$13,  8,$1D,$28,$19 ; 48
-		dc.b   8,$2A,$28,  7,  9,  0,  1,  0,  5,$20,  4,  2,  5,  1,  0,  0 ; 64
-		dc.b   8,$3A,  0,$25,  4, $A,$24,  9,  4,$1C,  0,  3,  8,$3A,$28,  6 ; 80
-		dc.b   8, $C,  0,$16,  8,  0,$28, $F,  8,$33,$28,  7,  8,  4,  0,$46 ; 96
-		dc.b   8,$6A,  0,$29,$80,  0,$C0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 112
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 128
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 144
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 160
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 176
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 192
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 208
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 224
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 240
-Demo_2P:	dc.b   0,$46,  8,$1E,$28, $A,  8,$5E,$28,$30,  8,$66,  0, $F,  8, $F ; 0
-		dc.b $28,$2E,  8,  0,  0,$1F,  8,$12,  0,$13,  8, $A,  0,$16,  4, $D ; 16
-		dc.b   0,  8,  4,$10,  0,$30,  8,$6B,$28,$14,  8,$80, $A,  2,  2,$23 ; 32
-		dc.b   0,  7,  8,$13,$28,$17,  8,  0,  0,  3,  4,  3,  5,  0,  1,  0 ; 48
-		dc.b   9,  1,  8,$3C,$28,  7,  0,$18,  8,$4D,$28,$12,  8,  1,  0,  4 ; 64
-		dc.b   8, $B,  0,  7,  8,$1B,  0,  9,$20,  5,$28,$13,  8,  4,  0,$21 ; 80
-		dc.b   8,$11,  0,$20,  8,$51,  0, $B,  4,$57,  0, $D,  2,$27, $A,  0 ; 96
-		dc.b   0,  2,  9,  1,  8,$2A,$28,$15,  8,  3,$28,$19,  8, $A,  0, $A ; 112
-		dc.b   8,  2,$28,$1B,  8,$33,  0,$27,  8,$3A,  9,$12,  1,  7,  0,$13 ; 128
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 144
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 160
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 176
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 192
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 208
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 224
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 240
-Demo_HTZ:	dc.b   0,  5,  1,$1D,  9,  3,$29,  5,  9,$10,  1,  0,  0,$13,  4,  0 ; 0
-		dc.b   5, $A,$25,  7,  5,$10,  4,  1,  0, $C,  8,  4,  9, $C,$29, $A ; 16
-		dc.b   9,$10,  8,  3,  0,$1C,$20,  7,  0, $B,  4,  6,  0,$25,$20,  6 ; 32
-		dc.b   0,$22,  8,  5,  0,$25,  4, $E,  0,$33,  8,  7,  0,$39,  8, $A ; 48
-		dc.b $28,  8,  8,$16,  0,$24,  8,$74,$28,  2,$29,  7,  9,  3,  0, $F ; 64
-		dc.b   8, $D,  0,  5,  4, $C,  0,  1,$20,  2,$28,  0,$2A,  8,$28,  2 ; 80
-		dc.b   8,$1E,  0,  4,  4,$13,  0,$12,  8,$18,$28, $B,  8,$11,  0,$2C ; 96
-		dc.b   8, $C,  0, $D,$20,  4,$28,  3,  8,  5,  0,$22,  4,$12,  0,  4 ; 112
-		dc.b   8,$1A,  0, $D,  4,  6,  0,$37,  8, $C,  0,$19,  8, $D,  0, $C ; 128
-		dc.b   4,  9,  0,  3,  8,$20,  0,$1A,  4,  6,  0,$22,  8,  9,  0,  9 ; 144
-		dc.b   8,$16,  0,$2F,  8, $E,$28,  4,$20,  2,  0,  8,  4,$19,  0,  5 ; 160
-		dc.b   8,  6,$28,  8,  8,  8,  0,$24,  8,$72, $A,  9,  2, $E, $A,$6B ; 176
-		dc.b $8A,  0,$40,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 192
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 208
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 224
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 240
-Demo_HPZ:	dc.b   0,$40,  8,$33,$28,  6,  8,$39,$28,  5,  8, $D,  0,$25,  8,$10 ; 0
-		dc.b $28,$2A,  8,$1C,  2,  0,$26,  3,$22,  0,$2A,  0,$28,  6,  8,$22 ; 16
-		dc.b   2,  0,  6, $F,  4,  8,  6,  0,  2, $E,  6,$2F,  2,$79,  6,  1 ; 32
-		dc.b   4,$43,$24, $F,  4,$17,  0,  9,  8,$1C,$28,  3,  8,$45,  0,  5 ; 48
-		dc.b   8,$1A,$28,$33,  8,$72,  0, $F,  4,$15,$24,$10,  4, $B,  0,$24 ; 64
-		dc.b   4,  1,$24,  8,  4,  7,  0,  6,  4,  4,  0,$1E,$24, $E,  4,$15 ; 80
-		dc.b   0,$1E,$20,  3,$24, $F,  4,  0,  0,  7,  8,$12,  4,  9,$24, $F ; 96
-		dc.b   4,  6,  0, $A,  4,$62,$24,$12,$20,  4,  0,$21,$28, $E,  8,$16 ; 112
-		dc.b   0,$19,  8,$29,  0,$63,  4,$15,$24,  9,  4,$39,  0,$31,  8,$25 ; 128
-		dc.b $28,  2,  8,$12,  0,$93,$80,  0,$C0,  0,  0,  0,  0,  0,  0,  0 ; 144
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 160
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 176
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 192
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 208
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 224
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 240
-Demo_CPZ:	dc.b   0,$1B,  1,$30,  0,$19,  8,$29,$28,$13,  8,  3,  0,$1D,$20,  3 ; 0
-		dc.b $28,$1E,  8,  2,  0,  9,  4,  5,  0,$2E,  8,$1E,$28,  5,$20,  3 ; 16
-		dc.b   0, $B,  4,  1,  5,  7,  4,  0,  0,$2F,$28,  3,$2A,  4, $A,  0 ; 32
-		dc.b   8,  6,  0,$24,  8,  2,$28,  6,  8,  1,  0,$26,  8,$FF,  8,$14 ; 48
-		dc.b $28, $A,  8,  3,  0,$60,  8, $E,$28,  7,  8, $C,  0,  8,  4, $B ; 64
-		dc.b   0,$23,  8,  5,  0,$93,  8,$19,$28,$11,  8,$78,$28, $F,  8,$FF ; 80
-		dc.b   8,$83,$28, $D,  8,$82,  0,$1F,$80,  0,$40,  0,  0,  0,  0,  0 ; 96
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 112
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 128
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 144
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 160
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 176
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 192
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 208
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 224
-		dc.b   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ; 240
-Demo_S1GHZ:	binclude	"demodata\Intro - GHZ.bin"
+Demo_EHZ:	binclude	"demodata/Intro - EHZ (1P).bin"
 		even
-		binclude	"demodata\Intro - MZ.bin"
+Demo_EHZ_2P:	binclude	"demodata/Intro - EHZ (2P).bin"
 		even
-		binclude	"demodata\Intro - SYZ.bin"
+Demo_HTZ:	binclude	"demodata/Intro - HTZ.bin"
 		even
-Demo_S1SS:	binclude	"demodata\Intro - Special Stage.bin"
+Demo_HPZ:	binclude	"demodata/Intro - HPZ.bin"
+		even
+Demo_CPZ:	binclude	"demodata/Intro - CPZ.bin"
+		even
+Demo_S1GHZ:	binclude	"demodata/S1/Intro - GHZ.bin"
+		even
+		binclude	"demodata/S1/Intro - MZ.bin"
+		even
+		binclude	"demodata/S1/Intro - SYZ.bin"
+		even
+Demo_S1SS:	binclude	"demodata/S1/Intro - Special Stage.bin"
 		even
 ; ---------------------------------------------------------------------------
 
@@ -13271,12 +13131,12 @@ Obj0F:
 		jsr	Obj0F_Index(pc,d1.w)
 		bra.w	DisplaySprite
 ; ===========================================================================
-Obj0F_Index:	dc.w loc_B416-Obj0F_Index
-		dc.w loc_B438-Obj0F_Index
-		dc.w loc_B438-Obj0F_Index
+Obj0F_Index:	dc.w Obj0F_Init-Obj0F_Index
+		dc.w Obj0F_Cycle-Obj0F_Index
+		dc.w Obj0F_Cycle-Obj0F_Index
 ; ===========================================================================
 
-loc_B416:
+Obj0F_Init:
 		addq.b	#2,obRoutine(a0)
 		move.w	#$90,obX(a0)
 		move.w	#$90,$A(a0)
@@ -13284,19 +13144,19 @@ loc_B416:
 		move.w	#$680,obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 
-loc_B438:
+Obj0F_Cycle:
 		move.b	(v_jpadpress1).w,d0
 		btst	#5,d0				; has C been pressed?
-		beq.s	loc_B44C			; if not, branch
+		beq.s	Obj0F_Toggle			; if not, branch
 		addq.b	#1,obFrame(a0)			; increment mappings
 		andi.b	#$F,obFrame(a0)			; if above $F, reset
 
-loc_B44C:
+Obj0F_Toggle:
 		btst	#4,d0				; has B been pressed?
-		beq.s	locret_B458			; if not, branch
-		bchg	#0,(unk_FFFFFFE9).w		; this crashes the game
+		beq.s	.donothing			; if not, branch
+		bchg	#0,(unk_FFFFFFE9).w		; try turning on two player mode which will not work...
 
-locret_B458:
+.donothing:
 		rts
 ; ---------------------------------------------------------------------------
 Map_Obj0F:	dc.w word_B47A-Map_Obj0F
@@ -36249,8 +36109,8 @@ levartptrs macro plc1,plc2,palette,art,map16x16,map128x128,music
 ; MainLoadBlocks:
 LevelArtPointers:
 		levartptrs  4,  5,  4, Nem_GHZ, Map16_GHZ, Map128_GHZ, bgm_GHZ ;   0 ; GHZ  ; GREEN HILL ZONE
-		levartptrs  6,  7,  5, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_LZ ;   1 ; LZ   ; LABYRINTH ZONE
-		levartptrs  8,  9,  6, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_MZ ;   2 ; CPZ  ; CHEMICAL PLANT ZONE
+		levartptrs  6,  7,  5, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_LZ ;    1 ; LZ   ; LABYRINTH ZONE
+		levartptrs  8,  9,  6, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_MZ ;    2 ; CPZ  ; CHEMICAL PLANT ZONE
 		levartptrs $A, $B,  7, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SLZ ;   3 ; EHZ  ; EMERALD HILL ZONE
 		levartptrs $C, $D,  8, Nem_HPZ, Map16_HPZ, Map128_HPZ, bgm_SYZ ;   4 ; HPZ  ; HIDDEN PALACE ZONE
 		levartptrs $E, $F,  9, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SBZ ;   5 ; HTZ  ; HILL TOP ZONE
@@ -36984,7 +36844,7 @@ ObjPos_Null:	dc.w $FFFF,    0,    0
 ; Leftover symbol tables due to compiler weirdness; these are formatted
 ; with a Unix ($0A) line break instead of a DOS ($0D0A) line break and it's
 ; also using big-endian integers, which suggest Sonic 2 wasn't developed in
-; at least a little-endian environment
+; DOS (or at least a little-endian environment)
 ; in addition, the locations that can be extracted don't even match up with
 ; the prototype.
 ;
