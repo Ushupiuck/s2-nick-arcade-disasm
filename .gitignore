@@ -15,3 +15,7 @@ s2built.prev.bin
 
 # Typical CMake build directory.
 build_tools/source_code/build
+
+# Hivebrains comment utility
+Comment.bat
+Comment.exe

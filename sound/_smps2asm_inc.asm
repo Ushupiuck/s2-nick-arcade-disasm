@@ -57,7 +57,7 @@ nMaxPSG2			EQU nB6
 			enum		fTone_01=$01,fTone_02,fTone_03,fTone_04,fTone_05,fTone_06
 			nextenum	fTone_07,fTone_08,fTone_09,fTone_0A,fTone_0B,fTone_0C
 			nextenum	fTone_0D
-		elsecase;SonicDriverVer>=3
+		elsecase				;SonicDriverVer>=3
 			enum		sTone_01=$01,sTone_02,sTone_03,sTone_04,sTone_05,sTone_06
 			nextenum	sTone_07,sTone_08,sTone_09,sTone_0A,sTone_0B,sTone_0C
 			nextenum	sTone_0D,sTone_0E,sTone_0F,sTone_10,sTone_11,sTone_12
@@ -65,7 +65,7 @@ nMaxPSG2			EQU nB6
 			nextenum	sTone_19,sTone_1A,sTone_1B,sTone_1C,sTone_1D,sTone_1E
 			nextenum	sTone_1F,sTone_20,sTone_21,sTone_22,sTone_23,sTone_24
 			nextenum	sTone_25,sTone_26,sTone_27
-			; For conversions:
+							; For conversions:
 			if SonicDriverVer>=5
 				nextenum	fTone_01,fTone_02,fTone_03,fTone_04,fTone_05,fTone_06
 				nextenum	fTone_07,fTone_08,fTone_09,fTone_0A,fTone_0B,fTone_0C
@@ -116,7 +116,7 @@ nMaxPSG2			EQU nB6
 			nextenum	dReverseFadingWind,dScratchS3,dLooseSnareNoise,dPowerKick2
 			nextenum	dCrashingNoiseWoo,dQuickHit,dKickHey,dPowerKickHit
 			nextenum	dLowPowerKickHit,dLowerPowerKickHit,dLowestPowerKickHit
-		elsecase;SonicDriverVer>=5
+		elsecase				;SonicDriverVer>=5
 			if (use_s3_samples<>0)||(use_sk_samples<>0)||(use_s3d_samples<>0)
 				enum		dSnareS3=$81,dHighTom,dMidTomS3,dLowTomS3,dFloorTomS3,dKickS3,dMuffledSnare
 				nextenum	dCrashCymbal,dRideCymbal,dLowMetalHit,dMetalHit,dHighMetalHit
@@ -137,7 +137,7 @@ nMaxPSG2			EQU nB6
 				nextenum	dCrashingNoiseWoo,dQuickHit,dKickHey,dPowerKickHit
 				nextenum	dLowPowerKickHit,dLowerPowerKickHit,dLowestPowerKickHit
 			endif
-			; For conversions:
+							; For conversions:
 			if (use_s2_samples<>0)
 				if (use_s3_samples<>0)||(use_sk_samples<>0)||(use_s3d_samples<>0)
 					nextenum	dKick
@@ -160,11 +160,11 @@ nMaxPSG2			EQU nB6
 cPSG1				EQU $80
 cPSG2				EQU $A0
 cPSG3				EQU $C0
-cNoise				EQU $E0	; Not for use in S3/S&K/S3D
+cNoise				EQU $E0			; Not for use in S3/S&K/S3D
 cFM3				EQU $02
 cFM4				EQU $04
 cFM5				EQU $05
-cFM6				EQU $06	; Only in S3/S&K/S3D, overrides DAC
+cFM6				EQU $06			; Only in S3/S&K/S3D, overrides DAC
 ; ---------------------------------------------------------------------------
 ; Conversion macros and functions
 
@@ -679,7 +679,7 @@ smpsFM3SpecialMode macro ind1,ind2,ind3,ind4
 
 smpsPlaySound macro index
 	if SonicDriverVer>=5
-		message "smpsPlaySound only plays SFX in Flamedriver; use smpsPlayMusic to play music or fade effects."
+		message "smpsPlaySound only plays SFX in Flamedriver ; use smpsPlayMusic to play music or fade effects."
 	endif
 	dc.b	$FF,$01,index
 	endm
