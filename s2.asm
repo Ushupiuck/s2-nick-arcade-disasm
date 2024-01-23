@@ -2696,10 +2696,12 @@ loc_3516:
 		beq.s	loc_355A
 
 loc_353A:
+	if ~~FixBugs
 		cmpi.w	#bgm__Last+1,d0
 		bcs.s	loc_3546
 		cmpi.w	#sfx__First,d0
 		bcs.s	LevelSelect_Loop
+	endif
 
 loc_3546:
 		bsr.w	PlaySound_Special
