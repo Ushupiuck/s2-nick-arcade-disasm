@@ -1317,7 +1317,7 @@ loc_16C8:
 
 ClearPLC:
 		lea	(v_plc_buffer).w,a2
-		moveq	#$1F,d0
+		moveq	#(v_plc_buffer_end-v_plc_buffer)/4-1,d0
 
 loc_16D4:
 		clr.l	(a2)+
@@ -1432,11 +1432,27 @@ locret_17CA:
 ; loc_17CC:
 ProcessDPLC_Pop:
 		lea	(v_plc_buffer).w,a0
-		moveq	#$15,d0
+		moveq	#(v_plc_buffer_only_end-v_plc_buffer-6)/4-1,d0
 
 loc_17D2:
 		move.l	6(a0),(a0)+
 		dbf	d0,loc_17D2
+		
+	if FixBugs
+		; The above code does not properly 'pop' the 16th PLC entry.
+		; Because of this, occupying the 16th slot will cause it to
+		; be repeatedly decompressed infinitely.
+		; Granted, this could be conisdered more of an optimisation
+		; than a bug: treating the 16th entry as a dummy that
+		; should never be occupied makes this code unnecessary.
+		; Still, the overhead of this code is minimal.
+	if (v_plc_buffer_only_end-v_plc_buffer-6)&2
+		move.w	6(a0),(a0)
+	endif
+
+		clr.l	(v_plc_buffer_only_end-6).w
+	endif
+
 		rts
 ; End of function ProcessDPLC
 
