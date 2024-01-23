@@ -1,9 +1,11 @@
 ; Disassembly originally created by drx
 ; thanks to Hivebrain and Rika_Chou
 
-; Updated by Alex Field, BetaFilter, and RepellantMold
+; Updated by Alex Field, Filter, and RepellantMold
 
-zeroOffsetOptimization = 0
+FixBugs		  = 0	; change to 1 to enable bugfixes
+
+zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
 	CPU 68000
 	include	"s2.macrosetup.asm"
@@ -1059,8 +1061,13 @@ ClearScreen_DMAWait2:
 		move.w	#$8F02,(a5)
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
-		clearRAM Sprite_Table,Sprite_Table_End+4
-		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded+4
+	if FixBugs
+		clearRAM Sprite_Table,Sprite_Table_End
+		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded
+	else
+		clearRAM Sprite_Table,Sprite_Table_End+4 ; Clears too much RAM, clearing the first 4 bytes of v_pal_water.
+		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded+4 ; Clears too much RAM, clearing the first 4 bytes of v_objspace.
+	endif
 		rts
 ; End of function ClearScreen
 
