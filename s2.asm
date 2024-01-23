@@ -3,9 +3,9 @@
 
 ; Updated by Alex Field, Filter, and RepellantMold
 
-FixBugs		  = 0	; change to 1 to enable bugfixes
+FixBugs		  = 0					; change to 1 to enable bugfixes
 
-zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
+zeroOffsetOptimization = 0				; if 1, makes a handful of zero-offset instructions smaller
 
 	CPU 68000
 	include	"s2.macrosetup.asm"
@@ -133,7 +133,7 @@ InitValues:	dc.w $8000
 		dc.w $100
 
 		dc.l z80_ram				; Z80 RAM start	location
-dword_29E:	dc.l z80_bus_request			; Z80 bus request
+		dc.l z80_bus_request			; Z80 bus request
 		dc.l z80_reset				; Z80 reset
 		dc.l vdp_data_port			; VDP data port
 		dc.l vdp_control_port			; VDP control port
@@ -561,8 +561,6 @@ Vint_Title:
 		bsr.w	ProcessDPLC
 		tst.w	(v_demolength).w
 		beq.w	locret_CD0
-
-loc_CCC:
 		subq.w	#1,(v_demolength).w
 
 locret_CD0:
