@@ -34,7 +34,7 @@ obAngle:	equ $26					; angle
 obSubtype:	equ $28					; object subtype
 obSolid:	equ ob2ndRout				; solid status flag
 
-; Object variables used by Sonic
+; Object variables used by Sonic/Tails
 flashtime:	equ $30					; time between flashes after getting hit
 invtime:	equ $32					; time left for invincibility
 shoetime:	equ $34					; time left for speed shoes

@@ -3177,8 +3177,8 @@ MusicList:	dc.b bgm_GHZ
 		dc.b bgm_SLZ
 		dc.b bgm_SYZ
 		dc.b bgm_SBZ
-		dc.b $8D
-		dc.b 0
+		dc.b bgm_FZ
+		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Level
@@ -13046,7 +13046,7 @@ Monitor_SonicLife:
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
-Monitor_TailsLife:
+Monitor_TailsLife:					; A complete copy of Monitor_SonicLife
 		addq.b	#1,(v_lives).w
 		addq.b	#1,(f_lifecount).w
 		move.w	#bgm_ExtraLife,d0
@@ -13072,7 +13072,7 @@ loc_B130:
 
 Monitor_Shoes:
 		move.b	#1,(v_shoes).w
-		move.w	#$4B0,(v_objspace+$34).w
+		move.w	#$4B0,(v_objspace+shoetime).w
 		move.w	#$C00,(Sonic_top_speed).w
 		move.w	#$18,(Sonic_acceleration).w
 		move.w	#$80,(Sonic_deceleration).w
@@ -13089,7 +13089,7 @@ Monitor_Shield:
 
 Monitor_Invincibility:
 		move.b	#1,(v_invinc).w
-		move.w	#$4B0,(v_objspace+$32).w
+		move.w	#$4B0,(v_objspace+invtime).w
 		move.b	#$38,(v_objspace+$200).w
 		move.b	#1,(v_objspace+$21C).w
 		tst.b	(f_lockscreen).w
@@ -19875,13 +19875,14 @@ Obj01_Modes:	dc.w Obj01_MdNormal-Obj01_Modes
 		dc.w Obj01_MdAir-Obj01_Modes
 		dc.w Obj01_MdRoll-Obj01_Modes
 		dc.w Obj01_MdJump-Obj01_Modes
-
+; Used for when invincibility wears off
 MusicList_Sonic:dc.b bgm_GHZ
 		dc.b bgm_LZ
 		dc.b bgm_MZ
 		dc.b bgm_SLZ
 		dc.b bgm_SYZ
 		dc.b bgm_SBZ
+		even
 
 ; ===========================================================================
 
@@ -19889,9 +19890,9 @@ MusicList_Sonic:dc.b bgm_GHZ
 
 
 Sonic_Display:
-		move.w	$30(a0),d0
+		move.w	flashtime(a0),d0
 		beq.s	Obj01_Display
-		subq.w	#1,$30(a0)
+		subq.w	#1,flashtime(a0)
 		lsr.w	#3,d0
 		bcc.s	Obj01_ChkInvin
 ; loc_FB2E:
@@ -19901,13 +19902,15 @@ Obj01_Display:
 Obj01_ChkInvin:						; Checks if invincibility has expired and (should) disables it if it has
 		tst.b	(v_invinc).w
 		beq.s	Obj01_ChkShoes
-		tst.w	$32(a0)
+		tst.w	invtime(a0)
 		beq.s	Obj01_ChkShoes
+	if ~~FixBugs
+		; This branch causes the invincibility timer to be disabled.
+		; Strangely, Tails' version doesn't have this.
 		bra.s	Obj01_ChkShoes
+	endif
 ; ===========================================================================
-; Strange that they disabled the invincibility timer for this build,
-; a leftover debugging feature?
-		subq.w	#1,$32(a0)
+		subq.w	#1,invtime(a0)
 		bne.s	Obj01_ChkShoes
 		tst.b	(f_lockscreen).w
 		bne.s	Obj01_RmvInvin
@@ -19915,7 +19918,7 @@ Obj01_ChkInvin:						; Checks if invincibility has expired and (should) disables
 		bcs.s	Obj01_RmvInvin
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
-		cmpi.w	#$103,(Current_ZoneAndAct).w
+		cmpi.w	#$103,(Current_ZoneAndAct).w	; Leftover check from Sonic 1 for SBZ3
 		bne.s	loc_FB66
 		moveq	#5,d0
 
@@ -19927,12 +19930,12 @@ loc_FB66:
 Obj01_RmvInvin:
 		move.b	#0,(v_invinc).w
 ; loc_FB7A:
-Obj01_ChkShoes:	; Checks if Speed Shoes have expired and disables them if they have.
+Obj01_ChkShoes:						; Checks if Speed Shoes have expired and disables them if they have.
 		tst.b	(v_shoes).w
 		beq.s	Obj01_ExitChk
-		tst.w	$34(a0)
+		tst.w	shoetime(a0)
 		beq.s	Obj01_ExitChk
-		subq.w	#1,$34(a0)
+		subq.w	#1,shoetime(a0)
 		bne.s	Obj01_ExitChk
 		move.w	#$600,(Sonic_top_speed).w
 		move.w	#$C,(Sonic_acceleration).w
@@ -21839,9 +21842,9 @@ MusicList_Tails:dc.b bgm_GHZ
 
 
 Tails_Display:
-		move.w	$30(a0),d0
+		move.w	flashtime(a0),d0
 		beq.s	Obj02_Display
-		subq.w	#1,$30(a0)
+		subq.w	#1,flashtime(a0)
 		lsr.w	#3,d0
 		bcc.s	Obj02_ChkInvinc
 ; loc_10D1E:
@@ -21853,9 +21856,9 @@ Obj02_ChkInvinc:
 		; and unlike Sonic's version, functions normally...
 		tst.b	(v_invinc).w
 		beq.s	Obj02_ChkShoes
-		tst.w	$32(a0)
+		tst.w	invtime(a0)
 		beq.s	Obj02_ChkShoes
-		subq.w	#1,$32(a0)
+		subq.w	#1,invtime(a0)
 		bne.s	Obj02_ChkShoes
 		tst.b	(f_lockscreen).w
 		bne.s	Obj02_RmvInvin
@@ -21879,9 +21882,9 @@ Obj02_ChkShoes:
 		; checks if Speed Shoes have expired and disables them if they have
 		tst.b	(v_shoes).w
 		beq.s	Obj02_ExitChk
-		tst.w	$34(a0)
+		tst.w	shoetime(a0)
 		beq.s	Obj02_ExitChk
-		subq.w	#1,$34(a0)
+		subq.w	#1,shoetime(a0)
 		bne.s	Obj02_ExitChk
 		move.w	#$600,(Sonic_top_speed).w
 		move.w	#$C,(Sonic_acceleration).w
