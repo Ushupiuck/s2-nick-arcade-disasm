@@ -15226,7 +15226,7 @@ loc_D034:
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2
+		sub.w	obMap(a1),d2
 		move.w	d2,d1
 		add.w	d0,d1
 		bmi.s	loc_D0FA
@@ -15246,7 +15246,7 @@ loc_D0B2:
 
 loc_D0BC:
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2
+		sub.w	obMap(a1),d2
 		addi.w	#$80,d2
 		cmpi.w	#$60,d2
 		bcs.s	loc_D0FA
@@ -15254,7 +15254,7 @@ loc_D0BC:
 		bcc.s	loc_D0FA
 
 loc_D0D4:
-		movea.l	4(a0),a1
+		movea.l	obMap(a0),a1
 		moveq	#0,d1
 		btst	#5,d4
 		bne.s	loc_D0F0
@@ -15298,8 +15298,8 @@ loc_D124:
 loc_D126:
 		move.l	a4,-(sp)
 		lea	(Camera_RAM).w,a4
-		movea.w	2(a0),a3
-		movea.l	4(a0),a5
+		movea.w	obGfx(a0),a3
+		movea.l	obMap(a0),a5
 		moveq	#0,d0
 		move.b	$E(a0),d0
 		move.w	obX(a0),d3
@@ -15312,14 +15312,14 @@ loc_D126:
 		cmpi.w	#$140,d1
 		bge.s	loc_D1B0
 		move.w	obY(a0),d2
-		sub.w	4(a4),d2
+		sub.w	obMap(a4),d2
 		addi.w	#$80,d2
 		cmpi.w	#$60,d2
 		bcs.s	loc_D1B0
 		cmpi.w	#$180,d2
 		bcc.s	loc_D1B0
 		ori.b	#$80,obRender(a0)
-		lea	obVelX(a0),a6
+		lea	$10(a0),a6
 		moveq	#0,d0
 		move.b	$F(a0),d0
 		subq.w	#1,d0
@@ -15331,7 +15331,7 @@ loc_D17E:
 		sub.w	(a4),d3
 		addi.w	#$80,d3
 		move.w	(a6)+,d2
-		sub.w	4(a4),d2
+		sub.w	obMap(a4),d2
 		addi.w	#$80,d2
 		addq.w	#1,a6
 		moveq	#0,d1
@@ -15358,7 +15358,7 @@ loc_D1B0:
 
 
 sub_D1B6:
-		movea.w	2(a0),a3
+		movea.w	obGfx(a0),a3
 ; End of function sub_D1B6
 
 
@@ -15431,14 +15431,14 @@ loc_D230:
 		dbf	d1,loc_D200
 		rts
 ; ---------------------------------------------------------------------------
-byte_D238:	dc.b   8,  8,  8,  8			; 0
-		dc.b $10,$10,$10,$10			; 4
-		dc.b $18,$18,$18,$18			; 8
-		dc.b $20,$20,$20,$20			; 12
-byte_D248:	dc.b   8,$10,$18,$20			; 0
-		dc.b   8,$10,$18,$20			; 4
-		dc.b   8,$10,$18,$20			; 8
-		dc.b   8,$10,$18,$20			; 12
+byte_D238:	dc.b   8,  8,  8,  8
+		dc.b $10,$10,$10,$10
+		dc.b $18,$18,$18,$18
+		dc.b $20,$20,$20,$20
+byte_D248:	dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
 ; ---------------------------------------------------------------------------
 
 loc_D258:
@@ -15469,10 +15469,10 @@ loc_D288:
 		dbf	d1,loc_D258
 		rts
 ; ---------------------------------------------------------------------------
-byte_D290:	dc.b   8,$10,$18,$20			; 0
-		dc.b   8,$10,$18,$20			; 4
-		dc.b   8,$10,$18,$20			; 8
-		dc.b   8,$10,$18,$20			; 12
+byte_D290:	dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
 ; ---------------------------------------------------------------------------
 
 loc_D2A0:
@@ -15509,10 +15509,10 @@ loc_D2DA:
 ; End of function sub_D1BA
 
 ; ---------------------------------------------------------------------------
-byte_D2E2:	dc.b   8,  8,  8,  8			; 0
-		dc.b $10,$10,$10,$10			; 4
-		dc.b $18,$18,$18,$18			; 8
-		dc.b $20,$20,$20,$20			; 12
+byte_D2E2:	dc.b   8,  8,  8,  8
+		dc.b $10,$10,$10,$10
+		dc.b $18,$18,$18,$18
+		dc.b $20,$20,$20,$20
 BldSpr_ScrPos_2p:dc.l 0
 		dc.l Camera_RAM
 		dc.l Camera_BG_X_pos
@@ -15573,7 +15573,7 @@ loc_D342:
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2
+		sub.w	obMap(a1),d2
 		move.w	d2,d1
 		add.w	d0,d1
 		bmi.s	loc_D406
@@ -15594,7 +15594,7 @@ loc_D3B6:
 
 loc_D3C4:
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2
+		sub.w	obMap(a1),d2
 		addi.w	#$80,d2
 		cmpi.w	#$60,d2
 		bcs.s	loc_D406
@@ -15603,7 +15603,7 @@ loc_D3C4:
 		addi.w	#$80,d2
 
 loc_D3E0:
-		movea.l	4(a0),a1
+		movea.l	obMap(a0),a1
 		moveq	#0,d1
 		btst	#5,d4
 		bne.s	loc_D3FC
@@ -15693,7 +15693,7 @@ loc_D462:
 		moveq	#0,d0
 		move.b	obHeight(a0),d0
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2
+		sub.w	obMap(a1),d2
 		move.w	d2,d1
 		add.w	d0,d1
 		bmi.s	loc_D520
@@ -15714,7 +15714,7 @@ loc_D4D0:
 
 loc_D4DE:
 		move.w	obY(a0),d2
-		sub.w	4(a1),d2
+		sub.w	obMap(a1),d2
 		addi.w	#$80,d2
 		cmpi.w	#$60,d2
 		bcs.s	loc_D520
@@ -15723,7 +15723,7 @@ loc_D4DE:
 		addi.w	#$160,d2
 
 loc_D4FA:
-		movea.l	4(a0),a1
+		movea.l	obMap(a0),a1
 		moveq	#0,d1
 		btst	#5,d4
 		bne.s	loc_D516
@@ -15763,8 +15763,8 @@ loc_D542:
 loc_D54A:
 		move.l	a4,-(sp)
 		lea	(Camera_RAM).w,a4
-		movea.w	2(a0),a3
-		movea.l	4(a0),a5
+		movea.w	obGfx(a0),a3
+		movea.l	obMap(a0),a5
 		moveq	#0,d0
 		move.b	$E(a0),d0
 		move.w	obX(a0),d3
@@ -15777,7 +15777,7 @@ loc_D54A:
 		cmpi.w	#$140,d1
 		bge.s	loc_D5D4
 		move.w	obY(a0),d2
-		sub.w	4(a4),d2
+		sub.w	obMap(a4),d2
 		addi.w	#$80,d2
 		cmpi.w	#$60,d2
 		bcs.s	loc_D5D4
@@ -15796,7 +15796,7 @@ loc_D5A2:
 		sub.w	(a4),d3
 		addi.w	#$80,d3
 		move.w	(a6)+,d2
-		sub.w	4(a4),d2
+		sub.w	obMap(a4),d2
 		addi.w	#$100,d2
 		addq.w	#1,a6
 		moveq	#0,d1
@@ -15821,8 +15821,8 @@ loc_D5D4:
 loc_D5DA:
 		move.l	a4,-(sp)
 		lea	(Camera_X_pos_P2).w,a4
-		movea.w	2(a0),a3
-		movea.l	4(a0),a5
+		movea.w	obGfx(a0),a3
+		movea.l	obMap(a0),a5
 		moveq	#0,d0
 		move.b	$E(a0),d0
 		move.w	obX(a0),d3
@@ -15835,7 +15835,7 @@ loc_D5DA:
 		cmpi.w	#$140,d1
 		bge.s	loc_D664
 		move.w	obY(a0),d2
-		sub.w	4(a4),d2
+		sub.w	obMap(a4),d2
 		addi.w	#$80,d2
 		cmpi.w	#$60,d2
 		bcs.s	loc_D664
@@ -15854,7 +15854,7 @@ loc_D632:
 		sub.w	(a4),d3
 		addi.w	#$80,d3
 		move.w	(a6)+,d2
-		sub.w	4(a4),d2
+		sub.w	obMap(a4),d2
 		addi.w	#$1E0,d2
 		addq.w	#1,a6
 		moveq	#0,d1
@@ -15884,7 +15884,7 @@ loc_D664:
 Adjust2PArtPointer:
 		tst.w	(Two_player_mode).w
 		beq.s	locret_D684
-		move.w	2(a0),d0
+		move.w	obGfx(a0),d0
 		andi.w	#$7FF,d0
 		lsr.w	#1,d0
 		andi.w	#$F800,obGfx(a0)
@@ -15902,7 +15902,7 @@ locret_D684:
 Adjust2PArtPointer2:
 		tst.w	(Two_player_mode).w
 		beq.s	locret_D6BE
-		move.w	2(a1),d0
+		move.w	obGfx(a1),d0
 		andi.w	#$7FF,d0
 		lsr.w	#1,d0
 		andi.w	#$F800,obGfx(a1)
@@ -15917,7 +15917,7 @@ locret_D6BE
 
 
 sub_D6A2:
-		movea.w	2(a0),a3
+		movea.w	obGfx(a0),a3
 ; End of function sub_D6A2
 
 
@@ -15958,14 +15958,14 @@ loc_D6E0:
 locret_D6E6:
 		rts
 ; ---------------------------------------------------------------------------
-byte_D6E8:	dc.b   0,  0				; 0
-		dc.b   1,  1				; 2
-		dc.b   4,  4				; 4
-		dc.b   5,  5				; 6
-		dc.b   8,  8				; 8
-		dc.b   9,  9				; 10
-		dc.b  $C, $C				; 12
-		dc.b  $D, $D				; 14
+byte_D6E8:	dc.b   0,  0
+		dc.b   1,  1
+		dc.b   4,  4
+		dc.b   5,  5
+		dc.b   8,  8
+		dc.b   9,  9
+		dc.b  $C, $C
+		dc.b  $D, $D
 ; ---------------------------------------------------------------------------
 
 loc_D6F8:
@@ -16000,18 +16000,18 @@ loc_D732:
 		dbf	d1,loc_D700
 		rts
 ; ---------------------------------------------------------------------------
-byte_D73A:	dc.b   8,  8				; 0
-		dc.b   8,  8				; 2
-		dc.b $10,$10				; 4
-		dc.b $10,$10				; 6
-		dc.b $18,$18				; 8
-		dc.b $18,$18				; 10
-		dc.b $20,$20				; 12
-		dc.b $20,$20				; 14
-byte_D74A:	dc.b   8,$10,$18,$20			; 0
-		dc.b   8,$10,$18,$20			; 4
-		dc.b   8,$10,$18,$20			; 8
-		dc.b   8,$10,$18,$20			; 12
+byte_D73A:	dc.b   8,  8
+		dc.b   8,  8
+		dc.b $10,$10
+		dc.b $10,$10
+		dc.b $18,$18
+		dc.b $18,$18
+		dc.b $20,$20
+		dc.b $20,$20
+byte_D74A:	dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
 ; ---------------------------------------------------------------------------
 
 loc_D75A:
@@ -16043,14 +16043,14 @@ loc_D78E:
 		dbf	d1,loc_D75A
 		rts
 ; ---------------------------------------------------------------------------
-byte_D796:	dc.b   0,  0,  1,  1			; 0
-		dc.b   4,  4,  5,  5			; 4
-		dc.b   8,  8,  9,  9			; 8
-		dc.b  $C, $C, $D, $D			; 12
-byte_D7A6:	dc.b   8,$10,$18,$20			; 0
-		dc.b   8,$10,$18,$20			; 4
-		dc.b   8,$10,$18,$20			; 8
-		dc.b   8,$10,$18,$20			; 12
+byte_D796:	dc.b   0,  0,  1,  1
+		dc.b   4,  4,  5,  5
+		dc.b   8,  8,  9,  9
+		dc.b  $C, $C, $D, $D
+byte_D7A6:	dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
+		dc.b   8,$10,$18,$20
 ; ---------------------------------------------------------------------------
 
 loc_D7B6:
@@ -16087,11 +16087,11 @@ loc_D7F2:
 ; End of function sub_D6A6
 
 ; ---------------------------------------------------------------------------
-byte_D7FA:	dc.b   8,  8,  8,  8			; 0
-		dc.b $10,$10,$10,$10			; 4
-		dc.b $18,$18,$18,$18			; 8
-		dc.b $20,$20,$20,$20			; 12
-		dc.b $30,$28,  0,  8			; 16
+byte_D7FA:	dc.b   8,  8,  8,  8
+		dc.b $10,$10,$10,$10
+		dc.b $18,$18,$18,$18
+		dc.b $20,$20,$20,$20
+		dc.b $30,$28,  0,  8
 ; ---------------------------------------------------------------------------
 		sub.w	(Camera_RAM).w,d0
 		bmi.s	loc_D82E
