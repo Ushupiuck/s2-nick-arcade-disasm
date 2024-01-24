@@ -4685,7 +4685,7 @@ S1SS_BgAnimate:
 		move.w	(v_ssbganim).w,d0
 		bne.s	loc_5634
 		move.w	#0,(Camera_BG_Y_pos).w
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 
 loc_5634:
 		cmpi.w	#8,d0
@@ -4694,7 +4694,7 @@ loc_5634:
 		bne.s	loc_564E
 		addq.w	#1,(Camera_BG3_X_pos).w
 		addq.w	#1,(Camera_BG_Y_pos).w
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 
 loc_564E:
 		moveq	#0,d0
@@ -5106,7 +5106,7 @@ loc_5AA4:
 loc_5B2A:
 		bsr.w	DynScreenResizeLoad
 		move.w	(Camera_Y_pos).w,(v_scrposy_vdp).w
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
 		add.w	d0,d0
@@ -5151,7 +5151,7 @@ Deform_GHZ:
 
 loc_5B9A:
 		move.w	d0,d4
-		move.w	d0,($FFFFF618).w
+		move.w	d0,(v_bgscrposy_vdp).w
 		move.w	(Camera_RAM).w,d0
 		cmpi.b	#GameModeID_TitleScreen,(v_gamemode).w
 		bne.s	loc_5BAE
@@ -5257,7 +5257,7 @@ loc_5C94:
 		andi.w	#$FFFE,d0
 		move.w	d0,d4
 		lsr.w	#1,d4
-		move.w	d0,($FFFFF618).w
+		move.w	d0,(v_bgscrposy_vdp).w
 		andi.l	#$FFFEFFFE,(v_scrposy_vdp).w
 		move.w	(Camera_RAM).w,d0
 		cmpi.b	#GameModeID_TitleScreen,(v_gamemode).w
@@ -5519,7 +5519,7 @@ Deform_CPZ:
 		ext.l	d5
 		asl.l	#6,d5
 		bsr.w	ScrollBlock1
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		lea	(v_hscrolltablebuffer).w,a1
 		move.w	#$DF,d1
 		move.w	(Camera_RAM).w,d0
@@ -5547,7 +5547,7 @@ Deform_Unk:						; unknown BG deform
 		asl.l	#7,d4
 		moveq	#4,d6
 		bsr.w	ScrollBlock5
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		move.b	(Scroll_flags_BG).w,d0
 		or.b	(Scroll_flags_BG2).w,d0
 		move.b	d0,(Scroll_flags_BG3).w
@@ -5579,7 +5579,7 @@ loc_6088:
 
 
 Deform_TitleScreen:
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		move.w	(Camera_RAM).w,d0
 		cmpi.w	#$1C00,d0
 		bcc.s	loc_60B6
@@ -5597,7 +5597,7 @@ loc_60B6:
 Deform_EHZ:
 		tst.w	(Two_player_mode).w
 		bne.w	loc_620E
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		lea	(v_hscrolltablebuffer).w,a1
 		move.w	(Camera_RAM).w,d0
 		neg.w	d0
@@ -5729,7 +5729,7 @@ loc_620E:
 		subq.w	#1,(v_bgscroll_buffer).w
 
 loc_621C:
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		andi.l	#$FFFEFFFE,(v_scrposy_vdp).w
 		lea	(v_hscrolltablebuffer).w,a1
 		move.w	(Camera_RAM).w,d0
@@ -5877,7 +5877,7 @@ Deform_HPZ:
 		asl.l	#7,d5
 		moveq	#6,d6
 		bsr.w	ScrollBlock2
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		lea	(v_bgscroll_buffer).w,a1
 		move.w	(Camera_RAM).w,d2
 		neg.w	d2
@@ -5952,7 +5952,7 @@ loc_63F2:
 ; ---------------------------------------------------------------------------
 
 Deform_HTZ:
-		move.w	(Camera_BG_Y_pos).w,($FFFFF618).w
+		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
 		lea	(v_hscrolltablebuffer).w,a1
 		move.w	(Camera_RAM).w,d0
 		neg.w	d0
