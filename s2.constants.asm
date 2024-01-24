@@ -34,6 +34,9 @@ obAngle:	equ $26					; angle
 obSubtype:	equ $28					; object subtype
 obSolid:	equ ob2ndRout				; solid status flag
 
+ObTopSolidBit:	equ $3E					; bit to check for top solidity (either $C or $E)
+ObLRBSolidBit:	equ $3F					; bit to check for left/right/bottom solidity (either $D or $F)
+
 ; Object variables used by Sonic/Tails
 flashtime:	equ $30					; time between flashes after getting hit
 invtime:	equ $32					; time left for invincibility
