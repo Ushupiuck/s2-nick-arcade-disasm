@@ -5176,7 +5176,7 @@ loc_5BDA:
 		dbf	d1,loc_5BDA
 
 loc_5BE0:
-		move.w	($FFFFA804).w,d0
+		move.w	(v_bgscroll_buffer+4).w,d0
 		add.w	(Camera_BG3_X_pos).w,d0
 		neg.w	d0
 		move.w	#$F,d1
@@ -5184,7 +5184,7 @@ loc_5BE0:
 loc_5BEE:
 		move.l	d0,(a1)+
 		dbf	d1,loc_5BEE
-		move.w	($FFFFA808).w,d0
+		move.w	(v_bgscroll_buffer+8).w,d0
 		add.w	(Camera_BG3_X_pos).w,d0
 		neg.w	d0
 		move.w	#$F,d1
@@ -5283,7 +5283,7 @@ loc_5CE2:
 		dbf	d1,loc_5CE2
 
 loc_5CE8:
-		move.w	($FFFFA804).w,d0
+		move.w	(v_bgscroll_buffer+4).w,d0
 		add.w	(Camera_BG3_X_pos).w,d0
 		neg.w	d0
 		move.w	#7,d1
@@ -5291,7 +5291,7 @@ loc_5CE8:
 loc_5CF6:
 		move.l	d0,(a1)+
 		dbf	d1,loc_5CF6
-		move.w	($FFFFA808).w,d0
+		move.w	(v_bgscroll_buffer+8).w,d0
 		add.w	(Camera_BG3_X_pos).w,d0
 		neg.w	d0
 		move.w	#7,d1
@@ -5384,7 +5384,7 @@ loc_5DE2:
 		dbf	d1,loc_5DE2
 
 loc_5DE8:
-		move.w	($FFFFA804).w,d0
+		move.w	(v_bgscroll_buffer+4).w,d0
 		add.w	(Camera_BG3_X_pos_P2).w,d0
 		neg.w	d0
 		move.w	#7,d1
@@ -5392,7 +5392,7 @@ loc_5DE8:
 loc_5DF6:
 		move.l	d0,(a1)+
 		dbf	d1,loc_5DF6
-		move.w	($FFFFA808).w,d0
+		move.w	(v_bgscroll_buffer+8).w,d0
 		add.w	(Camera_BG3_X_pos_P2).w,d0
 		neg.w	d0
 		move.w	#7,d1
@@ -5900,7 +5900,7 @@ loc_637E:
 		moveq	#0,d3
 		move.w	d2,d3
 		asr.w	#1,d3
-		lea	($FFFFA860).w,a2
+		lea	(v_bgscroll_buffer+$60).w,a2
 		swap	d3
 		add.l	d0,d3
 		swap	d3
@@ -15452,7 +15452,7 @@ loc_D0FA:
 loc_D102:
 		lea	$80(a4),a4
 		dbf	d7,loc_D02C
-		move.b	d5,($FFFFF62C).w
+		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
 		beq.s	loc_D11C
 		move.l	#0,(a2)
@@ -15802,7 +15802,7 @@ loc_D406:
 loc_D410:
 		lea	$80(a4),a4
 		dbf	d7,loc_D338
-		move.b	d5,($FFFFF62C).w
+		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
 		bcc.s	loc_D42A
 		move.l	#0,(a2)
@@ -15921,7 +15921,7 @@ loc_D520:
 loc_D528:
 		lea	$80(a4),a4
 		dbf	d7,loc_D45A
-		move.b	d5,($FFFFF62C).w
+		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
 		beq.s	loc_D542
 		move.l	#0,(a2)
@@ -24537,7 +24537,7 @@ Floor_ChkTile:
 		lsr.w	#7,d1
 		andi.w	#$7F,d1
 		add.w	d1,d0
-		moveq	#$FFFFFFFF,d1
+		moveq	#-1,d1
 		lea	(v_lvllayout).w,a1
 		move.b	(a1,d0.w),d1
 		andi.w	#$FF,d1
@@ -27829,7 +27829,7 @@ Obj04_Main:
 ; ---------------------------------------------------------------------------
 
 loc_15530:
-		tst.w	($FFFFF63A).w
+		tst.w	(f_pause).w
 		bne.s	loc_15540
 		move.b	#0,$32(a0)
 		subq.b	#3,obFrame(a0)
@@ -30849,7 +30849,7 @@ sub_17A8C:
 		jsr	(PlaySound_Special).l
 
 loc_17AB6:
-		lea	($FFFFFB22).w,a1
+		lea	(v_pal_dry+$22).w,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_17AC4
@@ -31811,7 +31811,7 @@ loc_18DE4:
 		jsr	(PlaySound_Special).l
 
 loc_18E2C:
-		lea	($FFFFFB22).w,a1
+		lea	(v_pal_dry+$22).w,a1
 		moveq	#0,d0
 		tst.w	(a1)
 		bne.s	loc_18E3A
@@ -33168,7 +33168,7 @@ loc_19C9A:
 		dbf	d6,loc_19C42
 		lea	$70(a0),a0
 		dbf	d7,loc_19C3E
-		move.b	d5,($FFFFF62C).w
+		move.b	d5,(v_spritecount).w
 		cmpi.b	#$50,d5
 		beq.s	loc_19CBA
 		move.l	#0,(a2)
@@ -33185,7 +33185,7 @@ loc_19CBA:
 
 
 sub_19CC2:
-		lea	($FFFF400C).l,a1
+		lea	(v_ssbuffer2+$C).l,a1
 		moveq	#0,d0
 		move.b	($FFFFF780).w,d0
 		lsr.b	#2,d0
@@ -33196,7 +33196,7 @@ loc_19CD6:
 		move.w	d0,(a1)
 		addq.w	#8,a1
 		dbf	d1,loc_19CD6
-		lea	($FFFF4005).l,a1
+		lea	(v_ssbuffer2+5).l,a1
 		subq.b	#1,(v_ani1_time).w
 		bpl.s	loc_19CFA
 		move.b	#7,(v_ani1_time).w
@@ -33244,7 +33244,7 @@ loc_19D58:
 		andi.b	#7,(v_ani0_frame).w
 
 loc_19D82:
-		lea	($FFFF4016).l,a1
+		lea	(v_ssbuffer2+$16).l,a1
 		lea	(S1SS_WaRiVramSet).l,a0
 		moveq	#0,d0
 		move.b	(v_ani0_frame).w,d0
@@ -33307,8 +33307,8 @@ S1SS_WaRiVramSet:dc.w $142,$6142,$142,$142,$142,$142,$142,$6142
 
 
 sub_19EEC:
-		lea	($FFFF4400).l,a2
-		move.w	#$1F,d0
+		lea	(v_ssitembuffer).l,a2
+		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d0
 
 loc_19EF6:
 		tst.b	(a2)
@@ -33325,8 +33325,8 @@ locret_19F00:
 
 
 sub_19F02:
-		lea	($FFFF4400).l,a0
-		move.w	#$1F,d7
+		lea	(v_ssitembuffer).l,a0
+		move.w	#(v_ssitembuffer_end-v_ssitembuffer)/8-1,d7
 
 loc_19F0C:
 		moveq	#0,d0
