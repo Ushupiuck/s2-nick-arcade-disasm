@@ -3269,10 +3269,10 @@ loc_3D2A:
 		jsr	(ApplySonic1Collision).l
 		bsr.w	LoadCollisionIndexes
 		bsr.w	WaterEffects
-		move.b	#1,(v_objspace).w
+		move.b	#1,(v_player).w
 		tst.w	(f_demo).w
 		bmi.s	loc_3D6C
-		move.b	#$21,(v_objspace+$380).w
+		move.b	#$21,(v_hud).w
 
 loc_3D6C:
 		tst.w	(Two_player_mode).w
@@ -3281,10 +3281,10 @@ loc_3D6C:
 		beq.s	LevelInit_SkipTails		; funny how they skipped Tails in EHZ for the Nick Arcade show
 
 LevelInit_LoadTails:
-		move.b	#2,(v_objspace+$40).w
-		move.w	(v_objspace+obX).w,(v_objspace+$40+obX).w
-		move.w	(v_objspace+obY).w,(v_objspace+$40+obY).w
-		subi.w	#$20,(v_objspace+$40+obX).w
+		move.b	#2,(v_2ndplayer).w
+		move.w	(v_player+obX).w,(v_2ndplayer+obX).w
+		move.w	(v_player+obY).w,(v_2ndplayer+obY).w
+		subi.w	#$20,(v_2ndplayer+obX).w
 
 LevelInit_SkipTails:
 		tst.b	(f_debugcheat).w
@@ -3602,7 +3602,7 @@ S1DynWater_LZ1:						; leftover from Sonic 1
 		cmpi.w	#$600,d0
 		bcs.s	loc_4148
 		move.w	#$108,d1
-		cmpi.w	#$200,(v_objspace+obY).w
+		cmpi.w	#$200,(v_player+obY).w
 		bcs.s	loc_414E
 		cmpi.w	#$C00,d0
 		bcs.s	loc_4148
@@ -3636,7 +3636,7 @@ loc_414E:
 loc_4164:
 		subq.b	#1,d2
 		bne.s	locret_4188
-		cmpi.w	#$2E0,(v_objspace+obY).w
+		cmpi.w	#$2E0,(v_player+obY).w
 		bcc.s	locret_4188
 		move.w	#$3A8,d1
 		cmpi.w	#$1300,d0
@@ -3673,9 +3673,9 @@ DynWater_HPZ3:
 		move.w	#$900,d1
 		cmpi.w	#$600,d0
 		bcs.s	loc_41E8
-		cmpi.w	#$3C0,(v_objspace+obY).w
+		cmpi.w	#$3C0,(v_player+obY).w
 		bcs.s	loc_41E8
-		cmpi.w	#$600,(v_objspace+obY).w
+		cmpi.w	#$600,(v_player+obY).w
 		bcc.s	loc_41E8
 		move.w	#$4C8,d1
 		move.b	#$4B,($FFFF8206).w
@@ -3700,9 +3700,9 @@ loc_41F2:
 		bcs.s	loc_4236
 		cmpi.w	#$508,(v_waterpos3).w
 		beq.s	loc_4222
-		cmpi.w	#$600,(v_objspace+obY).w
+		cmpi.w	#$600,(v_player+obY).w
 		bcc.s	loc_4222
-		cmpi.w	#$280,(v_objspace+obY).w
+		cmpi.w	#$280,(v_player+obY).w
 		bcc.s	loc_4236
 
 loc_4222:
@@ -3794,7 +3794,7 @@ S1_LZWindTunnels:					; leftover from Sonic 1's LZ
 		subq.w	#8,a2
 
 loc_42EA:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 
 loc_42EE:
 		move.w	obX(a1),d0
@@ -3867,7 +3867,7 @@ S1LZWind_Data:	dc.w  $F80, $100,$1410,	$180, $460, $400, $710,	$480, $A20, $600,
 ; ---------------------------------------------------------------------------
 
 S1_LZWaterSlides:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		btst	#1,obStatus(a1)
 		bne.s	loc_4400
 		move.w	obY(a1),d0
@@ -4167,7 +4167,7 @@ Osc_Data:	dc.w   $7C,  $80			; 0
 
 
 OscillateNumDo:
-		cmpi.b	#6,(v_objspace+obRoutine).w
+		cmpi.b	#6,(v_player+obRoutine).w
 		bcc.s	locret_46FC
 		lea	(v_oscillate).w,a1
 		lea	(OscData2).l,a2
@@ -4377,7 +4377,7 @@ loc_50BC:
 		jsr	(S1SS_Load).l
 		move.l	#0,(Camera_X_pos).w
 		move.l	#0,(Camera_Y_pos).w
-		move.b	#9,(v_objspace).w
+		move.b	#9,(v_player).w
 		bsr.w	PalCycle_S1SS
 		clr.w	($FFFFF780).w
 		move.w	#$40,($FFFFF782).w
@@ -4852,8 +4852,8 @@ LevelSize_CheckLamp:
 		tst.b	(v_lastlamp).w
 		beq.s	LevelSize_StartLoc
 		jsr	(Lamppost_LoadInfo).l
-		move.w	(v_objspace+obX).w,d1
-		move.w	(v_objspace+obY).w,d0
+		move.w	(v_player+obX).w,d1
+		move.w	(v_player+obY).w,d0
 		bra.s	LevelSize_StartLocLoaded
 ; ---------------------------------------------------------------------------
 
@@ -4873,10 +4873,10 @@ LevelSize_StartLoc:
 loc_58CE:
 		moveq	#0,d1
 		move.w	(a1)+,d1
-		move.w	d1,(v_objspace+obX).w
+		move.w	d1,(v_player+obX).w
 		moveq	#0,d0
 		move.w	(a1),d0
-		move.w	d0,(v_objspace+obY).w
+		move.w	d0,(v_player+obY).w
 
 LevelSize_StartLocLoaded:
 		subi.w	#$A0,d1
@@ -5076,7 +5076,7 @@ loc_5AA4:
 		clr.w	(Scroll_flags_BG_P2).w
 		clr.w	(Scroll_flags_BG2_P2).w
 		clr.w	(Scroll_flags_BG3_P2).w
-		lea	(v_objspace).w,a0
+		lea	(v_player).w,a0
 		lea	(Camera_RAM).w,a1
 		lea	(Horiz_block_crossed_flag).w,a2
 		lea	(Scroll_flags).w,a3
@@ -5090,7 +5090,7 @@ loc_5AA4:
 		bsr.w	ScrollVertical
 		tst.w	(Two_player_mode).w
 		beq.s	loc_5B2A
-		lea	(v_objspace+$40).w,a0
+		lea	(v_2ndplayer).w,a0
 		lea	(Camera_X_pos_P2).w,a1
 		lea	(Horiz_block_crossed_flag_P2).w,a2
 		lea	(Scroll_flags_P2).w,a3
@@ -8082,7 +8082,7 @@ loc_756C:
 		addi.w	#8,d0
 		cmp.w	(Camera_Max_Y_pos).w,d0
 		bcs.s	loc_7586
-		btst	#1,(v_objspace+obStatus).w
+		btst	#1,(v_player+obStatus).w
 		beq.s	loc_7586
 		add.w	d1,d1
 		add.w	d1,d1
@@ -8271,7 +8271,7 @@ locret_7726:
 DynResize_LZ4:
 		cmpi.w	#$D00,(Camera_RAM).w
 		bcs.s	locret_774E
-		cmpi.w	#$18,(v_objspace+obY).w
+		cmpi.w	#$18,(v_player+obY).w
 		bcc.s	locret_774E
 		clr.b	(v_lastlamp).w
 		move.w	#1,(Level_Inactive_flag).w
@@ -8594,7 +8594,7 @@ DynResize_HPZ2:
 		cmpi.w	#$25A0,(Camera_RAM).w
 		bcs.s	locret_7A1A
 		move.w	#$420,(Camera_Max_Y_pos_target).w
-		cmpi.w	#$4D0,(v_objspace+obY).w
+		cmpi.w	#$4D0,(v_player+obY).w
 		bcs.s	locret_7A1A
 		move.w	#$520,(Camera_Max_Y_pos_target).w
 
@@ -9031,13 +9031,13 @@ loc_7DA0:
 
 
 sub_7DC0:
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		moveq	#4,d6
 		moveq	#$3B,d5
 		movem.l	d1-d4,-(sp)
 		bsr.s	sub_7DDA
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		subq.b	#1,d6
 		moveq	#$3F,d5
 ; End of function sub_7DC0
@@ -9113,7 +9113,7 @@ locret_7E5E:
 
 sub_7E60:
 		moveq	#0,d0
-		tst.w	(v_objspace+obVelX).w
+		tst.w	(v_player+obVelX).w
 		bne.s	loc_7E72
 		move.b	($FFFFFE0F).w,d0
 		andi.w	#$1C,d0
@@ -9125,7 +9125,7 @@ loc_7E72:
 		swap	d2
 		move.b	byte_7E9E(pc,d0.w),d2
 		moveq	#0,d0
-		tst.w	(v_objspace+$40+obVelX).w
+		tst.w	(v_2ndplayer+obVelX).w
 		bne.s	loc_7E90
 		move.b	($FFFFFE0F).w,d0
 		andi.w	#$1C,d0
@@ -10070,7 +10070,7 @@ loc_89EE:
 		bne.s	loc_8A2E
 		btst	#3,obStatus(a0)
 		beq.s	loc_8A28
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		bset	#1,obStatus(a1)
 		bclr	#3,obStatus(a1)
 		move.b	#2,obRoutine(a1)
@@ -10286,9 +10286,9 @@ loc_8D16:
 		bsr.w	sub_8CEC
 		subq.b	#1,$38(a0)
 		bne.s	locret_8D44
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		bsr.s	sub_8D2A
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -10383,9 +10383,9 @@ loc_8DFE:
 		bsr.w	sub_8DD6
 		subq.b	#1,$38(a0)
 		bne.s	locret_8E2C
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		bsr.s	sub_8E12
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -10790,7 +10790,7 @@ loc_94FE:
 loc_9526:
 		move.w	#$40,d1
 		clr.b	obAnim(a0)
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		add.w	d1,d0
 		cmp.w	obX(a0),d0
 		bcs.s	loc_9564
@@ -11424,7 +11424,7 @@ loc_9DA0:
 
 loc_9DB2:
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		bcs.s	loc_9DCA
 		subi.w	#$180,d0
 		bpl.s	loc_9DCA
@@ -11597,7 +11597,7 @@ locret_9F78:
 sub_9F7A:
 		bset	#0,obRender(a0)
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		bcc.s	locret_9F90
 		bclr	#0,obRender(a0)
 
@@ -11610,7 +11610,7 @@ locret_9F90:
 
 
 sub_9F92:
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		subi.w	#$B8,d0
 		rts
@@ -12028,7 +12028,7 @@ Obj22_NearSonic:
 		bsr.w	ObjectMove
 		tst.b	obj22_status(a0)
 		bne.s	locret_A558
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bpl.s	loc_A51C
 		neg.w	d0
@@ -12481,7 +12481,7 @@ loc_AAF4:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.l	a0,$3C(a1)
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		cmp.w	obX(a0),d0
 		bcs.s	loc_AB2C
 		bset	#0,obRender(a1)
@@ -12544,7 +12544,7 @@ sub_AB98:
 		bne.s	locret_ABD6
 		movea.l	$3C(a0),a1
 		move.b	#6,obRoutine(a1)
-		move.b	#$1C,(v_objspace+obAnim).w
+		move.b	#$1C,(v_player+obAnim).w
 		move.b	#1,(f_bigring).w
 		clr.b	(v_invinc).w
 		clr.b	(v_shield).w
@@ -12555,7 +12555,7 @@ locret_ABD6:
 
 loc_ABD8:
 		addq.b	#2,obRoutine(a0)
-		move.w	#0,(v_objspace).w
+		move.w	#0,(v_player).w
 		addq.l	#4,sp
 		rts
 ; End of function sub_AB98
@@ -12934,7 +12934,7 @@ loc_B130:
 
 Monitor_Shoes:
 		move.b	#1,(v_shoes).w
-		move.w	#$4B0,(v_objspace+shoetime).w
+		move.w	#$4B0,(v_player+shoetime).w
 		move.w	#$C00,(Sonic_top_speed).w
 		move.w	#$18,(Sonic_acceleration).w
 		move.w	#$80,(Sonic_deceleration).w
@@ -12951,7 +12951,7 @@ Monitor_Shield:
 
 Monitor_Invincibility:
 		move.b	#1,(v_invinc).w
-		move.w	#$4B0,(v_objspace+invtime).w
+		move.w	#$4B0,(v_player+invtime).w
 		move.b	#$38,(v_objspace+$200).w
 		move.b	#1,(v_objspace+$200+obAnim).w
 		tst.b	(f_lockscreen).w
@@ -12975,7 +12975,7 @@ loc_B1AA:
 
 
 Obj26_SolidSides:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d1,d0
@@ -12996,7 +12996,7 @@ Obj26_SolidSides:
 		bcc.s	loc_B20E
 		tst.b	(f_playerctrl).w
 		bmi.s	loc_B20E
-		cmpi.b	#6,(v_objspace+obRoutine).w
+		cmpi.b	#6,(v_player+obRoutine).w
 		bcc.s	loc_B20E
 		tst.w	(Debug_placement_mode).w
 		bne.s	loc_B20E
@@ -14450,7 +14450,7 @@ loc_C736:
 		bne.s	loc_C766
 		move.l	a0,-(sp)
 		movea.l	a0,a2
-		lea	(v_objspace).w,a0
+		lea	(v_player).w,a0
 		cmpi.b	#4,obRoutine(a0)
 		bcc.s	loc_C764
 		move.l	obY(a0),d3
@@ -14634,7 +14634,7 @@ loc_C8DC:
 		move.b	obSubtype(a0),obFrame(a0)
 
 loc_C90A:
-		move.w	(v_objspace+obVelX).w,$30(a0)
+		move.w	(v_player+obVelX).w,$30(a0)
 		move.w	#$1B,d1
 		move.w	#$20,d2
 		move.w	#$20,d3
@@ -14648,7 +14648,7 @@ locret_C92C:
 ; ---------------------------------------------------------------------------
 
 loc_C92E:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		cmpi.b	#2,obAnim(a1)
 		bne.s	locret_C92C
 		move.w	$30(a0),d0
@@ -14795,7 +14795,7 @@ RunObjects:
 		lea	(v_objspace).w,a0
 		moveq	#$7F,d7				; run the first $80 objects out of levels
 		moveq	#0,d0
-		cmpi.b	#6,(v_objspace+obRoutine).w	; is Sonic dead?
+		cmpi.b	#6,(v_player+obRoutine).w	; is Sonic dead?
 		bcc.s	RunObjectsWhenPlayerIsDead	; if yes, branch
 
 ; ---------------------------------------------------------------------------
@@ -16498,7 +16498,7 @@ loc_D98C:
 Touch_Rings:
 		movea.w	(Ring_start_addr).w,a1
 		movea.w	(Ring_end_addr).w,a2
-		cmpa.w	#v_objspace,a0
+		cmpa.w	#v_player,a0
 		beq.s	loc_D9AE
 		movea.w	(Ring_start_addr_P2).w,a1
 		movea.w	(Ring_end_addr_P2).w,a2
@@ -17661,7 +17661,7 @@ Obj41_Up:
 		move.w	#8,d2
 		move.w	#$10,d3
 		move.w	obX(a0),d4
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.w	SolidObject_Always_SingleCharacter
@@ -17671,7 +17671,7 @@ Obj41_Up:
 
 loc_E32A:
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		moveq	#4,d6
 		bsr.w	SolidObject_Always_SingleCharacter
 		btst	#4,obStatus(a0)
@@ -17742,7 +17742,7 @@ Obj41_Horizontal:
 		move.w	#$E,d2
 		move.w	#$F,d3
 		move.w	obX(a0),d4
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.w	SolidObject_Always_SingleCharacter
@@ -17761,7 +17761,7 @@ loc_E42C:
 
 loc_E434:
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		moveq	#4,d6
 		bsr.w	SolidObject_Always_SingleCharacter
 		btst	#6,obStatus(a0)
@@ -17869,7 +17869,7 @@ loc_E56E:
 		move.w	d2,d3
 		subi.w	#$18,d2
 		addi.w	#$18,d3
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		btst	#1,obStatus(a1)
 		bne.s	loc_E5C2
 		move.w	obInertia(a1),d4
@@ -17895,7 +17895,7 @@ loc_E596:
 		move.w	(sp)+,d0
 
 loc_E5C2:
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		btst	#1,obStatus(a1)
 		bne.s	locret_E604
 		move.w	obInertia(a1),d4
@@ -17929,7 +17929,7 @@ Obj41_Down:
 		move.w	#8,d2
 		move.w	#$10,d3
 		move.w	obX(a0),d4
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.w	SolidObject_Always_SingleCharacter
@@ -17939,7 +17939,7 @@ Obj41_Down:
 
 loc_E62C:
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		moveq	#4,d6
 		bsr.w	SolidObject_Always_SingleCharacter
 		cmpi.w	#-2,d4
@@ -18010,7 +18010,7 @@ Obj41_DiagonallyUp:
 		move.w	#$10,d2
 		move.w	obX(a0),d4
 		lea	Obj41_SlopeData_DiagUp(pc),a2
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.w	SlopedSolid_SingleCharacter
@@ -18020,7 +18020,7 @@ Obj41_DiagonallyUp:
 
 loc_E71A:
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		moveq	#4,d6
 		bsr.w	SlopedSolid_SingleCharacter
 		btst	#4,obStatus(a0)
@@ -18115,7 +18115,7 @@ Obj41_DiagonallyDown:
 		move.w	#$10,d2
 		move.w	obX(a0),d4
 		lea	Obj41_SlopeData_DiagDown(pc),a2
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.w	SlopedSolid_SingleCharacter
@@ -18125,7 +18125,7 @@ Obj41_DiagonallyDown:
 
 loc_E84E:
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		moveq	#4,d6
 		bsr.w	SlopedSolid_SingleCharacter
 		cmpi.w	#-2,d4
@@ -18368,7 +18368,7 @@ Obj42_Main_Index:	dc.w Obj42_ChkDistance-Obj42_Main_Index
 ; loc_EC26:
 Obj42_ChkDistance:
 		bset	#0,obStatus(a0)
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bcc.s	loc_EC3E
 		neg.w	d0
@@ -18395,7 +18395,7 @@ Obj42_Type00:
 		cmpi.b	#4,obFrame(a0)
 		bcc.s	Obj42_Fall
 		bset	#0,obStatus(a0)
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bcc.s	locret_EC8A
 		bclr	#0,obStatus(a0)
@@ -18596,7 +18596,7 @@ Obj0D_Init:
 		move.b	#4,obPriority(a0)
 ; loc_EFFE:
 Obj0D_Main:
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bcs.s	locret_F026
 		cmpi.w	#$20,d0
@@ -18662,16 +18662,16 @@ Obj0D_RingSparklePositions:
 Obj0D_EndLevel:
 		tst.w	(Debug_placement_mode).w
 		bne.w	locret_F15E
-		btst	#1,(v_objspace+obStatus).w
+		btst	#1,(v_player+obStatus).w
 		bne.s	loc_F0E0
 		move.b	#1,(f_lockctrl).w
 		move.w	#$800,(v_jpadhold2).w
 
 loc_F0E0:
 		; This check here is for S1's Big Ring, which would set Sonic's Object ID to 0
-		tst.b	(v_objspace).w
+		tst.b	(v_player).w
 		beq.s	loc_F0F6
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		move.w	(Camera_Max_X_pos).w,d1
 		addi.w	#$128,d1
 		cmp.w	d1,d0
@@ -18909,12 +18909,12 @@ Map_obj40:	binclude	"mappings/sprite/obj40.bin"
 
 
 SolidObject:
-		lea	(v_objspace).w,a1		; a1=character
+		lea	(v_player).w,a1		; a1=character
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)			; store input registers
 		bsr.s	sub_F456			; first collision check with Sonic
 		movem.l	(sp)+,d1-d4			; restore input registers
-		lea	(v_objspace+$40).w,a1		; a1=character ; now check collision with Tails
+		lea	(v_2ndplayer).w,a1		; a1=character ; now check collision with Tails
 		tst.b	1(a1)
 		bpl.w	locret_F490			; return if not Tails
 		addq.b	#1,d6
@@ -18952,12 +18952,12 @@ locret_F490:
 ; alternate function to check for collision even if off-screen, unused
 ; in this build...
 ; SolidObject_Always:
-		lea	(v_objspace).w,a1		; a1=character
+		lea	(v_player).w,a1		; a1=character
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.s	SolidObject_Always_SingleCharacter
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1		; a1=character
+		lea	(v_2ndplayer).w,a1		; a1=character
 		addq.b	#1,d6
 ; loc_F4A8:
 SolidObject_Always_SingleCharacter:
@@ -19004,12 +19004,12 @@ loc_F4DA:
 ; a1 = sonic or tails (set inside these subroutines)
 ; a2 = height data for slope
 ; ---------------------------------------------------------------------------
-		lea	(v_objspace).w,a1		; a1=character
+		lea	(v_player).w,a1		; a1=character
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.s	SlopedSolid_SingleCharacter
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1		; a1=character
+		lea	(v_2ndplayer).w,a1		; a1=character
 		addq.b	#1,d6
 ; loc_F4FA:
 SlopedSolid_SingleCharacter:
@@ -19336,12 +19336,12 @@ locret_F788:
 
 
 sub_F78A:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.s	sub_F7A0
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		addq.b	#1,d6
 ; End of function sub_F78A
 
@@ -19382,12 +19382,12 @@ loc_F7D2:
 
 
 sub_F7DC:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.s	sub_F7F2
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		addq.b	#1,d6
 ; End of function sub_F7DC
 
@@ -19431,12 +19431,12 @@ loc_F824:
 
 
 sub_F82E:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.s	sub_F844
 		movem.l	(sp)+,d1-d4
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		addq.b	#1,d6
 ; End of function sub_F82E
 
@@ -19615,7 +19615,7 @@ loc_F9A0:
 sub_F9C8:
 		move.w	d1,d2
 		add.w	d2,d2
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		btst	#1,obStatus(a1)
 		bne.s	loc_F9E8
 		move.w	obX(a1),d0
@@ -20038,7 +20038,7 @@ loc_FD9E:
 		moveq	#0,d0
 		move.b	$3D(a0),d0
 		lsl.w	#6,d0
-		lea	(v_objspace).w,a1		; a1=character
+		lea	(v_player).w,a1		; a1=character
 		lea	(a1,d0.w),a1			; a1=object
 		tst.b	obStatus(a1)
 		bmi.s	Sonic_LookUp
@@ -20548,7 +20548,7 @@ loc_101C4:
 loc_101D4:
 		cmpi.w	#$501,(Current_ZoneAndAct).w
 		bne.w	JmpTo_KillSonic
-		cmpi.w	#$2000,(v_objspace+obX).w
+		cmpi.w	#$2000,(v_player+obX).w
 		bcs.w	JmpTo_KillSonic
 		clr.b	(v_lastlamp).w
 		move.w	#1,(Level_Inactive_flag).w
@@ -21829,7 +21829,7 @@ loc_10E0C:
 ; ---------------------------------------------------------------------------
 
 TailsC_CopySonicMoves:
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bpl.s	loc_10E38
 		neg.w	d0
@@ -21952,7 +21952,7 @@ loc_10F48:
 		moveq	#0,d0
 		move.b	$3D(a0),d0
 		lsl.w	#6,d0
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		lea	(a1,d0.w),a1
 		tst.b	obStatus(a1)
 		bmi.s	Tails_LookUp
@@ -23075,10 +23075,10 @@ Tails_GameOver:
 		addi.w	#$100,d0
 		cmp.w	obY(a0),d0
 		bcc.w	locret_11986
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		subi.w	#$40,d0
 		move.w	d0,obX(a0)
-		move.w	(v_objspace+obY).w,d0
+		move.w	(v_player+obY).w,d0
 		subi.w	#$80,d0
 		move.w	d0,obY(a0)
 		move.b	#2,obRoutine(a0)
@@ -23325,8 +23325,8 @@ loc_11B66:
 ; ---------------------------------------------------------------------------
 
 loc_11B88:
-		move.w	(v_objspace+$40+obVelX).w,d1
-		move.w	(v_objspace+$40+obVelY).w,d2
+		move.w	(v_2ndplayer+obVelX).w,d1
+		move.w	(v_2ndplayer+obVelY).w,d2
 		jsr	(CalcAngle).l
 		moveq	#0,d1
 		move.b	obStatus(a0),d2
@@ -23499,12 +23499,12 @@ Obj05_Init:
 		move.b	#4,obRender(a0)
 
 Obj05_Main:
-		move.b	(v_objspace+$40+obAngle).w,obAngle(a0)
-		move.b	(v_objspace+$40+obStatus).w,obStatus(a0)
-		move.w	(v_objspace+$40+obX).w,obX(a0)
-		move.w	(v_objspace+$40+obY).w,obY(a0)
+		move.b	(v_2ndplayer+obAngle).w,obAngle(a0)
+		move.b	(v_2ndplayer+obStatus).w,obStatus(a0)
+		move.w	(v_2ndplayer+obX).w,obX(a0)
+		move.w	(v_2ndplayer+obY).w,obY(a0)
 		moveq	#0,d0
-		move.b	(v_objspace+$40+obAnim).w,d0
+		move.b	(v_2ndplayer+obAnim).w,d0
 		cmp.b	$30(a0),d0
 		beq.s	loc_11DE6
 		move.b	d0,$30(a0)
@@ -23722,9 +23722,9 @@ Obj0A_WobbleData:dc.b	 0,   0,   0,	0,   0,	  0,   1,   1,	 1,   1,   1,	2,   2,
 Obj0A_Countdown:
 		tst.w	$2C(a0)
 		bne.w	loc_121D6
-		cmpi.b	#6,(v_objspace+obRoutine).w
+		cmpi.b	#6,(v_player+obRoutine).w
 		bcc.w	locret_122DC
-		btst	#6,(v_objspace+obStatus).w
+		btst	#6,(v_player+obStatus).w
 		beq.w	locret_122DC
 		subq.w	#1,$38(a0)
 		bpl.w	loc_121FC
@@ -23769,7 +23769,7 @@ loc_12170:
 		move.w	#1,$36(a0)
 		move.w	#$78,$2C(a0)
 		move.l	a0,-(sp)
-		lea	(v_objspace).w,a0
+		lea	(v_player).w,a0
 		bsr.w	Sonic_ResetOnFloor
 		move.b	#$17,obAnim(a0)
 		bset	#1,obStatus(a0)
@@ -23785,13 +23785,13 @@ loc_12170:
 loc_121D6:
 		subq.w	#1,$2C(a0)
 		bne.s	loc_121E4
-		move.b	#6,(v_objspace+obRoutine).w
+		move.b	#6,(v_player+obRoutine).w
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_121E4:
 		move.l	a0,-(sp)
-		lea	(v_objspace).w,a0
+		lea	(v_player).w,a0
 		jsr	(ObjectMove).l
 		addi.w	#$10,obVelY(a0)
 		movea.l	(sp)+,a0
@@ -23815,22 +23815,22 @@ loc_1220C:
 		jsr	(FindFreeObj).l
 		bne.w	locret_122DC
 		_move.b	#$A,obID(a1)
-		move.w	(v_objspace+obX).w,obX(a1)
+		move.w	(v_player+obX).w,obX(a1)
 		moveq	#6,d0
-		btst	#0,(v_objspace+obStatus).w
+		btst	#0,(v_player+obStatus).w
 		beq.s	loc_12242
 		neg.w	d0
 		move.b	#$40,obAngle(a1)
 
 loc_12242:
 		add.w	d0,obX(a1)
-		move.w	(v_objspace+obY).w,obY(a1)
+		move.w	(v_player+obY).w,obY(a1)
 		move.b	#6,obSubtype(a1)
 		tst.w	$2C(a0)
 		beq.w	loc_1228E
 		andi.w	#7,$3A(a0)
 		addi.w	#0,$3A(a0)
-		move.w	(v_objspace+obY).w,d0
+		move.w	(v_player+obY).w,d0
 		subi.w	#$C,d0
 		move.w	d0,obY(a1)
 		jsr	(RandomNumber).l
@@ -23977,9 +23977,9 @@ Obj38_Shield:
 		bne.s	locret_1245A			; if yes, branch
 		tst.b	(v_shield).w			; does Sonic have a shield?
 		beq.s	Obj38_Delete			; if not, branch
-		move.w	(v_objspace+obX).w,obX(a0)
-		move.w	(v_objspace+obY).w,obY(a0)
-		move.b	(v_objspace+obStatus).w,obStatus(a0)
+		move.w	(v_player+obX).w,obX(a0)
+		move.w	(v_player+obY).w,obY(a0)
+		move.b	(v_player+obStatus).w,obStatus(a0)
 		lea	(Ani_obj38).l,a1
 		jsr	(AnimateSprite).l
 		jmp	(DisplaySprite).l
@@ -24011,9 +24011,9 @@ Obj38_Stars:
 		move.w	(a1)+,d0
 		andi.w	#$7FF,d0
 		move.w	d0,obY(a0)
-		move.b	(v_objspace+obStatus).w,obStatus(a0)
-		move.b	(v_objspace+$1A).w,obFrame(a0)
-		move.b	(v_objspace+1).w,obRender(a0)
+		move.b	(v_player+obStatus).w,obStatus(a0)
+		move.b	(v_player+obFrame).w,obFrame(a0)
+		move.b	(v_player+obRender).w,obRender(a0)
 		jmp	(DisplaySprite).l
 ; ===========================================================================
 ; loc_124B2:
@@ -24055,16 +24055,16 @@ loc_124D4:
 		move.w	#60*2,obj4A_vanishtime(a0)	; set vanishing time to 2 seconds
 
 S1Obj4A_RmvSonic:
-		move.w	(v_objspace+obX).w,obX(a0)
-		move.w	(v_objspace+obY).w,obY(a0)
-		move.b	(v_objspace+obStatus).w,obStatus(a0)
+		move.w	(v_player+obX).w,obX(a0)
+		move.w	(v_player+obY).w,obY(a0)
+		move.b	(v_player+obStatus).w,obStatus(a0)
 		lea	(Ani_S1obj4A).l,a1
 		jsr	(AnimateSprite).l
 		cmpi.b	#2,obFrame(a0)
 		bne.s	loc_1253E
-		tst.b	(v_objspace).w			; is this Sonic?
+		tst.b	(v_player).w			; is this Sonic?
 		beq.s	loc_1253E			; if not, branch
-		move.b	#0,(v_objspace).w		; set Sonic's object ID to 0
+		move.b	#0,(v_player).w		; set Sonic's object ID to 0
 		move.w	#sfx_SSGoal,d0
 		jsr	(PlaySound_Special).l		; play Special Stage entry sound effect
 
@@ -24075,7 +24075,7 @@ loc_1253E:
 S1Obj4A_LoadSonic:
 		subq.w	#1,obj4A_vanishtime(a0)		; subtract 1 from vanishing time
 		bne.s	locret_12556			; if there's any time left, branch
-		move.b	#1,(v_objspace).w		; set Sonic's object ID to 1
+		move.b	#1,(v_player).w		; set Sonic's object ID to 1
 		jmp	(DeleteObject).l
 ; ---------------------------------------------------------------------------
 
@@ -24105,7 +24105,7 @@ Obj08_Init:
 		move.b	#$10,obActWid(a0)
 		move.w	#$4259,obGfx(a0)
 		bsr.w	Adjust2PArtPointer
-		move.w	(v_objspace+obX).w,obX(a0)
+		move.w	(v_player+obX).w,obX(a0)
 
 Obj08_Display:
 		move.w	(v_waterpos1).w,obY(a0)
@@ -25428,12 +25428,12 @@ Obj79_Main:
 ; ---------------------------------------------------------------------------
 
 Obj79_HitLamp:
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		addi.w	#8,d0
 		cmpi.w	#$10,d0
 		bcc.w	locret_135CA
-		move.w	(v_objspace+obY).w,d0
+		move.w	(v_player+obY).w,d0
 		sub.w	obY(a0),d0
 		addi.w	#$40,d0
 		cmpi.w	#$68,d0
@@ -25492,8 +25492,8 @@ Lamppost_StoreInfo:
 
 Lamppost_LoadInfo:
 		move.b	(v_lastlamp+1).w,(v_lastlamp).w
-		move.w	(v_lamp_xpos).w,(v_objspace+obX).w
-		move.w	(v_lamp_ypos).w,(v_objspace+obY).w
+		move.w	(v_lamp_xpos).w,(v_player+obX).w
+		move.w	(v_lamp_ypos).w,(v_player+obY).w
 		move.w	(v_lamp_rings).w,(v_rings).w
 		move.b	(v_lamp_lives).w,(v_lifecount).w
 		clr.w	(v_rings).w
@@ -25568,7 +25568,7 @@ Obj7D_Main:
 		moveq	#$10,d2
 		move.w	d2,d3
 		add.w	d3,d3
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		move.w	obX(a1),d0
 		sub.w	obX(a0),d0
 		add.w	d2,d0
@@ -25666,13 +25666,13 @@ S1Obj47_Init:
 S1Obj47_Main:
 		move.b	obColProp(a0),d0
 		beq.w	loc_13976
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		bclr	#0,obColProp(a0)
 		beq.s	loc_138CA
 		bsr.s	S1Obj47_Bump
 
 loc_138CA:
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		bclr	#1,obColProp(a0)
 		beq.s	loc_138D8
 		bsr.s	S1Obj47_Bump
@@ -25825,7 +25825,7 @@ loc_13A7E:
 		bsr.w	ResumeMusic
 		move.w	#sfx_Bubble,d0
 		jsr	(PlaySound_Special).l
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		clr.w	obVelX(a1)
 		clr.w	obVelY(a1)
 		clr.w	obInertia(a1)
@@ -25972,7 +25972,7 @@ S1Obj64_BblTypes:dc.b	0,  1,	0,  0,	0,  0,	1,  0,	0 ; 0
 S1Obj64_ChkSonic:
 		tst.b	(f_playerctrl).w
 		bmi.s	loc_13CBE
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		move.w	obX(a1),d0
 		move.w	obX(a0),d1
 		subi.w	#$10,d1
@@ -26324,8 +26324,8 @@ loc_140AA:
 locret_140B6:
 		rts
 ; ---------------------------------------------------------------------------
-dword_140B8:	dc.l v_objspace
-		dc.l v_objspace+$40
+dword_140B8:	dc.l v_player
+		dc.l v_2ndplayer
 		dc.l 0
 		dc.l 0
 		dc.l 0
@@ -26409,7 +26409,7 @@ loc_14254:
 loc_1426E:
 		btst	#3,obStatus(a0)
 		beq.s	loc_14286
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		bclr	#3,obStatus(a1)
 		bclr	#3,obStatus(a0)
 
@@ -26899,10 +26899,10 @@ Obj06_Init:
 		move.b	#$D0,obActWid(a0)
 
 Obj06_Main:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		moveq	#3,d6
 		bsr.s	sub_149BC
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		addq.b	#1,d6
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -27114,7 +27114,7 @@ loc_14D40:
 		btst	#3,obStatus(a0)
 		beq.s	loc_14D9A
 		moveq	#2,d1
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		move.w	obX(a0),d0
 		sub.w	obX(a1),d0
 		bcc.s	loc_14D60
@@ -27130,7 +27130,7 @@ loc_14D68:
 		btst	#4,obStatus(a0)
 		beq.s	loc_14DBE
 		moveq	#2,d2
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		move.w	obX(a0),d0
 		sub.w	obX(a1),d0
 		bcc.s	loc_14D84
@@ -27157,7 +27157,7 @@ loc_14D9A:
 		btst	#4,obStatus(a0)
 		beq.s	loc_14DBE
 		moveq	#2,d1
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 		move.w	obX(a0),d0
 		sub.w	obX(a1),d0
 		bcc.s	loc_14DB6
@@ -27177,7 +27177,7 @@ loc_14DBE:
 		lea	(byte_1502F).l,a2
 
 loc_14DD6:
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		move.w	obVelY(a1),$38(a0)
 		move.w	obX(a0),-(sp)
 		moveq	#0,d1
@@ -27191,7 +27191,7 @@ locret_14DF2:
 		rts
 ; ---------------------------------------------------------------------------
 		moveq	#2,d1
-		lea	(v_objspace).w,a1
+		lea	(v_player).w,a1
 		move.w	obX(a0),d0
 		sub.w	obX(a1),d0
 		bcc.s	loc_14E08
@@ -27346,13 +27346,13 @@ loc_14F8C:
 		move.b	d1,$3A(a0)
 		cmp.b	obFrame(a1),d1
 		beq.s	loc_14FB6
-		lea	(v_objspace).w,a2
+		lea	(v_player).w,a2
 		bclr	#3,obStatus(a1)
 		beq.s	loc_14FA8
 		bsr.s	sub_14FC4
 
 loc_14FA8:
-		lea	(v_objspace+$40).w,a2
+		lea	(v_2ndplayer).w,a2
 		bclr	#4,obStatus(a1)
 		beq.s	loc_14FB6
 		bsr.s	sub_14FC4
@@ -27929,7 +27929,7 @@ loc_156F6:
 		addi.w	#$40,d2
 		move.b	obSubtype(a0),d3
 		move.b	#0,obFrame(a0)
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		cmp.w	d1,d0
 		bcs.s	loc_15728
 		cmp.w	d2,d0
@@ -27940,7 +27940,7 @@ loc_156F6:
 ; ---------------------------------------------------------------------------
 
 loc_15728:
-		move.w	(v_objspace+$40+obX).w,d0
+		move.w	(v_2ndplayer+obX).w,d0
 		cmp.w	d1,d0
 		bcs.s	loc_1573A
 		cmp.w	d2,d0
@@ -28103,7 +28103,7 @@ loc_15948:
 
 sub_1596C:
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		bmi.s	loc_159A0
 		cmpi.w	#$60,d0
 		bgt.s	locret_15990
@@ -28725,8 +28725,8 @@ locret_1611A:
 sub_1611C:
 		tst.b	$2C(a0)
 		beq.s	locret_16182
-		move.w	(v_objspace+obX).w,d0
-		move.w	(v_objspace+obY).w,d1
+		move.w	(v_player+obX).w,d0
+		move.w	(v_player+obY).w,d1
 		sub.w	obY(a0),d1
 		bpl.s	locret_16182
 		cmpi.w	#$FFD0,d1
@@ -28870,8 +28870,8 @@ Obj50_Routine0A:
 		beq.s	locret_1628E
 		subi.w	#1,$2C(a0)
 		beq.w	loc_1676E
-		move.w	(v_objspace+obX).w,obX(a0)
-		move.w	(v_objspace+obY).w,obY(a0)
+		move.w	(v_player+obX).w,obX(a0)
+		move.w	(v_player+obY).w,obY(a0)
 		addi.w	#$C,obY(a0)
 		subi.b	#1,$2A(a0)
 		bne.s	loc_16290
@@ -28894,11 +28894,11 @@ loc_16290:
 sub_1629E:
 		tst.b	ob2ndRout(a0)
 		bne.s	locret_162DC
-		move.b	(v_objspace+obRoutine).w,d0
+		move.b	(v_player+obRoutine).w,d0
 		cmpi.b	#2,d0
 		bne.s	locret_162DC
-		move.w	(v_objspace+obX).w,obX(a0)
-		move.w	(v_objspace+obY).w,obY(a0)
+		move.w	(v_player+obX).w,obX(a0)
+		move.w	(v_player+obY).w,obY(a0)
 		ori.b	#4,obRender(a0)
 		move.b	#1,obPriority(a0)
 		move.b	#5,obAnim(a0)
@@ -29157,7 +29157,7 @@ loc_16626:
 		sf	$2D(a0)
 		sf	$2C(a0)
 		sf	$36(a0)
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		bpl.s	loc_16646
 		btst	#0,obStatus(a0)
@@ -29173,7 +29173,7 @@ loc_1664E:
 		st	$2C(a0)
 
 loc_16652:
-		move.w	(v_objspace+obY).w,d0
+		move.w	(v_player+obY).w,d0
 		sub.w	obY(a0),d0
 		cmpi.w	#$FFFC,d0
 		blt.s	locret_16676
@@ -29438,7 +29438,7 @@ Obj4B_ChkPlayers:
 		tst.b	$32(a0)
 		bne.w	locret_1694E			; branch, if shooting is disabled
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0		; a1=character
+		sub.w	(v_player+obX).w,d0		; a1=character
 		move.w	d0,d1
 		bpl.s	loc_16918
 		neg.w	d0
@@ -29604,7 +29604,7 @@ loc_16ADE:
 		move.w	#0,obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		bpl.s	loc_16B3C
 		bchg	#0,obStatus(a0)
 
@@ -29630,7 +29630,7 @@ Obj4A_SubIndex:	dc.w Obj4A_Init-Obj4A_SubIndex
 
 Obj4A_Init:
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		cmpi.w	#$80,d0
 		bgt.s	locret_16B86
 		cmpi.w	#$FF80,d0
@@ -29832,7 +29832,7 @@ sub_16DC8:
 
 sub_16DE2:
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		cmpi.w	#$80,d0
 		bgt.s	locret_16E0E
 		cmpi.w	#$FF80,d0
@@ -29880,7 +29880,7 @@ sub_16E44:
 		subi.w	#1,$2C(a0)
 		bpl.s	locret_16E8E
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		cmpi.w	#$60,d0
 		bgt.s	loc_16E90
 		cmpi.w	#$FFA0,d0
@@ -30211,7 +30211,7 @@ loc_1729E:
 
 sub_172B6:
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		bmi.s	loc_172D0
 		cmpi.w	#$40,d0
 		bgt.s	loc_172E6
@@ -30495,7 +30495,7 @@ Obj54_Display:
 sub_176D0:
 		tst.b	$35(a0)
 		bne.s	locret_17712
-		move.w	(v_objspace+obX).w,d0
+		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
 		cmpi.w	#$64,d0
 		bgt.s	locret_17712
@@ -31099,7 +31099,7 @@ sub_17D6A:
 
 loc_17D74:
 		move.w	obX(a0),d0
-		sub.w	(v_objspace+obX).w,d0
+		sub.w	(v_player+obX).w,d0
 		bpl.s	loc_17D88
 		btst	#0,obStatus(a1)
 		bne.s	loc_17D92
@@ -32589,7 +32589,7 @@ Obj3E_EndAct:
 		moveq	#$3E,d0
 		moveq	#$28,d1
 		moveq	#$40,d2
-		lea	(v_objspace+$40).w,a1
+		lea	(v_2ndplayer).w,a1
 
 loc_19714:
 		cmp.b	(a1),d1
@@ -33528,8 +33528,8 @@ loc_1A0E4:
 loc_1A0E8:
 		lsl.w	#2,d0
 		lea	S1SS_StartLoc(pc,d0.w),a1
-		move.w	(a1)+,(v_objspace+obX).w
-		move.w	(a1)+,(v_objspace+obY).w
+		move.w	(a1)+,(v_player+obX).w
+		move.w	(a1)+,(v_player+obY).w
 		movea.l	S1SS_LayoutIndex(pc,d0.w),a0
 		lea	(v_ssbuffer2).l,a1
 		move.w	#0,d0
@@ -35150,7 +35150,7 @@ locret_1B318:
 ; to its "beq" command being noped out above
 S1TimeOver:
 		clr.b	(f_timecount).w
-		lea	(v_objspace).w,a0
+		lea	(v_player).w,a0
 		movea.l	a0,a2
 		bsr.w	KillSonic
 		move.b	#1,(f_timeover).w
@@ -35256,11 +35256,11 @@ HUDDebug_XY:
 		move.l	#$5C400003,(vdp_control_port).l
 		move.w	(Camera_RAM).w,d1
 		swap	d1
-		move.w	(v_objspace+obX).w,d1
+		move.w	(v_player+obX).w,d1
 		bsr.s	HUDDebug_XY2
 		move.w	(Camera_Y_pos).w,d1
 		swap	d1
-		move.w	(v_objspace+obY).w,d1
+		move.w	(v_player+obY).w,d1
 ; End of function HUDDebug_XY
 
 
@@ -35649,7 +35649,7 @@ Debug_Init:
 		move.w	(Camera_Max_Y_pos_target).w,(v_limitbtmdb).w
 		move.w	#0,(Camera_Min_Y_pos).w
 		move.w	#$720,(Camera_Max_Y_pos_target).w
-		andi.w	#$7FF,(v_objspace+obY).w
+		andi.w	#$7FF,(v_player+obY).w
 		andi.w	#$7FF,(Camera_Y_pos).w
 		andi.w	#$3FF,(Camera_BG_Y_pos).w
 		move.b	#0,obFrame(a0)
@@ -35821,14 +35821,14 @@ Debug_ExitDebugMode:
 		; exit Debug Mode
 		moveq	#0,d0
 		move.w	d0,(Debug_placement_mode).w
-		move.l	#Map_Sonic,(v_objspace+obMap).w
-		move.w	#$780,(v_objspace+obGfx).w
+		move.l	#Map_Sonic,(v_player+obMap).w
+		move.w	#$780,(v_player+obGfx).w
 		tst.w	(Two_player_mode).w
 		beq.s	loc_1BC98
-		move.w	#$3C0,(v_objspace+obGfx).w
+		move.w	#$3C0,(v_player+obGfx).w
 
 loc_1BC98:
-		move.b	d0,(v_objspace+obAnim).w
+		move.b	d0,(v_player+obAnim).w
 		move.w	d0,$A(a0)
 		move.w	d0,$E(a0)
 		move.w	(v_limittopdb).w,(Camera_Min_Y_pos).w
@@ -35841,9 +35841,9 @@ loc_1BC98:
 		;move.l	#Map_Sonic,($FFFFD004).w
 		;move.w	#$780,($FFFFD002).w
 
-		move.b	#2,(v_objspace+obAnim).w
-		bset	#2,(v_objspace+obStatus).w
-		bset	#1,(v_objspace+obStatus).w
+		move.b	#2,(v_player+obAnim).w
+		bset	#2,(v_player+obStatus).w
+		bset	#1,(v_player+obStatus).w
 
 locret_1BCCA:
 		rts
