@@ -76,7 +76,7 @@ SkipSecurity:
 		moveq	#0,d0
 		movea.l	d0,a6
 		move.l	a6,usp
-		moveq	#$17,d1
+		moveq	#VDPInitValues_End-VDPInitValues-1,d1
 
 VDPInitLoop:
 		move.b	(a5)+,d5
@@ -91,7 +91,7 @@ VDPInitLoop:
 WaitForZ80:
 		btst	d0,(a1)
 		bne.s	WaitForZ80
-		moveq	#$25,d2
+		moveq	#Z80StartupCodeEnd-Z80StartupCodeBegin-1,d2
 
 Z80InitLoop:
 		move.b	(a5)+,(a0)+
@@ -105,18 +105,18 @@ ClearRAMLoop:
 		dbf	d6,ClearRAMLoop
 		move.l	(a5)+,(a4)
 		move.l	(a5)+,(a4)
-		moveq	#$1F,d3
+		moveq	#bytesToLcnt($80),d3
 
 ClearCRAMLoop:
 		move.l	d0,(a3)
 		dbf	d3,ClearCRAMLoop
 		move.l	(a5)+,(a4)
-		moveq	#$13,d4
+		moveq	#bytesToLcnt($50),d4
 
 ClearVSRAMLoop:
 		move.l	d0,(a3)
 		dbf	d4,ClearVSRAMLoop
-		moveq	#3,d5
+		moveq	#PSGInitValues_End-PSGInitValues-1,d5
 
 PSGInitLoop:
 		move.b	(a5)+,$11(a3)
@@ -129,7 +129,7 @@ PortC_OK:
 		bra.s	GameProgram
 ; ---------------------------------------------------------------------------
 InitValues:	dc.w $8000
-		dc.w $3FFF
+		dc.w bytesToLcnt($10000)
 		dc.w $100
 
 		dc.l z80_ram				; Z80 RAM start	location
@@ -138,25 +138,49 @@ InitValues:	dc.w $8000
 		dc.l vdp_data_port			; VDP data port
 		dc.l vdp_control_port			; VDP control port
 
-		dc.b   4,$14,$30,$3C			; 0 ; values for VDP registers
-		dc.b   7,$6C,  0,  0			; 4
-		dc.b   0,  0,$FF,  0			; 8
-		dc.b $81,$37,  0,  1			; 12
-		dc.b   1,  0,  0,$FF			; 16
-		dc.b $FF,  0,  0,$80			; 20
+VDPInitValues:						; values for VDP registers
+		dc.b 4					; Command $8004 - HInt off, Enable HV counter read
+		dc.b $14				; Command $8114 - Display off, VInt off, DMA on, PAL off
+		dc.b $30				; Command $8230 - Scroll A Address $C000
+		dc.b $3C				; Command $833C - Window Address $F000
+		dc.b 7					; Command $8407 - Scroll B Address $E000
+		dc.b $6C				; Command $856C - Sprite Table Address $D800
+		dc.b 0					; Command $8600 - Null
+		dc.b 0					; Command $8700 - Background color Pal 0 Color 0
+		dc.b 0					; Command $8800 - Null
+		dc.b 0					; Command $8900 - Null
+		dc.b $FF				; Command $8AFF - Hint timing $FF scanlines
+		dc.b 0					; Command $8B00 - Ext Int off, VScroll full, HScroll full
+		dc.b $81				; Command $8C81 - 40 cell mode, shadow/highlight off, no interlace
+		dc.b $37				; Command $8D37 - HScroll Table Address $DC00
+		dc.b 0					; Command $8E00 - Null
+		dc.b 1					; Command $8F01 - VDP auto increment 1 byte
+		dc.b 1					; Command $9001 - 64x32 cell scroll size
+		dc.b 0					; Command $9100 - Window H left side, Base Point 0
+		dc.b 0					; Command $9200 - Window V upside, Base Point 0
+		dc.b $FF				; Command $93FF - DMA Length Counter $FFFF
+		dc.b $FF				; Command $94FF - See above
+		dc.b 0					; Command $9500 - DMA Source Address $0
+		dc.b 0					; Command $9600 - See above
+		dc.b $80				; Command $9780	- See above + VRAM fill mode
+VDPInitValues_End:
 
 		dc.l $40000080				; value	for VRAM fill
 
+Z80StartupCodeBegin:
 		dc.b $AF,  1,$D9,$1F,$11,$27,  0,$21,$26,  0,$F9,$77,$ED,$B0,$DD,$E1 ; 0	; Z80 instructions
 		dc.b $FD,$E1,$ED,$47,$ED,$4F,$D1,$E1,$F1,  8,$D9,$C1,$D1,$E1,$F1,$F9 ; 16
 		dc.b $F3,$ED,$56,$36,$E9,$E9		; 32
+Z80StartupCodeEnd:
 
 		dc.w $8104				; VDP display mode
 		dc.w $8F02				; VDP increment
-		dc.l $C0000000				; value	for CRAM Write mode
-		dc.l $40000010				; value	for VSRAM write	mode
+		dc.l vdpComm($0000,CRAM,WRITE)		; value	for CRAM Write mode
+		dc.l vdpComm($0000,VSRAM,WRITE)		; value	for VSRAM write	mode
 
+PSGInitValues:
 		dc.b  $9F, $BF,	$DF, $FF		; 0 ; values for PSG channel volumes
+PSGInitValues_End:
 ; ---------------------------------------------------------------------------
 
 GameProgram:
@@ -950,25 +974,25 @@ VDP_ClrCRAM:
 ; End of function VDPSetupGame
 
 ; ===========================================================================
-VDPSetupArray:	dc.w $8004
-		dc.w $8134
-		dc.w $8230
-		dc.w $8328
-		dc.w $8407
-		dc.w $857C
+VDPSetupArray:	dc.w $8004				; H-INT disabled
+		dc.w $8134				; Genesis mode, DMA enabled, VBLANK-INT enabled
+		dc.w $8200|(vram_fg/$400)		; PNT A base: $C000
+		dc.w $8300|(vram_window/$400)		; PNT W base: $A000
+		dc.w $8400|(vram_bg/$2000)		; PNT B base: $E000
+		dc.w $8500|(vram_sprites/$200)		; Sprite attribute table base: $F800
 		dc.w $8600
-		dc.w $8700
+		dc.w $8700				; Background palette/color: 0/0
 		dc.w $8800
 		dc.w $8900
-		dc.w $8A00
-		dc.w $8B00
-		dc.w $8C81
-		dc.w $8D3F
+		dc.w $8A00				; H-INT every scanline
+		dc.w $8B00				; EXT-INT off, V scroll by screen, H scroll by screen
+		dc.w $8C81				; H res 40 cells, no interlace, S/H disabled
+		dc.w $8D00|(vram_hscroll/$400)
 		dc.w $8E00
-		dc.w $8F02
-		dc.w $9001
-		dc.w $9100
-		dc.w $9200
+		dc.w $8F02				; VRAM pointer increment: $0002
+		dc.w $9001				; Scroll table size: 64x32
+		dc.w $9100				; Disable window
+		dc.w $9200				; Disable window
 VDPSetupArray_End:
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
@@ -18712,7 +18736,7 @@ Map_obj40:	binclude	"mappings/sprite/obj40.bin"
 
 
 SolidObject:
-		lea	(v_player).w,a1		; a1=character
+		lea	(v_player).w,a1			; a1=character
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)			; store input registers
 		bsr.s	sub_F456			; first collision check with Sonic
@@ -18755,7 +18779,7 @@ locret_F490:
 ; alternate function to check for collision even if off-screen, unused
 ; in this build...
 ; SolidObject_Always:
-		lea	(v_player).w,a1		; a1=character
+		lea	(v_player).w,a1			; a1=character
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.s	SolidObject_Always_SingleCharacter
@@ -18807,7 +18831,7 @@ loc_F4DA:
 ; a1 = sonic or tails (set inside these subroutines)
 ; a2 = height data for slope
 ; ---------------------------------------------------------------------------
-		lea	(v_player).w,a1		; a1=character
+		lea	(v_player).w,a1			; a1=character
 		moveq	#3,d6
 		movem.l	d1-d4,-(sp)
 		bsr.s	SlopedSolid_SingleCharacter
@@ -19841,7 +19865,7 @@ loc_FD9E:
 		moveq	#0,d0
 		move.b	$3D(a0),d0
 		lsl.w	#6,d0
-		lea	(v_player).w,a1		; a1=character
+		lea	(v_player).w,a1			; a1=character
 		lea	(a1,d0.w),a1			; a1=object
 		tst.b	obStatus(a1)
 		bmi.s	Sonic_LookUp
@@ -23867,7 +23891,7 @@ S1Obj4A_RmvSonic:
 		bne.s	loc_1253E
 		tst.b	(v_player).w			; is this Sonic?
 		beq.s	loc_1253E			; if not, branch
-		move.b	#0,(v_player).w		; set Sonic's object ID to 0
+		move.b	#0,(v_player).w			; set Sonic's object ID to 0
 		move.w	#sfx_SSGoal,d0
 		jsr	(PlaySound_Special).l		; play Special Stage entry sound effect
 
@@ -23878,7 +23902,7 @@ loc_1253E:
 S1Obj4A_LoadSonic:
 		subq.w	#1,obj4A_vanishtime(a0)		; subtract 1 from vanishing time
 		bne.s	locret_12556			; if there's any time left, branch
-		move.b	#1,(v_player).w		; set Sonic's object ID to 1
+		move.b	#1,(v_player).w			; set Sonic's object ID to 1
 		jmp	(DeleteObject).l
 ; ---------------------------------------------------------------------------
 

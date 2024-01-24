@@ -19,7 +19,7 @@ QueueDMATransfer:
 		bcc.s	.transfer
 		; Do first transfer
 		movem.l	d1-d3,-(sp)
-		add.w	d0,d3		; d3 = words remaining in 128KB "bank"
+		add.w	d0,d3				; d3 = words remaining in 128KB "bank"
 		bsr.s	.transfer
 		movem.l	(sp)+,d1-d3
 		; Get second transfer's source, destination, and length
