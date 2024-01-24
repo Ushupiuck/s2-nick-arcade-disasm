@@ -3134,7 +3134,7 @@ loc_3C1A:
 
 loc_3C56:
 		move.w	(v_hbla_hreg).w,(a6)
-		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w
+		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w	; reset the DMA Queue
 		tst.b	(Water_flag).w
 		beq.s	LevelInit_NoWater
 		move.w	#$8014,(a6)
