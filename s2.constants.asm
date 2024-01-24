@@ -153,6 +153,7 @@ TrackGoSubStack:	equ TrackSz			; All tracks (multiple bytes. This constant won't
 TrackSz:	equ $30
 
 ; VRAM data
+vram_window:	equ $A000	; window namespace
 vram_fg:	equ $C000	; foreground namespace
 vram_bg:	equ $E000	; background namespace
 vram_sprites:	equ $F800	; sprite table
@@ -217,7 +218,7 @@ v_objspace:		ds.b	object_size*$80		; object variable space ($40 bytes per object
 v_objspace_end:
 
 ; Title screen objects
-v_sonicteam	= v_objspace+object_size*2	; object variable space for the "SONIC TEAM PRESENTS" text ($40 bytes)
+v_titletails	= v_objspace+object_size*2	; object variable space for the "SONIC TEAM PRESENTS" text ($40 bytes)
 v_titlesonic	= v_objspace+object_size*1	; object variable space for Sonic in the title screen ($40 bytes)
 v_pressstart	= v_objspace+object_size*2	; object variable space for the "PRESS START BUTTON" text ($40 bytes)
 v_titletm	= v_objspace+object_size*3	; object variable space for the trademark symbol ($40 bytes)

@@ -923,7 +923,7 @@ VDPSetupGame:
 		lea	(vdp_control_port).l,a0
 		lea	(vdp_data_port).l,a1
 		lea	(VDPSetupArray).l,a2
-		moveq	#$12,d7
+		moveq	#bytesToWcnt(VDPSetupArray_End-VDPSetupArray),d7
 
 VDP_Loop:
 		move.w	(a2)+,(a0)
@@ -944,18 +944,7 @@ VDP_ClrCRAM:
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 		move.l	d1,-(sp)
-		lea	(vdp_control_port).l,a5
-		move.w	#$8F01,(a5)
-		move.l	#$94FF93FF,(a5)
-		move.w	#$9780,(a5)
-		move.l	#$40000080,(a5)
-		move.w	#0,(vdp_data_port).l
-
-VDP_WaitDMA:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	VDP_WaitDMA
-		move.w	#$8F02,(a5)
+		dmaFillVRAM 0,$0000,$10000
 		move.l	(sp)+,d1
 		rts
 ; End of function VDPSetupGame
@@ -980,35 +969,14 @@ VDPSetupArray:	dc.w $8004
 		dc.w $9001
 		dc.w $9100
 		dc.w $9200
+VDPSetupArray_End:
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
 
 
 ClearScreen:
-		lea	(vdp_control_port).l,a5
-		move.w	#$8F01,(a5)
-		move.l	#$940F93FF,(a5)
-		move.w	#$9780,(a5)
-		move.l	#$40000083,(a5)
-		move.w	#0,(vdp_data_port).l
-
-ClearScreen_DMAWait:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	ClearScreen_DMAWait
-		move.w	#$8F02,(a5)
-		lea	(vdp_control_port).l,a5
-		move.w	#$8F01,(a5)
-		move.l	#$940F93FF,(a5)
-		move.w	#$9780,(a5)
-		move.l	#$60000083,(a5)
-		move.w	#0,(vdp_data_port).l
-
-ClearScreen_DMAWait2:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	ClearScreen_DMAWait2
-		move.w	#$8F02,(a5)
+		dmaFillVRAM 0,vram_fg,$1000
+		dmaFillVRAM 0,vram_bg,$1000
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 	if FixBugs
@@ -2517,16 +2485,16 @@ loc_32C4:
 		move.b	#0,(Debug_mode_flag).w
 		move.w	#0,(Two_player_mode).w
 		move.w	#$178,(v_demolength).w
-		lea	(v_objspace+$80).w,a1
+		lea	(v_titletails).w,a1
 		moveq	#0,d0
 		move.w	#$F,d1
 
 loc_339A:
 		move.l	d0,(a1)+
 		dbf	d1,loc_339A
-		move.b	#$E,(v_objspace+$40).w
-		move.b	#$E,(v_objspace+$80).w
-		move.b	#1,(v_objspace+$80+obFrame).w
+		move.b	#$E,(v_titlesonic).w
+		move.b	#$E,(v_titletails).w
+		move.b	#1,(v_titletails+obFrame).w
 		jsr	(RunObjects).l
 		jsr	(BuildSprites).l
 		moveq	#0,d0
