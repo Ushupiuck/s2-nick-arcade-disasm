@@ -36389,9 +36389,9 @@ Level_Null:	dc.l	0
 
 Art_BigRing:	binclude	"art/uncompressed/Giant Ring.bin"
 		even
-;
+; --------------------------------------------------------------------------------------
 ; leftover level layouts from a	previous build
-;
+; --------------------------------------------------------------------------------------
 Leftover_LevelLayouts:
 		binclude	"misc/leftovers/2C292.bin"
 		even
@@ -36401,15 +36401,15 @@ Leftover_LevelLayouts:
 Leftover_Art_BigRing:
 		binclude	"art/uncompressed/Giant Ring.bin"
 		even
-;----------------------------------------------------
+; --------------------------------------------------------------------------------------
 ; some level mappings	(16x16 or 256x256?)
-;----------------------------------------------------
+; --------------------------------------------------------------------------------------
 Leftover_LevelMappings:
 		binclude	"misc/leftovers/2E292.bin"
 		even
-;----------------------------------------------------
+; --------------------------------------------------------------------------------------
 ; leftover art - full 128 character ASCII table
-;----------------------------------------------------
+; --------------------------------------------------------------------------------------
 Leftover_Art_Alphabet:
 		binclude	"art/uncompressed/leftovers/128 char ASCII.bin"
 		even
@@ -36673,7 +36673,7 @@ ObjPos_Null:	dc.w $FFFF,    0,    0
 ; Leftover symbol tables due to compiler weirdness; these are formatted
 ; with a Unix ($0A) line break instead of a DOS ($0D0A) line break and it's
 ; also using big-endian integers, which suggest Sonic 2 wasn't developed in
-; DOS (or at least a little-endian environment)
+; DOS (or at least a little-endian environment.)
 ; in addition, the locations that can be extracted don't even match up with
 ; the prototype.
 ;
