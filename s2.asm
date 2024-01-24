@@ -2574,7 +2574,7 @@ loc_339A:
 		dbf	d1,loc_339A
 		move.b	#$E,(v_objspace+$40).w
 		move.b	#$E,(v_objspace+$80).w
-		move.b	#1,(v_objspace+$9A).w
+		move.b	#1,(v_objspace+$80+obFrame).w
 		jsr	(RunObjects).l
 		jsr	(BuildSprites).l
 		moveq	#0,d0
@@ -3494,9 +3494,9 @@ ChangeWaterSurfacePos:
 loc_402C:
 		move.w	d1,d0
 		addi.w	#$60,d0
-		move.w	d0,(v_objspace+$788).w
+		move.w	d0,(v_objspace+$780+obX).w
 		addi.w	#$120,d1
-		move.w	d1,(v_objspace+$7C8).w
+		move.w	d1,(v_objspace+$7C0+obX).w
 
 locret_403E:
 		rts
@@ -9125,7 +9125,7 @@ loc_7E72:
 		swap	d2
 		move.b	byte_7E9E(pc,d0.w),d2
 		moveq	#0,d0
-		tst.w	(v_objspace+$50).w
+		tst.w	(v_objspace+$40+obVelX).w
 		bne.s	loc_7E90
 		move.b	($FFFFFE0F).w,d0
 		andi.w	#$1C,d0
@@ -12544,7 +12544,7 @@ sub_AB98:
 		bne.s	locret_ABD6
 		movea.l	$3C(a0),a1
 		move.b	#6,obRoutine(a1)
-		move.b	#$1C,(v_objspace+$1C).w
+		move.b	#$1C,(v_objspace+obAnim).w
 		move.b	#1,(f_bigring).w
 		clr.b	(v_invinc).w
 		clr.b	(v_shield).w
@@ -12953,7 +12953,7 @@ Monitor_Invincibility:
 		move.b	#1,(v_invinc).w
 		move.w	#$4B0,(v_objspace+invtime).w
 		move.b	#$38,(v_objspace+$200).w
-		move.b	#1,(v_objspace+$21C).w
+		move.b	#1,(v_objspace+$200+obAnim).w
 		tst.b	(f_lockscreen).w
 		bne.s	locret_B1A8
 		cmpi.w	#$C,(v_air).w
@@ -14014,7 +14014,7 @@ loc_BEC4:
 ; ---------------------------------------------------------------------------
 
 loc_BECE:
-		move.b	#4,(v_objspace+$6DA).w
+		move.b	#4,(v_objspace+$6C0+obFrame).w
 		move.b	#$14,(v_objspace+$6C0+obRoutine).w
 		move.w	#sfx_Continue,d0
 		jsr	(PlaySound_Special).l
@@ -19887,7 +19887,7 @@ Obj01_InWater:
 
 		bsr.w	ResumeMusic
 		move.b	#$A,(v_objspace+$340).w		; load Obj0A (sonic's breathing bubbles) at $FFFFB340
-		move.b	#$81,(v_objspace+$368).w
+		move.b	#$81,(v_objspace+$340+obSubtype).w
 		move.w	#$300,(Sonic_top_speed).w
 		move.w	#6,(Sonic_acceleration).w
 		move.w	#$40,(Sonic_deceleration).w
@@ -21248,7 +21248,7 @@ Sonic_GameOver:
 		move.w	#0,$3A(a0)
 		move.b	#$39,(v_objspace+$80).w
 		move.b	#$39,(v_objspace+$C0).w
-		move.b	#1,(v_objspace+$DA).w
+		move.b	#1,(v_objspace+$C0+obFrame).w
 		clr.b	(f_timeover).w
 
 loc_10876:
@@ -21265,8 +21265,8 @@ loc_10888:
 		move.w	#0,$3A(a0)
 		move.b	#$39,(v_objspace+$80).w
 		move.b	#$39,(v_objspace+$C0).w
-		move.b	#2,(v_objspace+$9A).w
-		move.b	#3,(v_objspace+$DA).w
+		move.b	#2,(v_objspace+$80+obFrame).w
+		move.b	#3,(v_objspace+$C0+obFrame).w
 		bra.s	loc_10876
 ; ---------------------------------------------------------------------------
 
@@ -23325,8 +23325,8 @@ loc_11B66:
 ; ---------------------------------------------------------------------------
 
 loc_11B88:
-		move.w	(v_objspace+$50).w,d1
-		move.w	(v_objspace+$52).w,d2
+		move.w	(v_objspace+$40+obVelX).w,d1
+		move.w	(v_objspace+$40+obVelY).w,d2
 		jsr	(CalcAngle).l
 		moveq	#0,d1
 		move.b	obStatus(a0),d2
@@ -23499,12 +23499,12 @@ Obj05_Init:
 		move.b	#4,obRender(a0)
 
 Obj05_Main:
-		move.b	(v_objspace+$66).w,obAngle(a0)
-		move.b	(v_objspace+$62).w,obStatus(a0)
-		move.w	(v_objspace+$48).w,obX(a0)
-		move.w	(v_objspace+$4C).w,obY(a0)
+		move.b	(v_objspace+$40+obAngle).w,obAngle(a0)
+		move.b	(v_objspace+$40+obStatus).w,obStatus(a0)
+		move.w	(v_objspace+$40+obX).w,obX(a0)
+		move.w	(v_objspace+$40+obY).w,obY(a0)
 		moveq	#0,d0
-		move.b	(v_objspace+$5C).w,d0
+		move.b	(v_objspace+$40+obAnim).w,d0
 		cmp.b	$30(a0),d0
 		beq.s	loc_11DE6
 		move.b	d0,$30(a0)
@@ -23897,7 +23897,7 @@ loc_1230A:
 
 loc_12310:
 		move.w	#$1E,(v_air).w
-		clr.b	(v_objspace+$372).w
+		clr.b	(v_objspace+$340+$32).w
 		rts
 ; End of function ResumeMusic
 
