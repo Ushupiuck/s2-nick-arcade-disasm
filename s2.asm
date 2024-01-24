@@ -494,24 +494,12 @@ loc_BBE:
 		waitZ80
 		tst.b	(f_wtr_state).w
 		bne.s	loc_C02
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
 		bra.s	loc_C26
 ; ---------------------------------------------------------------------------
 
 loc_C02:
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
 
 loc_C26:
 		move.w	(v_hbla_hreg).w,(a5)
@@ -583,24 +571,12 @@ Vint_Level:
 		tst.b	(f_wtr_state).w
 		bne.s	loc_D24
 
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
 		bra.s	loc_D48
 ; ---------------------------------------------------------------------------
 
 loc_D24:
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
 
 loc_D48:
 		move.w	(v_hbla_hreg).w,(a5)
@@ -697,24 +673,12 @@ Vint_TitleCard:
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	loc_EE4
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
 		bra.s	loc_F08
 ; ---------------------------------------------------------------------------
 
 loc_EE4:
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
 
 loc_F08:
 		move.w	(v_hbla_hreg).w,(a5)
@@ -799,24 +763,12 @@ Do_ControllerPal:
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	loc_107E
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
 		bra.s	loc_10A2
 ; ---------------------------------------------------------------------------
 
 loc_107E:
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9540,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
 
 loc_10A2:
 		lea	(vdp_control_port).l,a5

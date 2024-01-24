@@ -152,6 +152,12 @@ TrackGoSubStack:	equ TrackSz			; All tracks (multiple bytes. This constant won't
 
 TrackSz:	equ $30
 
+; VRAM data
+vram_fg:	equ $C000	; foreground namespace
+vram_bg:	equ $E000	; background namespace
+vram_sprites:	equ $F800	; sprite table
+vram_hscroll:	equ $FC00	; horizontal scroll table
+
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; V-Int routines
