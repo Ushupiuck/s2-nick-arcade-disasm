@@ -12944,7 +12944,7 @@ Monitor_Shoes:
 
 Monitor_Shield:
 		move.b	#1,(v_shield).w
-		move.b	#$38,(v_objspace+$180).w
+		move.b	#$38,(v_shieldobj).w
 		move.w	#sfx_Shield,d0
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
@@ -12952,8 +12952,8 @@ Monitor_Shield:
 Monitor_Invincibility:
 		move.b	#1,(v_invinc).w
 		move.w	#$4B0,(v_player+invtime).w
-		move.b	#$38,(v_objspace+$200).w
-		move.b	#1,(v_objspace+$200+obAnim).w
+		move.b	#$38,(v_starsobj1).w
+		move.b	#1,(v_starsobj1+obAnim).w
 		tst.b	(f_lockscreen).w
 		bne.s	locret_B1A8
 		cmpi.w	#$C,(v_air).w
@@ -13161,132 +13161,15 @@ Obj0F_Toggle:
 .donothing:
 		rts
 ; ---------------------------------------------------------------------------
-Map_Obj0F:	dc.w word_B47A-Map_Obj0F
-		dc.w word_B484-Map_Obj0F
-		dc.w word_B48E-Map_Obj0F
-		dc.w word_B498-Map_Obj0F
-		dc.w word_B4A2-Map_Obj0F
-		dc.w word_B4AC-Map_Obj0F
-		dc.w word_B4B6-Map_Obj0F
-		dc.w word_B4C0-Map_Obj0F
-		dc.w word_B4CA-Map_Obj0F
-		dc.w word_B4D4-Map_Obj0F
-		dc.w word_B4DE-Map_Obj0F
-		dc.w word_B4E8-Map_Obj0F
-		dc.w word_B4F2-Map_Obj0F
-		dc.w word_B4FC-Map_Obj0F
-		dc.w word_B506-Map_Obj0F
-		dc.w word_B510-Map_Obj0F
-word_B47A:	dc.w 1
-		dc.w	 0,    0,    0,	   0		; 0
-word_B484:	dc.w 1
-		dc.w	 1,    0,    0,	   0		; 0
-word_B48E:	dc.w 1
-		dc.w	 2,    0,    0,	   0		; 0
-word_B498:	dc.w 1
-		dc.w	 3,    0,    0,	   0		; 0
-word_B4A2:	dc.w 1
-		dc.w	 4,    0,    0,	   0		; 0
-word_B4AC:	dc.w 1
-		dc.w	 5,    0,    0,	   0		; 0
-word_B4B6:	dc.w 1
-		dc.w	 6,    0,    0,	   0		; 0
-word_B4C0:	dc.w 1
-		dc.w	 7,    0,    0,	   0		; 0
-word_B4CA:	dc.w 1
-		dc.w	 8,    0,    0,	   0		; 0
-word_B4D4:	dc.w 1
-		dc.w	 9,    0,    0,	   0		; 0
-word_B4DE:	dc.w 1
-		dc.w	$A,    0,    0,	   0		; 0
-word_B4E8:	dc.w 1
-		dc.w	$B,    0,    0,	   0		; 0
-word_B4F2:	dc.w 1
-		dc.b   0, $C,  0,  0			; 0
-		dc.b   0,  0,  0,  0			; 4
-word_B4FC:	dc.w 1
-		dc.b   0, $D,  0,  0			; 0
-		dc.b   0,  0,  0,  0			; 4
-word_B506:	dc.w 1
-		dc.w	$E,    0,    0,	   0		; 0
-word_B510:	dc.w 1
-		dc.w	$F,    0,    0,	   0		; 0
-off_B51A:	dc.w byte_B51C-off_B51A
+Map_Obj0F:	binclude "mappings/sprite/obj0F.bin"
+Ani_S1Obj0E:	dc.w byte_B51C-Ani_S1Obj0E
 byte_B51C:	dc.b   7,  0,  1,  2,  3,  4,  5,  6	; 0
 		dc.b   7,$FE,  2,  0			; 8
-off_B528:	dc.w byte_B52A-off_B528
+Ani_S1Obj0F:	dc.w byte_B52A-Ani_S1Obj0F
 byte_B52A:	dc.b $1F,  0,  1,$FF			; 0
-Map_S1Obj0F:	dc.w word_B536-Map_S1Obj0F
-		dc.w word_B538-Map_S1Obj0F		; leftover from Sonic 1
-		dc.w word_B56A-Map_S1Obj0F		; leftover from Sonic 1
-		dc.w word_B65C-Map_S1Obj0F		; leftover from Sonic 1
-word_B536:	dc.w 0
-word_B538:	dc.w 6
-		dc.w	$C,  $F0,  $78,	   0		; 0
-		dc.w	 0,  $F3,  $79,	 $20		; 4
-		dc.w	 0,  $F3,  $79,	 $30		; 8
-		dc.w	$C,  $F4,  $7A,	 $38		; 12
-		dc.w	 8,  $F8,  $7C,	 $60		; 16
-		dc.w	 8,  $FB,  $7D,	 $78		; 20
-word_B56A:	dc.w $1E
-		dc.w $B80F,    0,    0,$FF80		; 0
-		dc.w $B80F,    0,    0,$FF80		; 4
-		dc.w $B80F,    0,    0,$FF80		; 8
-		dc.w $B80F,    0,    0,$FF80		; 12
-		dc.w $B80F,    0,    0,$FF80		; 16
-		dc.w $B80F,    0,    0,$FF80		; 20
-		dc.w $B80F,    0,    0,$FF80		; 24
-		dc.w $B80F,    0,    0,$FF80		; 28
-		dc.w $B80F,    0,    0,$FF80		; 32
-		dc.w $B80F,    0,    0,$FF80		; 36
-		dc.w $D80F,    0,    0,$FF80		; 40
-		dc.w $D80F,    0,    0,$FF80		; 44
-		dc.w $D80F,    0,    0,$FF80		; 48
-		dc.w $D80F,    0,    0,$FF80		; 52
-		dc.w $D80F,    0,    0,$FF80		; 56
-		dc.w $D80F,    0,    0,$FF80		; 60
-		dc.w $D80F,    0,    0,$FF80		; 64
-		dc.w $D80F,    0,    0,$FF80		; 68
-		dc.w $D80F,    0,    0,$FF80		; 72
-		dc.w $D80F,    0,    0,$FF80		; 76
-		dc.w $F80F,    0,    0,$FF80		; 80
-		dc.w $F80F,    0,    0,$FF80		; 84
-		dc.w $F80F,    0,    0,$FF80		; 88
-		dc.w $F80F,    0,    0,$FF80		; 92
-		dc.w $F80F,    0,    0,$FF80		; 96
-		dc.w $F80F,    0,    0,$FF80		; 100
-		dc.w $F80F,    0,    0,$FF80		; 104
-		dc.w $F80F,    0,    0,$FF80		; 108
-		dc.w $F80F,    0,    0,$FF80		; 112
-		dc.w $F80F,    0,    0,$FF80		; 116
-word_B65C:	dc.w 1
-		dc.w $FC04,    0,    0,$FFF8		; 0
-Map_Obj0E:	dc.w word_B66A-Map_Obj0E
-		dc.w word_B6C4-Map_Obj0E
-word_B66A:	dc.w $B
-		dc.w $D40D,    0,    0,$FFD8		; 0
-		dc.w $CC0E,    8,    4,$FFF8		; 4
-		dc.w $CC07,  $14,   $A,	 $18		; 8
-		dc.w $E40F,  $1C,   $E,$FFE0		; 12
-		dc.w $E40B,  $2C,  $16,	   0		; 16
-		dc.w $EC07,  $38,  $1C,	 $18		; 20
-		dc.w  $40F,  $40,  $20,$FFD8		; 24
-		dc.w  $40F,  $50,  $28,$FFF8		; 28
-		dc.w  $C06,  $60,  $30,	 $18		; 32
-		dc.w $2404,  $66,  $33,$FFE8		; 36
-		dc.w $240D,  $68,  $34,$FFF8		; 40
-word_B6C4:	dc.w $A
-		dc.w $DC06,  $70,  $38,$FFEC		; 0
-		dc.w $F40F,  $76,  $3B,$FFD4		; 4
-		dc.w $F40F,  $86,  $43,$FFF4		; 8
-		dc.w $E409,  $96,  $4B,$FFFC		; 12
-		dc.w $DC0B,  $9C,  $4E,	 $14		; 16
-		dc.w $FC08,  $A8,  $54,	 $14		; 20
-		dc.w  $405,  $AB,  $55,	 $14		; 24
-		dc.w $1404,  $AF,  $57,$FFD4		; 28
-		dc.w $140D,  $B1,  $58,$FFE4		; 32
-		dc.w $140D,  $B9,  $5C,	   4		; 36
-		dc.w $4E71				; 40
+Map_S1Obj0F:	binclude "mappings/sprite/S1/obj0F.bin"
+Map_Obj0E:	binclude "mappings/sprite/obj0E.bin"
+		nop
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
 ; Object 2B - GHZ Chopper Badnik
@@ -24145,7 +24028,7 @@ byte_1278C:	dc.b   5,  0,  1,  0,  1,  0,  7,  1,  7,  2,  7,  3,  7,  4,  7,  5
 ; ---------------------------------------------------------------------------
 ; sprite mappings
 ; ---------------------------------------------------------------------------
-Map_S1obj4A:	binclude	"mappings/sprite/obj4A_S1.bin"
+Map_S1obj4A:	binclude	"mappings/sprite/S1/obj4A.bin"
 
 ; animation script
 Ani_obj08:	dc.w byte_129C2-Ani_obj08
