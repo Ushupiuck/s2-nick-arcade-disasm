@@ -5,9 +5,9 @@
 
 	CPU 68000
 
-EnableSRAM	  = 0	; change to 1 to enable SRAM
+EnableSRAM	  = 0					; change to 1 to enable SRAM
 BackupSRAM	  = 1
-AddressSRAM	  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
+AddressSRAM	  = 3					; 0 = odd+even; 2 = even only; 3 = odd only
 
 FixBugs		  = 0					; change to 1 to enable bugfixes
 
@@ -75,7 +75,7 @@ PortA_OK:
 		lea	InitValues(pc),a5
 		movem.w	(a5)+,d5-d7
 		movem.l	(a5)+,a0-a4
-		move.b	z80_version-z80_bus_request(a1),d0			; get hardware version
+		move.b	z80_version-z80_bus_request(a1),d0 ; get hardware version
 		andi.b	#$F,d0
 		beq.s	SkipSecurity
 		move.l	#'SEGA',security_addr-z80_bus_request(a1)
@@ -148,31 +148,31 @@ InitValues:	dc.w $8000
 		dc.l vdp_control_port			; VDP control port
 
 VDPInitValues:						; values for VDP registers
-		dc.b 4			; VDP $80 - 8-colour mode
-		dc.b $14		; VDP $81 - Megadrive mode, DMA enable
-		dc.b ($C000>>10)	; VDP $82 - foreground nametable address
-		dc.b ($F000>>10)	; VDP $83 - window nametable address
-		dc.b ($E000>>13)	; VDP $84 - background nametable address
-		dc.b ($D800>>9)		; VDP $85 - sprite table address
-		dc.b 0			; VDP $86 - unused
-		dc.b 0			; VDP $87 - background colour
-		dc.b 0			; VDP $88 - unused
-		dc.b 0			; VDP $89 - unused
-		dc.b 255		; VDP $8A - HBlank register
-		dc.b 0			; VDP $8B - full screen scroll
-		dc.b $81		; VDP $8C - 40 cell display
-		dc.b ($DC00>>10)	; VDP $8D - hscroll table address
-		dc.b 0			; VDP $8E - unused
-		dc.b 1			; VDP $8F - VDP increment
-		dc.b 1			; VDP $90 - 64 cell hscroll size
-		dc.b 0			; VDP $91 - window h position
-		dc.b 0			; VDP $92 - window v position
-		dc.w $FFFF		; VDP $93/94 - DMA length
-		dc.w 0			; VDP $95/96 - DMA source
-		dc.b $80		; VDP $97 - DMA fill VRAM
+		dc.b 4					; VDP $80 - 8-colour mode
+		dc.b $14				; VDP $81 - Megadrive mode, DMA enable
+		dc.b ($C000>>10)			; VDP $82 - foreground nametable address
+		dc.b ($F000>>10)			; VDP $83 - window nametable address
+		dc.b ($E000>>13)			; VDP $84 - background nametable address
+		dc.b ($D800>>9)				; VDP $85 - sprite table address
+		dc.b 0					; VDP $86 - unused
+		dc.b 0					; VDP $87 - background colour
+		dc.b 0					; VDP $88 - unused
+		dc.b 0					; VDP $89 - unused
+		dc.b 255				; VDP $8A - HBlank register
+		dc.b 0					; VDP $8B - full screen scroll
+		dc.b $81				; VDP $8C - 40 cell display
+		dc.b ($DC00>>10)			; VDP $8D - hscroll table address
+		dc.b 0					; VDP $8E - unused
+		dc.b 1					; VDP $8F - VDP increment
+		dc.b 1					; VDP $90 - 64 cell hscroll size
+		dc.b 0					; VDP $91 - window h position
+		dc.b 0					; VDP $92 - window v position
+		dc.w $FFFF				; VDP $93/94 - DMA length
+		dc.w 0					; VDP $95/96 - DMA source
+		dc.b $80				; VDP $97 - DMA fill VRAM
 VDPInitValues_End:
 
-		dc.l $40000080		; value	for VRAM fill
+		dc.l $40000080				; value	for VRAM fill
 
 Z80StartupCodeBegin:
 	; Z80 instructions (not the sound driver; that gets loaded later)
@@ -180,31 +180,31 @@ Z80StartupCodeBegin:
     save
     CPU Z80 ; start assembling Z80 code
     phase 0 ; pretend we're at address 0
-	xor	a	; clear a to 0
+	xor	a					; clear a to 0
 	ld	bc,((z80_ram_end-z80_ram)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
-	ld	de,zStartupCodeEndLoc+1	; initial destination address
-	ld	hl,zStartupCodeEndLoc	; initial source address
-	ld	sp,hl	; set the address the stack starts at
-	ld	(hl),a	; set first byte of the stack to 0
-	ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
-	pop	ix	; clear ix
-	pop	iy	; clear iy
-	ld	i,a	; clear i
-	ld	r,a	; clear r
-	pop	de	; clear de
-	pop	hl	; clear hl
-	pop	af	; clear af
-	ex	af,af'	; swap af with af'
-	exx		; swap bc/de/hl with their shadow registers too
-	pop	bc	; clear bc
-	pop	de	; clear de
-	pop	hl	; clear hl
-	pop	af	; clear af
-	ld	sp,hl	; clear sp
-	di		; clear iff1 (for interrupt handler)
-	im	1	; interrupt handling mode = 1
-	ld	(hl),0E9h ; replace the first instruction with a jump to itself
-	jp	(hl)	  ; jump to the first instruction (to stay there forever)
+	ld	de,zStartupCodeEndLoc+1			; initial destination address
+	ld	hl,zStartupCodeEndLoc			; initial source address
+	ld	sp,hl					; set the address the stack starts at
+	ld	(hl),a					; set first byte of the stack to 0
+	ldir						; loop to fill the stack (entire remaining available Z80 RAM) with 0
+	pop	ix					; clear ix
+	pop	iy					; clear iy
+	ld	i,a					; clear i
+	ld	r,a					; clear r
+	pop	de					; clear de
+	pop	hl					; clear hl
+	pop	af					; clear af
+	ex	af,af'					; swap af with af'
+	exx						; swap bc/de/hl with their shadow registers too
+	pop	bc					; clear bc
+	pop	de					; clear de
+	pop	hl					; clear hl
+	pop	af					; clear af
+	ld	sp,hl					; clear sp
+	di						; clear iff1 (for interrupt handler)
+	im	1					; interrupt handling mode = 1
+	ld	(hl),0E9h				; replace the first instruction with a jump to itself
+	jp	(hl)					; jump to the first instruction (to stay there forever)
 zStartupCodeEndLoc:
     dephase ; stop pretending
 	restore
@@ -936,10 +936,10 @@ VDP_ClrCRAM:
 
 .waitforDMA:
 		move.w	(a5),d1
-		btst	#1,d1		; is DMA (fillVRAM) still running?
-		bne.s	.waitforDMA	; if yes, branch
+		btst	#1,d1				; is DMA (fillVRAM) still running?
+		bne.s	.waitforDMA			; if yes, branch
 
-		move.w	#$8F02,(a5)	; set VDP increment size
+		move.w	#$8F02,(a5)			; set VDP increment size
 		move.l	(sp)+,d1
 		rts
 ; End of function VDPSetupGame
@@ -970,7 +970,7 @@ VDPSetupArray_End:
 
 
 ClearScreen:
-		fillVRAM	0,$FFF,vram_fg ; clear foreground namespace
+		fillVRAM	0,$FFF,vram_fg		; clear foreground namespace
 
 .wait1:
 		move.w	(a5),d1
@@ -978,7 +978,7 @@ ClearScreen:
 		bne.s	.wait1
 
 		move.w	#$8F02,(a5)
-		fillVRAM	0,$FFF,vram_bg ; clear background namespace
+		fillVRAM	0,$FFF,vram_bg		; clear background namespace
 
 .wait2:
 		move.w	(a5),d1
@@ -2908,7 +2908,7 @@ loc_3BB6:
 
 .no2p:
 		move.w	(v_hbla_hreg).w,(a6)
-		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w	; reset the DMA Queue
+		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w ; reset the DMA Queue
 		tst.b	(Water_flag).w
 		beq.s	LevelInit_NoWater
 		move.w	#$8014,(a6)
@@ -12108,100 +12108,9 @@ Map_Obj26:	binclude	"mappings/sprite/obj26.bin"
 		even
 
 ; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 0E - Sonic and Tails from the title screen
-;----------------------------------------------------
 
-Obj0E:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj0E_Index(pc,d0.w),d1
-		jmp	Obj0E_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj0E_Index:	dc.w loc_B38E-Obj0E_Index
-		dc.w loc_B3D0-Obj0E_Index
-		dc.w loc_B3E4-Obj0E_Index
-		dc.w loc_B3FA-Obj0E_Index
-; ---------------------------------------------------------------------------
-
-loc_B38E:
-		addq.b	#2,obRoutine(a0)
-		move.w	#$148,obX(a0)
-		move.w	#$C4,obScreenY(a0)
-		move.l	#Map_Obj0E,obMap(a0)
-		move.w	#$4200,obGfx(a0)
-		move.b	#1,obPriority(a0)
-		move.b	#$1D,obDelayAni(a0)
-		tst.b	obFrame(a0)
-		beq.s	loc_B3D0
-		move.w	#$FC,obX(a0)
-		move.w	#$CC,obScreenY(a0)
-		move.w	#$2200,obGfx(a0)
-
-loc_B3D0:
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-		subq.b	#1,obDelayAni(a0)
-		bpl.s	locret_B3E2
-		addq.b	#2,obRoutine(a0)
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-locret_B3E2:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_B3E4:
-		subi.w	#8,obScreenY(a0)
-		cmpi.w	#$96,obScreenY(a0)
-		bne.s	loc_B3F6
-		addq.b	#2,obRoutine(a0)
-
-loc_B3F6:
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_B3FA:
-		bra.w	DisplaySprite
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object 0F - Mappings test?
-; ---------------------------------------------------------------------------
-
-Obj0F:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj0F_Index(pc,d0.w),d1
-		jsr	Obj0F_Index(pc,d1.w)
-		bra.w	DisplaySprite
-; ===========================================================================
-Obj0F_Index:	dc.w Obj0F_Init-Obj0F_Index
-		dc.w Obj0F_Cycle-Obj0F_Index
-		dc.w Obj0F_Cycle-Obj0F_Index
-; ===========================================================================
-
-Obj0F_Init:
-		addq.b	#2,obRoutine(a0)
-		move.w	#$90,obX(a0)
-		move.w	#$90,$A(a0)
-		move.l	#Map_Obj0F,obMap(a0)
-		move.w	#$680,obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-
-Obj0F_Cycle:
-		move.b	(v_jpadpress1).w,d0
-		btst	#5,d0				; has C been pressed?
-		beq.s	Obj0F_Toggle			; if not, branch
-		addq.b	#1,obFrame(a0)			; increment mappings
-		andi.b	#$F,obFrame(a0)			; if above $F, reset
-
-Obj0F_Toggle:
-		btst	#4,d0				; has B been pressed?
-		beq.s	.donothing			; if not, branch
-		bchg	#0,(unk_FFFFFFE9).w		; try turning on two player mode which will not work...
-
-.donothing:
-		rts
+		include	"_incObj/0E Title screen Sonic and Tails.asm"
+		include	"_incObj/0F Unknown.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj0F:	binclude "mappings/sprite/obj0F.bin"
 Ani_S1Obj0E:	dc.w byte_B51C-Ani_S1Obj0E
@@ -13769,157 +13678,7 @@ loc_CB74:
 ; End of function RunObjects
 
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; OBJECT POINTER ARRAY ; object pointers ; sprite pointers ; object list ; sprite list
-;
-; This array contains the pointers to all the objects used in the game.
-; ---------------------------------------------------------------------------
-Obj_Index:
-		dc.l Obj01				; Sonic
-		dc.l Obj02				; Tails
-		dc.l Obj03				; Collision plane/layer switcher
-		dc.l Obj04				; Surface of the water
-		dc.l Obj05				; Tails' tails
-		dc.l Obj06				; Twisting spiral pathway in EHZ
-		dc.l ObjNull
-		dc.l Obj08				; Water splash in HPZ
-		dc.l Obj09				; (S1) Sonic in the Speical Stage
-		dc.l Obj0A				; Small bubbles from Sonic's face while underwater
-		dc.l Obj0B				; (S1) Pole that breaks in LZ
-		dc.l Obj0C				; Strange floating/falling platform object from CPZ
-		dc.l Obj0D				; End of level signpost
-		dc.l Obj0E				; Sonic and Tails from the title screen
-		dc.l Obj0F				; Mappings test?
-		dc.l Obj10				; (S1) Blank, animation test in prototype
-		dc.l Obj11				; Bridges in GHZ, EHZ and HPZ
-		dc.l Obj12				; Emerald from Hidden Palace Zone
-		dc.l Obj13				; Waterfall from Hidden Palace Zone
-		dc.l Obj14				; Seesaw from Hill Top Zone
-		dc.l Obj15				; Swinging platforms in GHZ, CPZ and EHZ
-		dc.l Obj16				; Diagonally moving lift from HTZ
-		dc.l Obj17				; (S1) GHZ rotating log helix spikes
-		dc.l Obj18				; Stationary/moving platforms from GHZ and EHZ
-		dc.l Obj19				; Platform from CPZ
-		dc.l Obj1A				; Collapsing platform from GHZ and HPZ
-		dc.l ObjNull
-		dc.l Obj1C				; Stage decorations in GHZ, EHZ, HTZ and HPZ
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l Obj1F				; (S1) Crabmeat from GHZ
-		dc.l ObjNull
-		dc.l Obj21				; Score/Rings/Time display (HUD)
-		dc.l Obj22				; (S1) Buzz Bomber from GHZ
-		dc.l Obj23				; (S1) Buzz Bomber/Newtron missile
-		dc.l Obj24				; (S1) Unused Buzz Bomber missile explosion
-		dc.l Obj25				; A ring
-		dc.l Obj26				; Monitor
-		dc.l Obj27				; An explosion, giving off an animal and 100 points
-		dc.l Obj28				; Animal and the 100 points from a badnik
-		dc.l Obj29				; "100 points" text
-		dc.l Obj2A				; (S1) Small door from SBZ
-		dc.l Obj2B				; (S1) Chopper from GHZ
-		dc.l Obj2C				; (S1) Jaws from LZ
-		dc.l ObjNull
-		dc.l Obj2E				; Monitor contents (code for power-up behavior and rising image)
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l Obj34				; (S1) Level title card
-		dc.l ObjNull
-		dc.l Obj36				; Vertical spikes
-		dc.l Obj37				; Scattering rings (generated when Sonic or Tails are hurt and has rings)
-		dc.l Obj38				; Shield
-		dc.l Obj39				; Game Over/Time Over text
-		dc.l Obj3A				; (S1) End of level results screen
-		dc.l Obj3B				; (S1) Purple rock from GHZ
-		dc.l Obj3C				; (S1) Breakable wall
-		dc.l Obj3D				; (S1) GHZ boss
-		dc.l Obj3E				; Egg prison
-		dc.l Obj3F				; Boss explosion
-		dc.l Obj40				; (S1) Motobug from GHZ
-		dc.l Obj41				; Spring
-		dc.l Obj42				; (S1) Newtron from GHZ
-		dc.l ObjNull
-		dc.l Obj44				; (S1) Unbreakable wall
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l Obj48				; (S1) Eggman's wrecking ball
-		dc.l Obj49				; Waterfall sound effect
-		dc.l Obj4A				; Octus from HPZ
-		dc.l Obj4B				; Buzzer from EHZ
-		dc.l Obj4C				; BBat from HPZ
-		dc.l Obj4D				; Stego/Stegway from HPZ
-		dc.l Obj4E				; Gator from HPZ
-		dc.l Obj4F				; Redz (dinosaur badnik) from HPZ
-		dc.l Obj50				; Seahorse/Aquis from HPZ
-		dc.l Obj51				; Skyhorse from HPZ
-		dc.l Obj52				; BFish from HPZ
-		dc.l Obj53				; Masher from EHZ
-		dc.l Obj54				; Snail badnik from EHZ
-		dc.l Obj55				; EHZ boss
-		dc.l Obj56				; EHZ boss part 2
-		dc.l Obj57				; EHZ boss part 3
-		dc.l Obj58				; EHZ boss part 4
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l Obj79				; Checkpoint
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l Obj7D				; (S1) Hidden points at end of stage
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l ObjNull
-		dc.l Obj8A				; (S1) "SONIC TEAM PRESENTS" screen and credits
-		dc.l ObjNull
-		dc.l ObjNull
-; ===========================================================================
-; blank object, allocates its array
-; jmp_DeleteObject:
-ObjNull:
-		bra.w	DeleteObject
+		include	"_inc/Object Pointers.asm"
 
 ; ---------------------------------------------------------------------------
 ; Subroutine to make an object move and fall downward increasingly fast
@@ -14054,11 +13813,7 @@ MarkObjGone:
 ; ---------------------------------------------------------------------------
 
 loc_CE64:
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.w	loc_CE7C
+		out_of_range.w	loc_CE7C
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
@@ -14081,11 +13836,7 @@ MarkObjGone2:
 ; ---------------------------------------------------------------------------
 
 loc_CE9A:
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.w	loc_CEB0
+		out_of_range.w	loc_CEB0
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -14104,11 +13855,7 @@ loc_CEC2:
 MarkObjGone_P1:
 		tst.w	(Two_player_mode).w
 		bne.s	MarkObjGone_P2
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.w	loc_CEE4
+		out_of_range.w	loc_CEE4
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
