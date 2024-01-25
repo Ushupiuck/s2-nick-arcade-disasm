@@ -588,7 +588,13 @@ loc_C66:
 		move.w	(v_hbla_hreg).w,(vdp_control_port).l
 		move.w	#$8230,(vdp_control_port).l
 		move.l	(v_bg3scrposy_vdp).w,(Camera_X_pos_copy).w
-		writeVRAM	Sprite_Table,$280,vram_sprites
+		lea	(vdp_control_port).l,a5
+		move.l	#$94019340,(a5)
+		move.l	#$96FC9500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7800,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		bra.w	Vint_SoundDriver
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_CAA: VintSub2:
@@ -597,10 +603,10 @@ Vint_SEGA:
 ; loc_CAE: VintSub14:
 Vint_PCM:
 		tst.w	(v_demolength).w
-		beq.w	.end
+		beq.w	locret_CBA
 		subq.w	#1,(v_demolength).w
 
-.end:
+locret_CBA:
 		rts
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_CBC: VintSub4:
@@ -608,10 +614,10 @@ Vint_Title:
 		bsr.w	Do_ControllerPal
 		bsr.w	ProcessDPLC
 		tst.w	(v_demolength).w
-		beq.w	.end
+		beq.w	locret_CD0
 		subq.w	#1,(v_demolength).w
 
-.end:
+locret_CD0:
 		rts
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_CD2: VintSub6:
@@ -641,8 +647,20 @@ loc_D24:
 loc_D48:
 		move.w	(v_hbla_hreg).w,(a5)
 		move.w	#$8230,(vdp_control_port).l
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
-		writeVRAM	Sprite_Table,$280,vram_sprites
+		lea	(vdp_control_port).l,a5
+		move.l	#$940193C0,(a5)
+		move.l	#$96F09500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7C00,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		lea	(vdp_control_port).l,a5
+		move.l	#$94019340,(a5)
+		move.l	#$96FC9500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7800,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		bsr.w	ProcessDMAQueue
 		startZ80
 		movem.l	(Camera_RAM).w,d0-d7
@@ -683,17 +701,35 @@ Vint_S1SS:
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
-		writeCRAM	v_pal_dry,$80,0
-		writeVRAM	Sprite_Table,$280,vram_sprites
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		lea	(vdp_control_port).l,a5
+		move.l	#$94009340,(a5)
+		move.l	#$96FD9580,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$C000,(a5)
+		move.w	#$80,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		lea	(vdp_control_port).l,a5
+		move.l	#$94019340,(a5)
+		move.l	#$96FC9500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7800,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		lea	(vdp_control_port).l,a5
+		move.l	#$940193C0,(a5)
+		move.l	#$96F09500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7C00,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		bsr.w	ProcessDMAQueue
 		startZ80
 		bsr.w	PalCycle_S1SS
 		tst.w	(v_demolength).w
-		beq.w	.end
+		beq.w	locret_EA0
 		subq.w	#1,(v_demolength).w
 
-.end:
+locret_EA0:
 		rts
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_EA2: VintSubC: VintSub18:
@@ -712,8 +748,20 @@ loc_EE4:
 
 loc_F08:
 		move.w	(v_hbla_hreg).w,(a5)
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
-		writeVRAM	Sprite_Table,$280,vram_sprites
+		lea	(vdp_control_port).l,a5
+		move.l	#$940193C0,(a5)
+		move.l	#$96F09500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7C00,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		lea	(vdp_control_port).l,a5
+		move.l	#$94019340,(a5)
+		move.l	#$96FC9500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7800,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		bsr.w	ProcessDMAQueue
 		startZ80
 		movem.l	(Camera_RAM).w,d0-d7
@@ -743,15 +791,33 @@ Vint_SSResults:
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
-		writeCRAM	v_pal_dry,$80,0
-		writeVRAM	Sprite_Table,$280,vram_sprites
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		lea	(vdp_control_port).l,a5
+		move.l	#$94009340,(a5)
+		move.l	#$96FD9580,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$C000,(a5)
+		move.w	#$80,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		lea	(vdp_control_port).l,a5
+		move.l	#$94019340,(a5)
+		move.l	#$96FC9500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7800,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		lea	(vdp_control_port).l,a5
+		move.l	#$940193C0,(a5)
+		move.l	#$96F09500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7C00,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		startZ80
 		tst.w	(v_demolength).w
-		beq.w	.end
+		beq.w	locret_103A
 		subq.w	#1,(v_demolength).w
 
-.end:
+locret_103A:
 		rts
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
@@ -771,8 +837,20 @@ loc_107E:
 		writeCRAM	v_pal_water,$80,0
 
 loc_10A2:
-		writeVRAM	Sprite_Table,$280,vram_sprites
-		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		lea	(vdp_control_port).l,a5
+		move.l	#$94019340,(a5)
+		move.l	#$96FC9500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7800,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		lea	(vdp_control_port).l,a5
+		move.l	#$940193C0,(a5)
+		move.l	#$96F09500,(a5)
+		move.w	#$977F,(a5)
+		move.w	#$7C00,(a5)
+		move.w	#$83,(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
 		startZ80
 		rts
 ; End of function Do_ControllerPal
@@ -1219,9 +1297,7 @@ RunPLC_RAM:
 
 loc_16FE:
 		andi.w	#$7FFF,d2
-	if ~~FixBugs
 		move.w	d2,(v_plc_patternsleft).w
-	endif
 		bsr.w	NemDec_BuildCodeTable
 		move.b	(a0)+,d5
 		asl.w	#8,d5
@@ -1235,9 +1311,6 @@ loc_16FE:
 		move.l	d0,(v_plc_previousrow).w
 		move.l	d5,(v_plc_dataword).w
 		move.l	d6,(v_plc_shiftvalue).w
-	if FixBugs
-		move.w	d2,(v_plc_patternsleft).w
-	endif
 
 locret_1730:
 		rts
@@ -1368,26 +1441,17 @@ loc_17EE:
 
 		include	"_inc/PaletteCycle.asm"
 
-Pal_HTZCyc2:	binclude "palette/Hill Top Lava Delay.bin"
-		even
-Pal_S1TitleCyc:	binclude "palette/S1 Title Water.bin"
-		even
-Pal_GHZCyc:	binclude "palette/GHZ Water.bin"
-		even
-Pal_EHZCyc:	binclude "palette/EHZ Water.bin"
-		even
-Pal_HTZCyc1:	binclude "palette/Hill Top Lava.bin"
-		even
-Pal_CPZCyc1:	binclude "palette/CPZ Cycle 1.bin"
-		even
-Pal_CPZCyc2:	binclude "palette/CPZ Cycle 2.bin"
-		even
-Pal_CPZCyc3:	binclude "palette/CPZ Cycle 3.bin"
-		even
-Pal_HPZCyc1:	binclude "palette/HPZ Water Cycle.bin"
-		even
-Pal_HPZCyc2:	binclude "palette/HPZ Underwater Cycle.bin"
-		even
+Pal_HTZCyc2:	binclude "art/palettes/Hill Top Lava Delay.bin"
+Pal_S1TitleCyc:	binclude "art/palettes/S1 Title Water.bin"
+Pal_GHZCyc:	binclude "art/palettes/GHZ Water.bin"
+Pal_EHZCyc:	binclude "art/palettes/EHZ Water.bin"
+Pal_HTZCyc1:	binclude "art/palettes/Hill Top Lava.bin"
+Pal_CPZCyc1:	binclude "art/palettes/CPZ Cycle 1.bin"
+Pal_CPZCyc2:	binclude "art/palettes/CPZ Cycle 2.bin"
+Pal_CPZCyc3:	binclude "art/palettes/CPZ Cycle 3.bin"
+Pal_HPZCyc1:	binclude "art/palettes/HPZ Water Cycle.bin"
+Pal_HPZCyc2:	binclude "art/palettes/HPZ Underwater Cycle.bin"
+
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Subroutine to fade in from black
@@ -1865,10 +1929,9 @@ loc_2456:
 ; End of function PalCycle_Sega
 
 ; ---------------------------------------------------------------------------
-Pal_Sega1:	binclude "palette/Sega1.bin"
-		even
-Pal_Sega2:	binclude "palette/Sega2.bin"
-		even
+Pal_Sega1:	dc.w  $EEE, $EEA, $EE4,	$EC0, $EE4, $EEA ; 0
+Pal_Sega2:	dc.w  $EEC, $EEA, $EEA,	$EEA, $EEA, $EEA, $EEC,	$EEA, $EE4, $EC0, $EC0,	$EC0, $EEC, $EEA, $EE4,	$EC0
+		dc.w  $EA0, $E60, $EEA,	$EE4, $EC0, $EA0, $E80,	$E00
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -1951,42 +2014,24 @@ PalLoad4_Water:
 ; ---------------------------------------------------------------------------
 ; Palette data
 ; ---------------------------------------------------------------------------
-Pal_SegaBG:		binclude	"palette/Sega Background.bin"
-			even
-Pal_Title:		binclude	"palette/Title Screen.bin"
-			even
-Pal_LevelSelect:	binclude	"palette/Level Select.bin"
-			even
-Pal_SonicTails:		binclude	"palette/Sonic and Tails.bin"
-			even
-Pal_GHZ:		binclude	"palette/GHZ.bin"
-			even
-Pal_HPZWater:		binclude	"palette/HPZ Underwater.bin"
-			even
-Pal_CPZ:		binclude	"palette/CPZ.bin"
-			even
-Pal_EHZ:		binclude	"palette/EHZ.bin"
-			even
-Pal_HPZ:		binclude	"palette/HPZ.bin"
-			even
-Pal_HTZ:		binclude	"palette/HTZ.bin"
-			even
-Pal_S1SpecialStage:	binclude	"palette/S1 Special Stage.bin"
-			even
-Pal_LZ4:		binclude	"palette/LZ4.bin"
-			even
-Pal_LZ4Water:		binclude	"palette/LZ4 Underwater.bin"
-			even
-Pal_LZSonicWater:	binclude	"palette/LZ Sonic Underwater.bin"
-			even
-Pal_LZ4SonicWater:	binclude	"palette/LZ4 Sonic Underwater.bin"
-			even
-Pal_S1SpeResults:	binclude	"palette/S1 Special Stage Results.bin"
-			even
-Pal_S1Continue:		binclude	"palette/S1 Continue Screen.bin"
-			even
-Pal_S1Ending:		binclude	"palette/S1 Ending.bin"
-			even
+Pal_SegaBG:		binclude	"art/palettes/Sega screen background.bin"
+Pal_Title:		binclude	"art/palettes/Title screen.bin"
+Pal_LevelSelect:	binclude	"art/palettes/Level select.bin"
+Pal_SonicTails:		binclude	"art/palettes/Sonic and Tails.bin"
+Pal_GHZ:		binclude	"art/palettes/GHZ.bin"
+Pal_HPZWater:		binclude	"art/palettes/HPZ underwater.bin"
+Pal_CPZ:		binclude	"art/palettes/CPZ.bin"
+Pal_EHZ:		binclude	"art/palettes/EHZ.bin"
+Pal_HPZ:		binclude	"art/palettes/HPZ.bin"
+Pal_HTZ:		binclude	"art/palettes/HTZ.bin"
+Pal_S1SpecialStage:	binclude	"art/palettes/S1 Special Stage.bin"
+Pal_LZ4:		binclude	"art/palettes/LZ4.bin"
+Pal_LZ4Water:		binclude	"art/palettes/LZ4 underwater.bin"
+Pal_LZSonicWater:	binclude	"art/palettes/LZ Sonic underwater.bin"
+Pal_LZ4SonicWater:	binclude	"art/palettes/LZ4 Sonic underwater.bin"
+Pal_S1SpeResults:	binclude	"art/palettes/S1 Special Stage results.bin"
+Pal_S1Continue:		binclude	"art/palettes/S1 Continue screen.bin"
+Pal_S1Ending:		binclude	"art/palettes/S1 Ending.bin"
 ; ===========================================================================
 		nop
 ; ===========================================================================
@@ -2167,19 +2212,32 @@ SegaScreen:
 		lea	(Eni_SegaLogo).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		copyTilemap	v_startofram,$E510,$17,7
-		copyTilemap	v_startofram+$180,$C000,$27,$1B
+		lea	(v_startofram).l,a1
+		move.l	#$65100003,d0
+		moveq	#$17,d1
+		moveq	#7,d2
+		bsr.w	PlaneMapToVRAM_H40
+		lea	($FFFF0180).l,a1
+		move.l	#$40000003,d0
+		moveq	#$27,d1
+		moveq	#$1B,d2
+		bsr.w	PlaneMapToVRAM_H40
 		tst.b	(v_megadrive).w			; is console Japanese?
 		bmi.s	loc_316A			; if not, branch
-		copyTilemap	v_startofram+$A40,$C53A,2,1 ; hide "TM" with a white rectangle
+		; hide 'TM' symbol
+		lea	($FFFF0A40).l,a1
+		move.l	#$453A0003,d0
+		moveq	#2,d1
+		moveq	#1,d2
+		bsr.w	PlaneMapToVRAM_H40
 
 loc_316A:
-		moveq	#palid_SegaBG,d0
+		moveq	#0,d0
 		bsr.w	PalLoad2
 		move.w	#-$A,(v_pcyc_num).w
 		move.w	#0,(v_pcyc_time).w
-		move.w	#0,(v_pal_buffer+$12).w
-		move.w	#0,(v_pal_buffer+$10).w
+		move.w	#0,($FFFFF662).w
+		move.w	#0,($FFFFF660).w
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
@@ -2234,7 +2292,7 @@ TitleScreen:
 		clearRAM v_levelvariables,v_levelvariables_end
 		clearRAM Camera_RAM,Camera_RAM_End
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
-		moveq	#palid_SonicTails,d0
+		moveq	#3,d0
 		bsr.w	PalLoad1
 		bsr.w	Pal_FadeFromBlack
 		move	#$2700,sr
@@ -2265,18 +2323,30 @@ loc_32C4:
 		lea	(Eni_TitleMap).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		copyTilemap	v_startofram,$C000,$27,$1B
+		lea	(v_startofram).l,a1
+		move.l	#$40000003,d0
+		moveq	#$27,d1
+		moveq	#$1B,d2
+		bsr.w	PlaneMapToVRAM_H40
 		lea	(v_startofram).l,a1
 		lea	(Eni_TitleBg1).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		copyTilemap	v_startofram,$E000,$1F,$1B
+		lea	(v_startofram).l,a1
+		move.l	#$60000003,d0
+		moveq	#$1F,d1
+		moveq	#$1B,d2
+		bsr.w	PlaneMapToVRAM_H40
 		lea	(v_startofram).l,a1
 		lea	(Eni_TitleBg2).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		copyTilemap	v_startofram,$E040,$1F,$1B
-		moveq	#palid_Title,d0
+		lea	(v_startofram).l,a1
+		move.l	#$60400003,d0
+		moveq	#$1F,d1
+		moveq	#$1B,d2
+		bsr.w	PlaneMapToVRAM_H40
+		moveq	#1,d0
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
 		bsr.w	PlaySound_Special
@@ -2295,7 +2365,7 @@ loc_339A:
 		move.b	#1,(v_titletails+obFrame).w
 		jsr	(RunObjects).l
 		jsr	(BuildSprites).l
-		moveq	#plcid_Main,d0
+		moveq	#0,d0
 		bsr.w	LoadPLC2
 		move.w	#0,(v_title_dcount).w
 		move.w	#0,(v_title_ccount).w
@@ -2372,7 +2442,7 @@ Title_Cheat_NoC:
 Title_CheckLvlSel:
 		tst.b	(f_levselcheat).w
 		beq.w	PlayLevel
-		moveq	#palid_LevelSel,d0
+		moveq	#2,d0
 		bsr.w	PalLoad2
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end
 		move.l	d0,(v_scrposy_vdp).w
@@ -2876,7 +2946,7 @@ loc_3B84:
 		bsr.w	LoadPLC
 
 loc_3BB0:
-		moveq	#plcid_Main2,d0
+		moveq	#1,d0
 		bsr.w	LoadPLC
 
 loc_3BB6:
@@ -2925,15 +2995,15 @@ loc_3BB6:
 		move.b	#1,(f_water).w
 
 LevelInit_NoWater:
-		move.w	#30,(v_air).w
-		moveq	#palid_SonicTails,d0
+		move.w	#$1E,(v_air).w
+		moveq	#3,d0
 		bsr.w	PalLoad2
 		tst.b	(Water_flag).w
 		beq.s	Level_GetBgm
-		moveq	#palid_LZSonWater,d0
+		moveq	#$F,d0
 		cmpi.b	#3,(Current_Act).w
 		bne.s	Level_WaterPal
-		moveq	#palid_SBZ3SonWat,d0
+		moveq	#$10,d0
 
 Level_WaterPal:
 		bsr.w	PalLoad3_Water
@@ -2960,7 +3030,7 @@ Level_PlayBgm:
 		nop
 		move.b	(a1,d0.w),d0
 		bsr.w	PlaySound
-		move.b	#$34,(v_titlecard).w
+		move.b	#$34,(v_objspace+$80).w
 
 Level_TtlCardLoop:
 		move.b	#VintID_TitleCard,(v_vbla_routine).w
@@ -2968,15 +3038,15 @@ Level_TtlCardLoop:
 		jsr	(RunObjects).l
 		jsr	(BuildSprites).l
 		bsr.w	RunPLC_RAM
-		move.w	(v_ttlcardact+obX).w,d0
-		cmp.w	(v_ttlcardact+$30).w,d0
+		move.w	(v_objspace+$100+obX).w,d0
+		cmp.w	(v_objspace+$100+$30).w,d0
 		bne.s	Level_TtlCardLoop
 		tst.l	(v_plc_buffer).w
 		bne.s	Level_TtlCardLoop
 		jsr	(HUD_Base).l
 
 Level_SkipTtlCard:
-		moveq	#palid_SonicTails,d0
+		moveq	#3,d0
 		bsr.w	PalLoad1
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformBGLayer
@@ -3081,10 +3151,10 @@ Level_Demo:
 Level_ChkWaterPal:
 		tst.b	(Water_flag).w
 		beq.s	Level_Delay
-		moveq	#palid_HPZWater,d0
+		moveq	#$B,d0
 		cmpi.b	#3,(Current_Act).w
 		bne.s	Level_WtrNotHtz
-		moveq	#palid_SBZ3Water,d0
+		moveq	#$D,d0
 
 Level_WtrNotHtz:
 		bsr.w	PalLoad4_Water
@@ -3100,19 +3170,19 @@ Level_DelayLoop:
 		bsr.w	Pal_FadeFromBlack2
 		tst.w	(f_demo).w
 		bmi.s	Level_ClrTitleCard
-		addq.b	#2,(v_ttlcardname+obRoutine).w
-		addq.b	#4,(v_ttlcardzone+obRoutine).w
-		addq.b	#4,(v_ttlcardact+obRoutine).w
-		addq.b	#4,(v_ttlcardoval+obRoutine).w
+		addq.b	#2,(v_objspace+$80+obRoutine).w
+		addq.b	#4,(v_objspace+$C0+obRoutine).w
+		addq.b	#4,(v_objspace+$100+obRoutine).w
+		addq.b	#4,(v_objspace+$140+obRoutine).w
 		bra.s	Level_StartGame
 ; ===========================================================================
 
 Level_ClrTitleCard:
-		moveq	#plcid_Explode,d0
+		moveq	#2,d0
 		jsr	(LoadPLC).l
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
-		addi.w	#plcid_GHZAnimals,d0
+		addi.w	#$15,d0
 		jsr	(LoadPLC).l
 
 Level_StartGame:
@@ -3326,7 +3396,7 @@ SignpostArtLoad:
 		cmp.w	(Camera_Min_X_pos).w,d1
 		beq.s	locret_47E2
 		move.w	d1,(Camera_Min_X_pos).w
-		moveq	#plcid_Signpost,d0
+		moveq	#$12,d0
 		bra.w	LoadPLC2
 ; ---------------------------------------------------------------------------
 
@@ -3394,35 +3464,33 @@ loc_507C:
 		bsr.w	S1_SSBGLoad
 		moveq	#$14,d0
 		bsr.w	RunPLC_ROM
-	if FixBugs
-		clearRAM v_objspace,v_objend
-	else
-		; DANGER!
-		; This does not actually clear the object space!
-		; this actually clears some of the collision
-		; addresses instead!
-		lea	(v_objspace+$2000).w,a1
+		lea	(v_colladdr1).w,a1
 		moveq	#0,d0
-		move.w	#(v_objend-v_objspace)/4-1,d1
+		move.w	#$7FF,d1
 
 loc_509C:
 		move.l	d0,(a1)+
 		dbf	d1,loc_509C
-	endif
 		clearRAM v_levelvariables,v_levelvariables_end
-		clearRAM v_timingvariables,v_timingvariables_end-$80
+		lea	($FFFFFE60).w,a1
+		moveq	#0,d0
+		move.w	#$27,d1
+
+loc_50BC:
+		move.l	d0,(a1)+
+		dbf	d1,loc_50BC
 		clearRAM v_ngfx_buffer,v_ngfx_buffer_end
 		clr.b	(f_wtr_state).w
 		clr.w	(Level_Inactive_flag).w
-		moveq	#palid_Special,d0
+		moveq	#$A,d0
 		bsr.w	PalLoad1
 		jsr	(S1SS_Load).l
 		move.l	#0,(Camera_X_pos).w
 		move.l	#0,(Camera_Y_pos).w
 		move.b	#9,(v_player).w
 		bsr.w	PalCycle_S1SS
-		clr.w	(v_ssangle).w
-		move.w	#$40,(v_ssrotate).w
+		clr.w	($FFFFF780).w
+		move.w	#$40,($FFFFF782).w
 		move.w	#bgm_SS,d0
 		bsr.w	PlaySound
 		move.w	#0,(Demo_button_index).w
@@ -3506,11 +3574,11 @@ loc_5214:
 		bsr.w	NemDec
 		jsr	(HUD_Base).l
 		move	#$2300,sr
-		moveq	#palid_SSResult,d0
+		moveq	#$11,d0
 		bsr.w	PalLoad2
-		moveq	#plcid_Main,d0
+		moveq	#0,d0
 		bsr.w	LoadPLC2
-		moveq	#plcid_SSResult,d0
+		moveq	#$1B,d0
 		bsr.w	LoadPLC
 		move.b	#1,(f_scorecount).w
 		move.b	#1,(f_endactbonus).w
@@ -6798,7 +6866,7 @@ loc_72C2:
 		bne.s	loc_72F4
 		lea	(v_16x16+$980).w,a1
 		lea	(Map16_HTZ).l,a0
-		move.w	#(v_16x16_end-v_16x16)/6-1,d2
+		move.w	#$3FF,d2
 
 loc_72D8:
 		move.w	(a0)+,d0
@@ -6855,7 +6923,7 @@ loc_7348:
 		andi.w	#$FF,d0
 		cmpi.w	#$103,(Current_ZoneAndAct).w
 		bne.s	loc_735E
-		moveq	#palid_SBZ3,d0
+		moveq	#$C,d0
 
 loc_735E:
 		cmpi.w	#$501,(Current_ZoneAndAct).w
@@ -6864,7 +6932,7 @@ loc_735E:
 		bne.s	loc_7370
 
 loc_736E:
-		moveq	#palid_HTZ2,d0
+		moveq	#$E,d0
 
 loc_7370:
 		bsr.w	PalLoad1
@@ -7242,7 +7310,7 @@ loc_7692:
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#plcid_Boss,d0
+		moveq	#$11,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7298,7 +7366,7 @@ loc_770C:
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#plcid_Boss,d0
+		moveq	#$11,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7480,7 +7548,7 @@ DynResize_CPZ3_BossCheck:
 		_move.b	#$55,obID(a1)			; load Obj55 (EHZ boss, likely CPZ boss at one point)
 		move.w	#$680,obX(a1)
 		move.w	#$540,obY(a1)
-		moveq	#plcid_Boss,d0
+		moveq	#$11,d0
 		bra.w	LoadPLC
 ; ===========================================================================
 
@@ -7534,7 +7602,7 @@ loc_7946:
 		move.w	#bgm_Boss,d0
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
-		moveq	#plcid_Boss,d0
+		moveq	#$11,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7593,14 +7661,14 @@ loc_79AA:
 		bcs.s	locret_79D4
 		bsr.w	FindFreeObj
 		bne.s	loc_79BC
-		move.b	#$7A,obID(a1)
+		move.b	#$7A,(a1)
 
 loc_79BC:
 		move.w	#bgm_Boss,d0
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#plcid_Boss,d0
+		moveq	#$11,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7660,7 +7728,7 @@ loc_7A30:
 		bcs.s	locret_7A46
 		bsr.w	FindFreeObj
 		bne.s	locret_7A46
-		move.b	#$76,obID(a1)
+		move.b	#$76,(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 
 locret_7A46:
@@ -7673,14 +7741,14 @@ loc_7A48:
 		move.w	#$4CC,(Camera_Max_Y_pos_target).w
 		bsr.w	FindFreeObj
 		bne.s	loc_7A64
-		move.b	#$75,obID(a1)
+		move.b	#$75,(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 
 loc_7A64:
 		move.w	#bgm_Boss,d0
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
-		moveq	#plcid_Boss,d0
+		moveq	#$11,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7748,9 +7816,9 @@ loc_7AF4:
 		bcs.s	locret_7B10
 		bsr.w	FindFreeObj
 		bne.s	locret_7B10
-		move.b	#$83,obID(a1)
+		move.b	#$83,(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#plcid_EggmanSBZ2,d0
+		moveq	#$1E,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7763,7 +7831,7 @@ loc_7B12:
 		bcs.s	loc_7B2E
 		bsr.w	FindFreeObj
 		bne.s	loc_7B28
-		move.b	#$82,obID(a1)
+		move.b	#$82,(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 
 loc_7B28:
@@ -7801,7 +7869,7 @@ loc_7B5A:
 		cmpi.w	#$2148,(Camera_RAM).w
 		bcs.s	loc_7B6C
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#plcid_FZBoss,d0
+		moveq	#$1F,d0
 		bsr.w	LoadPLC
 
 loc_7B6C:
@@ -7813,7 +7881,7 @@ loc_7B6E:
 		bcs.s	loc_7B8A
 		bsr.w	FindFreeObj
 		bne.s	loc_7B8A
-		move.b	#$85,obID(a1)
+		move.b	#$85,(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 		move.b	#1,(f_lockscreen).w
 
@@ -12252,162 +12320,7 @@ word_B8B6:	dc.w 2
 		dc.w $F40E,   $C,    6,$FFF0		; 0
 		dc.w $F505,$101C,$100E,	 $10		; 4
 ; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 34 - leftover Sonic 1 title cards
-;----------------------------------------------------
-
-Obj34:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj34_Index(pc,d0.w),d1
-		jmp	Obj34_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj34_Index:	dc.w Obj34_CheckLZ4-Obj34_Index		; 0
-		dc.w Obj34_CheckPos-Obj34_Index		; 1
-		dc.w Obj34_Wait-Obj34_Index		; 2
-		dc.w Obj34_Wait-Obj34_Index		; 3
-; ---------------------------------------------------------------------------
-
-Obj34_CheckLZ4:
-		movea.l	a0,a1
-		moveq	#0,d0
-		move.b	(Current_Zone).w,d0
-		cmpi.w	#$103,(Current_ZoneAndAct).w
-		bne.s	Obj34_CheckFZ
-		moveq	#5,d0
-
-Obj34_CheckFZ:
-		move.w	d0,d2
-		cmpi.w	#$502,(Current_ZoneAndAct).w
-		bne.s	Obj34_CheckConfig
-		moveq	#6,d0
-		moveq	#$B,d2
-
-Obj34_CheckConfig:
-		lea	(Obj34_Config).l,a3
-		lsl.w	#4,d0
-		adda.w	d0,a3
-		lea	(Obj34_ItemData).l,a2
-		moveq	#3,d1
-
-Obj34_Loop:
-		_move.b	#$34,obID(a1)
-		move.w	(a3),obX(a1)
-		move.w	(a3)+,$32(a1)
-		move.w	(a3)+,$30(a1)
-		move.w	(a2)+,$A(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,d0
-		bne.s	Obj34_ActNumber
-		move.b	d2,d0
-
-Obj34_ActNumber:
-		cmpi.b	#7,d0
-		bne.s	Obj34_MakeSprite
-		add.b	(Current_Act).w,d0
-		cmpi.b	#3,(Current_Act).w
-		bne.s	Obj34_MakeSprite
-		subq.b	#1,d0
-
-Obj34_MakeSprite:
-		move.b	d0,obFrame(a1)
-		move.l	#Map_Obj34,obMap(a1)
-		move.w	#$8580,obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#$78,obActWid(a1)
-		move.b	#0,obRender(a1)
-		move.b	#0,obPriority(a1)
-		move.w	#$3C,obTimeFrame(a1)
-		lea	$40(a1),a1
-		dbf	d1,Obj34_Loop
-
-Obj34_CheckPos:
-		moveq	#$10,d1
-		move.w	$30(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_B98E
-		bge.s	Obj34_Move
-		neg.w	d1
-
-Obj34_Move:
-		add.w	d1,obX(a0)
-
-loc_B98E:
-		move.w	obX(a0),d0
-		bmi.s	Obj34_NoDisplay
-		cmpi.w	#$200,d0
-		bcc.s	Obj34_NoDisplay
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-Obj34_NoDisplay:
-		rts
-; ---------------------------------------------------------------------------
-
-Obj34_Wait:
-		tst.w	obTimeFrame(a0)
-		beq.s	Obj34_CheckPos2
-		subq.w	#1,obTimeFrame(a0)
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-Obj34_CheckPos2:
-		tst.b	obRender(a0)
-		bpl.s	Obj34_ChangeArt
-		moveq	#$20,d1
-		move.w	$32(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	Obj34_ChangeArt
-		bge.s	Obj34_Move2
-		neg.w	d1
-
-Obj34_Move2:
-		add.w	d1,obX(a0)
-		move.w	obX(a0),d0
-		bmi.s	Obj34_NoDisplay2
-		cmpi.w	#$200,d0
-		bcc.s	Obj34_NoDisplay2
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-Obj34_NoDisplay2:
-		rts
-; ---------------------------------------------------------------------------
-
-Obj34_ChangeArt:
-		cmpi.b	#4,obRoutine(a0)
-		bne.s	Obj34_Delete
-		moveq	#plcid_Explode,d0
-		jsr	(LoadPLC).l
-		moveq	#0,d0
-		move.b	(Current_Zone).w,d0
-		addi.w	#plcid_GHZAnimals,d0
-		jsr	(LoadPLC).l
-
-Obj34_Delete:
-		bra.w	DeleteObject
-; ---------------------------------------------------------------------------
-Obj34_ItemData:	dc.w $D0
-		dc.b   2,  0				; 0
-		dc.w $E4
-		dc.b   2,  6				; 0
-		dc.w $EA
-		dc.b   2,  7				; 0
-		dc.w $E0
-		dc.b   2, $A				; 0
-Obj34_Config:	dc.w	 0, $120,$FEFC,	$13C, $414, $154, $214,	$154 ; 0
-		dc.w	 0, $120,$FEF4,	$134, $40C, $14C, $20C,	$14C ; 8
-		dc.w	 0, $120,$FEE0,	$120, $3F8, $138, $1F8,	$138 ; 16
-		dc.w	 0, $120,$FEFC,	$13C, $414, $154, $214,	$154 ; 24
-		dc.w	 0, $120,$FF04,	$144, $41C, $15C, $21C,	$15C ; 32
-		dc.w	 0, $120,$FF04,	$144, $41C, $15C, $21C,	$15C ; 40
-		dc.w	 0, $120,$FEE4,	$124, $3EC, $3EC, $1EC,	$12C ; 48
+		include "_incObj/34 Title Cards.asm"
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
 ; Object 39 - Game over	/ time over
@@ -12492,441 +12405,10 @@ loc_BB38:
 loc_BB42:
 		bra.w	DisplaySprite
 ; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object 3A - End of level results screen
-; ---------------------------------------------------------------------------
 
-Obj3A:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj3A_Index(pc,d0.w),d1
-		jmp	Obj3A_Index(pc,d1.w)
-; ===========================================================================
-Obj3A_Index:	dc.w Obj3A_ChkPLC-Obj3A_Index
-		dc.w Obj3A_ChkPos-Obj3A_Index
-		dc.w Obj3A_Wait-Obj3A_Index
-		dc.w Obj3A_NextLevel-Obj3A_Index
-; ===========================================================================
-; loc_BB5C:
-Obj3A_ChkPLC:
-		tst.l	(v_plc_buffer).w
-		beq.s	Obj3A_Config
-		rts
-; ---------------------------------------------------------------------------
-; loc_BB64:
-Obj3A_Config:
-		movea.l	a0,a1
-		lea	(Obj3A_Conf).l,a2
-		moveq	#6,d1
-; loc_BB6E:
-Obj3A_Init:
-		_move.b	#$3A,obID(a1)
-		move.w	(a2),obX(a1)
-		move.w	(a2)+,$32(a1)
-		move.w	(a2)+,$30(a1)
-		move.w	(a2)+,$A(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,d0
-		cmpi.b	#6,d0
-		bne.s	loc_BB94
-		add.b	(Current_Act).w,d0
-
-loc_BB94:
-		move.b	d0,obFrame(a1)
-		move.l	#Map_Obj3A,obMap(a1)
-		move.w	#$8580,obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#0,obRender(a1)
-		lea	$40(a1),a1
-		dbf	d1,Obj3A_Init
-; loc_BBB8:
-Obj3A_ChkPos:
-		moveq	#$10,d1
-		move.w	$30(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_BBEA
-		bge.s	Obj3A_Move
-		neg.w	d1
-; loc_BBC8:
-Obj3A_Move
-		add.w	d1,obX(a0)
-
-loc_BBCC:
-		move.w	obX(a0),d0
-		bmi.s	locret_BBDE
-		cmpi.w	#$200,d0
-		bcc.s	locret_BBDE
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ===========================================================================
-
-locret_BBDE:
-		rts
-; ===========================================================================
-
-loc_BBE0:
-		move.b	#$E,obRoutine(a0)
-		bra.w	loc_BCF8
-; ===========================================================================
-
-loc_BBEA:
-		cmpi.b	#$E,(v_objspace+$700+obRoutine).w
-		beq.s	loc_BBE0
-		cmpi.b	#4,obFrame(a0)
-		bne.s	loc_BBCC
-		addq.b	#2,obRoutine(a0)
-		move.w	#$B4,obTimeFrame(a0)
-; loc_BC04:
-Obj3A_Wait:
-		subq.w	#1,obTimeFrame(a0)
-		bne.s	locret_BC0E
-		addq.b	#2,obRoutine(a0)
-
-locret_BC0E:
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ===========================================================================
-; Obj3A_TimeBonus:
-		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w
-		moveq	#0,d0
-		tst.w	(v_timebonus).w
-		beq.s	Obj3A_RingBonus
-		addi.w	#10,d0
-		subi.w	#10,(v_timebonus).w
-; loc_BC30:
-Obj3A_RingBonus:
-		tst.w	(v_ringbonus).w
-		beq.s	Obj3A_ChkBonus
-		addi.w	#10,d0
-		subi.w	#10,(v_ringbonus).w
-; loc_BC40:
-Obj3A_ChkBonus:
-		tst.w	d0
-		bne.s	Obj3A_AddBonus
-		move.w	#sfx_Cash,d0
-		jsr	(PlaySound_Special).l
-		addq.b	#2,obRoutine(a0)
-		cmpi.w	#$501,(Current_ZoneAndAct).w
-		bne.s	Obj3A_SetDelay
-		addq.b	#4,obRoutine(a0)
-; loc_BC5E:
-Obj3A_SetDelay:
-		move.w	#$B4,obTimeFrame(a0)
-
-locret_BC64:
-		rts
-; ===========================================================================
-; loc_BC66:
-Obj3A_AddBonus:
-		jsr	(AddPoints).l
-		move.b	($FFFFFE0F).w,d0
-		andi.b	#3,d0
-		bne.s	locret_BC64
-		move.w	#sfx_Switch,d0
-		jmp	(PlaySound_Special).l
-; ===========================================================================
-; loc_BC80:
-Obj3A_NextLevel:
-		move.b	(Current_Zone).w,d0
-		andi.w	#7,d0
-		lsl.w	#3,d0
-		move.b	(Current_Act).w,d1
-		andi.w	#3,d1
-		add.w	d1,d1
-		add.w	d1,d0
-		move.w	LevelOrder(pc,d0.w),d0
-		move.w	d0,(Current_ZoneAndAct).w
-		tst.w	d0
-		bne.s	Obj3A_ChkSS
-		move.b	#GameModeID_SegaScreen,(v_gamemode).w
-		bra.s	locret_BCC2
-; ===========================================================================
-; loc_BCAA:
-Obj3A_ChkSS:
-		clr.b	(v_lastlamp).w
-		tst.b	(f_bigring).w
-		beq.s	loc_BCBC
-		move.b	#GameModeID_SpecialStage,(v_gamemode).w
-		bra.s	locret_BCC2
-; ===========================================================================
-
-loc_BCBC:
-		move.w	#1,(Level_Inactive_flag).w
-
-locret_BCC2:
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ===========================================================================
-LevelOrder:	dc.w	 1,    2, $200,	   0		; 0
-		dc.w  $101, $102, $300,	$502		; 4
-		dc.w  $201, $202, $400,	   0		; 8
-		dc.w  $301, $302, $500,	   0		; 12
-		dc.w  $401, $402, $100,	   0		; 16
-		dc.w  $501, $103,    0,	   0		; 20
-; ---------------------------------------------------------------------------
-
-loc_BCF8:
-		moveq	#$20,d1
-		move.w	$32(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_BD1E
-		bge.s	loc_BD08
-		neg.w	d1
-
-loc_BD08:
-		add.w	d1,obX(a0)
-		move.w	obX(a0),d0
-		bmi.s	locret_BD1C
-		cmpi.w	#$200,d0
-		bcc.s	locret_BD1C
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-locret_BD1C:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BD1E:
-		cmpi.b	#4,obFrame(a0)
-		bne.w	DeleteObject
-		addq.b	#2,obRoutine(a0)
-		clr.b	(f_lockctrl).w
-		move.w	#bgm_FZ,d0
-		jmp	(PlaySound).l
-; ---------------------------------------------------------------------------
-		addq.w	#2,(Camera_Max_X_pos).w
-		cmpi.w	#$2100,(Camera_Max_X_pos).w
-		beq.w	DeleteObject
-		rts
-; ---------------------------------------------------------------------------
-Obj3A_Conf:	dc.w	 4, $124,  $BC,	$200		; 0
-		dc.w $FEE0, $120,  $D0,	$201		; 4
-		dc.w  $40C, $14C,  $D6,	$206		; 8
-		dc.w  $520, $120,  $EC,	$202		; 12
-		dc.w  $540, $120,  $FC,	$203		; 16
-		dc.w  $560, $120, $10C,	$204		; 20
-		dc.w  $20C, $14C,  $CC,	$205		; 24
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Sonic	1 Object 7E - leftover S1 Special Stage	results
-;----------------------------------------------------
-
-S1Obj7E:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	S1Obj7E_Index(pc,d0.w),d1
-		jmp	S1Obj7E_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-S1Obj7E_Index:	dc.w loc_BDA6-S1Obj7E_Index
-		dc.w loc_BE1E-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BE6A-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BEC4-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BECE-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BEC4-S1Obj7E_Index
-		dc.w loc_BEF2-S1Obj7E_Index
-; ---------------------------------------------------------------------------
-
-loc_BDA6:
-		tst.l	(v_plc_buffer).w
-		beq.s	loc_BDAE
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BDAE:
-		movea.l	a0,a1
-		lea	(S1Obj7E_Conf).l,a2
-		moveq	#3,d1
-		cmpi.w	#$32,(v_rings).w
-		bcs.s	loc_BDC2
-		addq.w	#1,d1
-
-loc_BDC2:
-		_move.b	#$7E,obID(a1)
-		move.w	(a2)+,obX(a1)
-		move.w	(a2)+,$30(a1)
-		move.w	(a2)+,$A(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,obFrame(a1)
-		move.l	#Map_S1Obj7E,obMap(a1)
-		move.w	#$8580,obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#0,obRender(a1)
-		lea	$40(a1),a1
-		dbf	d1,loc_BDC2
-		moveq	#7,d0
-		move.b	(v_emeralds).w,d1
-		beq.s	loc_BE1A
-		moveq	#0,d0
-		cmpi.b	#6,d1
-		bne.s	loc_BE1A
-		moveq	#8,d0
-		move.w	#$18,obX(a0)
-		move.w	#$118,$30(a0)
-
-loc_BE1A:
-		move.b	d0,obFrame(a0)
-
-loc_BE1E:
-		moveq	#$10,d1
-		move.w	$30(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_BE44
-		bge.s	loc_BE2E
-		neg.w	d1
-
-loc_BE2E:
-		add.w	d1,obX(a0)
-
-loc_BE32:
-		move.w	obX(a0),d0
-		bmi.s	locret_BE42
-		cmpi.w	#$200,d0
-		bcc.s	locret_BE42
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-locret_BE42:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BE44:
-		cmpi.b	#2,obFrame(a0)
-		bne.s	loc_BE32
-		addq.b	#2,obRoutine(a0)
-		move.w	#$B4,obTimeFrame(a0)
-		move.b	#$7F,(v_objspace+$800).w
-
-loc_BE5C:
-		subq.w	#1,obTimeFrame(a0)
-		bne.s	loc_BE66
-		addq.b	#2,obRoutine(a0)
-
-loc_BE66:
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BE6A:
-		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w
-		tst.w	(v_ringbonus).w
-		beq.s	loc_BE9C
-		subi.w	#10,(v_ringbonus).w
-		moveq	#10,d0
-		jsr	(AddPoints).l
-		move.b	($FFFFFE0F).w,d0
-		andi.b	#3,d0
-		bne.s	locret_BEC2
-		move.w	#sfx_Switch,d0
-		jmp	(PlaySound_Special).l
-; ---------------------------------------------------------------------------
-
-loc_BE9C:
-		move.w	#sfx_Cash,d0
-		jsr	(PlaySound_Special).l
-		addq.b	#2,obRoutine(a0)
-		move.w	#$B4,obTimeFrame(a0)
-		cmpi.w	#$32,(v_rings).w
-		bcs.s	locret_BEC2
-		move.w	#$3C,obTimeFrame(a0)
-		addq.b	#4,obRoutine(a0)
-
-locret_BEC2:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BEC4:
-		move.w	#1,(Level_Inactive_flag).w
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BECE:
-		move.b	#4,(v_objspace+$6C0+obFrame).w
-		move.b	#$14,(v_objspace+$6C0+obRoutine).w
-		move.w	#sfx_Continue,d0
-		jsr	(PlaySound_Special).l
-		addq.b	#2,obRoutine(a0)
-		move.w	#$168,obTimeFrame(a0)
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BEF2:
-		move.b	($FFFFFE0F).w,d0
-		andi.b	#$F,d0
-		bne.s	loc_BF02
-		bchg	#0,obFrame(a0)
-
-loc_BF02:
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-S1Obj7E_Conf:	dc.w   $20, $120,  $C4,	$200		; 0
-		dc.w  $320, $120, $118,	$201		; 4
-		dc.w  $360, $120, $128,	$202		; 8
-		dc.w  $1EC, $11C,  $C4,	$203		; 12
-		dc.w  $3A0, $120, $138,	$206		; 16
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Sonic	1 Object 7F - leftover Sonic 1 SS emeralds
-;----------------------------------------------------
-
-S1Obj7F:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	S1Obj7F_Index(pc,d0.w),d1
-		jmp	S1Obj7F_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-S1Obj7F_Index:	dc.w loc_BF4C-S1Obj7F_Index
-		dc.w loc_BFA6-S1Obj7F_Index
-word_BF40:	dc.w $110
-		dc.w $128
-		dc.w $F8
-		dc.w $140
-		dc.w $E0
-		dc.w $158
-; ---------------------------------------------------------------------------
-
-loc_BF4C:
-		movea.l	a0,a1
-		lea	word_BF40(pc),a2
-		moveq	#0,d2
-		moveq	#0,d1
-		move.b	(v_emeralds).w,d1
-		subq.b	#1,d1
-		bcs.w	DeleteObject
-
-loc_BF60:
-		_move.b	#$7F,obID(a1)
-		move.w	(a2)+,obX(a1)
-		move.w	#$F0,$A(a1)
-		lea	(v_emldlist).w,a3
-		move.b	(a3,d2.w),d3
-		move.b	d3,obFrame(a1)
-		move.b	d3,obAnim(a1)
-		addq.b	#1,d2
-		addq.b	#2,obRoutine(a1)
-		move.l	#Map_S1Obj7F,obMap(a1)
-		move.w	#$8541,obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#0,obRender(a1)
-		lea	$40(a1),a1
-		dbf	d1,loc_BF60
-
-loc_BFA6:
-		move.b	obFrame(a0),d0
-		move.b	#6,obFrame(a0)
-		cmpi.b	#6,d0
-		bne.s	loc_BFBC
-		move.b	obAnim(a0),obFrame(a0)
-
-loc_BFBC:
-		bra.w	DisplaySprite
+		include "_incObj/3A Got Through Card.asm"
+		include "_incObj/7E Special Stage Results.asm"
+		include "_incObj/7F SS Result Chaos Emeralds.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj34:	dc.w word_BFD8-Map_Obj34
 		dc.w word_C022-Map_Obj34
@@ -17374,7 +16856,7 @@ Load_EndOfAct:
 		clr.b	(v_invinc).w
 		clr.b	(f_timecount).w
 		move.b	#$3A,(v_objspace+$5C0).w
-		moveq	#plcid_TitleCard,d0
+		moveq	#$10,d0
 		jsr	(LoadPLC2).l
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
@@ -19934,7 +19416,7 @@ Sonic_GameOver:
 loc_10876:
 		move.w	#bgm_GameOver,d0
 		jsr	(PlaySound).l
-		moveq	#plcid_GameOver,d0
+		moveq	#3,d0
 		jmp	(LoadPLC).l
 ; ---------------------------------------------------------------------------
 
@@ -31398,7 +30880,7 @@ S1SS_ShowLayout:
 		bsr.w	sub_19F02
 		move.w	d5,-(sp)
 		lea	(v_ssbuffer3).w,a1
-		move.b	(v_ssangle).w,d0
+		move.b	($FFFFF780).w,d0
 		andi.b	#$FC,d0
 		jsr	(CalcSine).l
 		move.w	d0,d4
@@ -31490,14 +30972,9 @@ loc_19C42:
 		add.w	d1,d1
 		adda.w	(a1,d1.w),a1
 		movea.w	(a5)+,a3
-	if ~~FixBugs
 		moveq	#0,d1
 		move.b	(a1)+,d1
 		subq.b	#1,d1
-	else
-		move.w	(a1)+,d1
-		subq.w	#1,d1
-	endif
 		bmi.s	loc_19C9A
 		jsr	(loc_D1CE).l
 
@@ -31525,7 +31002,7 @@ loc_19CBA:
 sub_19CC2:
 		lea	(v_ssbuffer2+$C).l,a1
 		moveq	#0,d0
-		move.b	(v_ssangle).w,d0
+		move.b	($FFFFF780).w,d0
 		lsr.b	#2,d0
 		andi.w	#$F,d0
 		moveq	#$23,d1
@@ -32208,9 +31685,9 @@ Obj09_Display:
 		bsr.w	Obj09_ChkItems2
 		jsr	(ObjectMove).l
 		bsr.w	S1SS_FixCamera
-		move.w	(v_ssangle).w,d0
-		add.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	($FFFFF780).w,d0
+		add.w	($FFFFF782).w,d0
+		move.w	d0,($FFFFF780).w
 		jsr	(Sonic_Animate).l
 		rts
 
@@ -32252,7 +31729,7 @@ loc_1A4DC:
 		move.w	d0,obInertia(a0)
 
 loc_1A4E0:
-		move.b	(v_ssangle).w,d0
+		move.b	($FFFFF780).w,d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
 		neg.b	d0
@@ -32347,7 +31824,7 @@ Obj09_Jump:
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#$70,d0
 		beq.s	locret_1A5D0
-		move.b	(v_ssangle).w,d0
+		move.b	($FFFFF780).w,d0
 		andi.b	#$FC,d0
 		neg.b	d0
 		subi.b	#$40,d0
@@ -32412,23 +31889,23 @@ locret_1A616:
 ; ---------------------------------------------------------------------------
 
 loc_1A618:
-		addi.w	#$40,(v_ssrotate).w
-		cmpi.w	#$1800,(v_ssrotate).w
+		addi.w	#$40,($FFFFF782).w
+		cmpi.w	#$1800,($FFFFF782).w
 		bne.s	loc_1A62C
 		move.b	#GameModeID_Level,(v_gamemode).w
 
 loc_1A62C:
-		cmpi.w	#$3000,(v_ssrotate).w
+		cmpi.w	#$3000,($FFFFF782).w
 		blt.s	loc_1A64A
-		move.w	#0,(v_ssrotate).w
-		move.w	#$4000,(v_ssangle).w
+		move.w	#0,($FFFFF782).w
+		move.w	#$4000,($FFFFF780).w
 		addq.b	#2,obRoutine(a0)
 		move.w	#$3C,$38(a0)
 
 loc_1A64A:
-		move.w	(v_ssangle).w,d0
-		add.w	(v_ssrotate).w,d0
-		move.w	d0,(v_ssangle).w
+		move.w	($FFFFF780).w,d0
+		add.w	($FFFFF782).w,d0
+		move.w	d0,($FFFFF780).w
 		jsr	(Sonic_Animate).l
 		jsr	(LoadSonicDynPLC).l
 		bsr.w	S1SS_FixCamera
@@ -32452,7 +31929,7 @@ loc_1A678:
 Obj09_Fall:
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
-		move.b	(v_ssangle).w,d0
+		move.b	($FFFFF780).w,d0
 		andi.b	#$FC,d0
 		jsr	(CalcSine).l
 		move.w	obVelX(a0),d4
@@ -32774,7 +32251,7 @@ loc_1A974:
 		move.b	#$1E,$36(a0)
 		btst	#6,($FFFFF783).w
 		beq.s	loc_1A99E
-		asl	(v_ssrotate).w
+		asl	($FFFFF782).w
 		movea.l	$32(a0),a1
 		subq.l	#1,a1
 		move.b	#$2A,(a1)
@@ -32792,7 +32269,7 @@ loc_1A9A8:
 		move.b	#$1E,$36(a0)
 		btst	#6,($FFFFF783).w
 		bne.s	loc_1A9D2
-		asr	(v_ssrotate).w
+		asr	($FFFFF782).w
 		movea.l	$32(a0),a1
 		subq.l	#1,a1
 		move.b	#$29,(a1)
@@ -32816,7 +32293,7 @@ loc_1A9DC:
 		move.l	d0,4(a2)
 
 loc_1AA04:
-		neg.w	(v_ssrotate).w
+		neg.w	($FFFFF782).w
 		move.w	#sfx_SSItem,d0
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------
@@ -33169,9 +32646,9 @@ loc_1AC28:
 		bpl.s	locret_1AC26
 		move.b	#7,(byte_FFFFF721).w
 		move.b	#1,(byte_FFFFF720).w
-		lea	(v_startofram+$7500).l,a1
+		lea	($FFFF7500).l,a1
 		bsr.s	sub_1AC58
-		lea	(v_startofram+$7D00).l,a1
+		lea	($FFFF7D00).l,a1
 
 sub_1AC58:
 		move.w	#7,d1
@@ -33947,8 +33424,16 @@ loc_1B656:
 ; ---------------------------------------------------------------------------
 Art_HUD:	binclude	"art/uncompressed/HUD Numbers.bin"
 		even
-Art_LivesNums:	binclude	"art/uncompressed/Lives Counter Numbers.bin"
-		even
+Art_LivesNums:	dc.b   0,  0,  0,  0,  0,$66,$66,$10,  6,$61,$16,$61,  6,$61,  6,$61,  6,$61,  6,$61,  6,$61,  6,$61,  0,$66,$66,$10,  0,$11,$11,  0 ; 0
+		dc.b   0,  0,  0,  0,  0,  6,$61,  0,  0,$66,$61,  0,  0,$16,$61,  0,  0,  6,$61,  0,  0,  6,$61,  0,  0,  6,$61,  0,  0,  1,$11,  0 ; 32
+		dc.b   0,  0,  0,  0,  0,$66,$66,$10,  0,$11,$16,$61,  0,  0,$66,$11,  0,  6,$61,$10,  0,$66,$11,$10,  6,$66,$66,$61,  1,$11,$11,$11 ; 64
+		dc.b   0,  0,  0,  0,  0,$66,$66,$10,  0,$11,$16,$61,  0,  6,$66,$10,  0,  1,$16,$61,  6,$61,  6,$61,  0,$66,$66,$10,  0,$11,$11,  0 ; 96
+		dc.b   0,  0,  0,  0,  0,  0,$66,$10,  0,  6,$66,$10,  0,$61,$66,$10,  6,$61,$66,$10,  6,$66,$66,$61,  1,$11,$66,$11,  0,  0,$11,$10 ; 128
+		dc.b   0,  0,  0,  0,  6,$66,$66,$61,  6,$61,$11,$11,  6,$66,$66,$10,  1,$11,$16,$61,  6,$61,  6,$61,  0,$66,$66,$10,  0,$11,$11,  0 ; 160
+		dc.b   0,  0,  0,  0,  0,$66,$66,$10,  6,$61,$11,$10,  6,$66,$66,$10,  6,$61,$16,$61,  6,$61,  6,$61,  0,$66,$66,$10,  0,$11,$11,  0 ; 192
+		dc.b   0,  0,  0,  0,  6,$66,$66,$61,  1,$11,$16,$61,  0,  0,$66,$10,  0,  6,$61,  0,  0,$66,$10,  0,  0,$66,$10,  0,  0,$11,$10,  0 ; 224
+		dc.b   0,  0,  0,  0,  0,$66,$66,$10,  6,$61,$16,$61,  0,$66,$66,$10,  6,$61,$16,$61,  6,$61,  6,$61,  0,$66,$66,$10,  0,$11,$11,  0 ; 256
+		dc.b   0,  0,  0,  0,  0,$66,$66,$10,  6,$61,$16,$61,  6,$61,  6,$61,  0,$66,$66,$61,  0,$11,$16,$61,  0,$66,$66,$10,  0,$11,$11,  0 ; 288
 ; ---------------------------------------------------------------------------
 		nop
 
@@ -34399,8 +33884,351 @@ j_Adjust2PArtPointer_1:
 ; ---------------------------------------------------------------------------
 		align 4
 
-		include	"_inc/LevelHeaders.asm"
-		include	"_inc/Pattern Load Cues.asm"
+
+
+; ---------------------------------------------------------------------------
+; "MAIN LEVEL LOAD BLOCK" (after Nemesis)
+;
+; This struct array tells the engine where to find all the art associated with
+; a particular zone. Each zone gets four longwords, in which it stores four
+; pointers (in the lower 24 bits) and three jump table indeces (in the upper eight
+; bits). The assembled data looks something like this:
+;
+; aaBBBBBB
+; ccDDDDDD
+; EEEEEE
+; ffgghhii
+;
+; aa = index for primary pattern load request list
+; BBBBBB = unused, pointer to level art
+; cc = index for secondary pattern load request list
+; DDDDDD = pointer to 16x16 block mappings
+; EEEEEE = pointer to 128x128 block mappings
+; ff = unused, always 0
+; gg = unused, music track
+; hh = unused, palette
+; ii = palette
+;
+; Nemesis refers to this as the "main level load block". However, that name implies
+; that this is code (obviously, it isn't), or at least that it points to the level's
+; collision, object and ring placement arrays (it only points to palettes and 16x16
+; mappings although the 128x128 mappings do affect the actual level layout and collision)
+; ---------------------------------------------------------------------------
+
+; macro for declaring a "main level load block" (MLLB)
+levartptrs macro plc1,plc2,palette,art,map16x16,map128x128,music
+	dc.l art+(plc1<<24)
+	dc.l map16x16+(plc2<<24)
+	dc.l map128x128
+	dc.b 0,music,palette,palette
+	endm
+
+; MainLoadBlocks:
+LevelArtPointers:
+		levartptrs  4,  5,  4, Nem_GHZ, Map16_GHZ, Map128_GHZ, bgm_GHZ ;   0 ; GHZ  ; GREEN HILL ZONE
+		levartptrs  6,  7,  5, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_LZ ;    1 ; LZ   ; LABYRINTH ZONE
+		levartptrs  8,  9,  6, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_MZ ;    2 ; CPZ  ; CHEMICAL PLANT ZONE
+		levartptrs $A, $B,  7, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SLZ ;   3 ; EHZ  ; EMERALD HILL ZONE
+		levartptrs $C, $D,  8, Nem_HPZ, Map16_HPZ, Map128_HPZ, bgm_SYZ ;   4 ; HPZ  ; HIDDEN PALACE ZONE
+		levartptrs $E, $F,  9, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SBZ ;   5 ; HTZ  ; HILL TOP ZONE
+		levartptrs  0,  0,$13, Nem_GHZ, Map16_GHZ, Map128_GHZ, bgm_SBZ ;   6 ; LEV6 ; LEVEL 6 (UNUSED, SONIC 1 ENDING)
+
+; ---------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LISTS
+;
+; Pattern load request lists are simple structures used to load
+; Nemesis-compressed art for sprites.
+;
+; The decompressor predictably moves down the list, so request 0 is processed first, etc.
+; This only matters if your addresses are bad and you overwrite art loaded in a previous request.
+;
+
+; NOTICE: The load queue buffer can only hold $10 (16) load requests. None of the routines
+; that load PLRs into the queue do any bounds checking, so it's possible to create a buffer
+; overflow and completely screw up the variables stored directly after the queue buffer.
+; (in my experience this is a guaranteed crash or hang)
+;
+; Many levels queue more than 16 items overall, but they don't exceed the limit because
+; their PLRs are split into multiple parts (like PLC_GHZ and PLC_GHZ2) and they fully
+; process the first part before requesting the rest.
+; ---------------------------------------------------------------------------
+
+;---------------------------------------------------------------------------------------
+; Table of pattern load request lists. Remember to use word-length data when adding lists
+; otherwise you'll break the array.
+;---------------------------------------------------------------------------------------
+ArtLoadCues:	dc.w PLC_Main-ArtLoadCues,PLC_Main2-ArtLoadCues
+		dc.w PLC_Explode-ArtLoadCues,PLC_GameOver-ArtLoadCues
+		dc.w PLC_GHZ-ArtLoadCues,PLC_GHZ2-ArtLoadCues
+		dc.w PLC_CPZ-ArtLoadCues,PLC_CPZ2-ArtLoadCues
+		dc.w PLC_CPZ-ArtLoadCues,PLC_CPZ2-ArtLoadCues
+		dc.w PLC_EHZ-ArtLoadCues,PLC_EHZ2-ArtLoadCues
+		dc.w PLC_HPZ-ArtLoadCues,PLC_HPZ2-ArtLoadCues
+		dc.w PLC_HTZ-ArtLoadCues,PLC_HTZ2-ArtLoadCues
+		dc.w PLC_S1TitleCard-ArtLoadCues,PLC_Boss-ArtLoadCues
+		dc.w PLC_Signpost-ArtLoadCues,PLC_S1SpecialStage-ArtLoadCues
+		dc.w PLC_S1SpecialStage-ArtLoadCues,PLC_GHZAnimals-ArtLoadCues
+		dc.w PLC_LZAnimals-ArtLoadCues,PLC_CPZAnimals-ArtLoadCues
+		dc.w PLC_EHZAnimals-ArtLoadCues,PLC_HPZAnimals-ArtLoadCues
+		dc.w PLC_HTZAnimals-ArtLoadCues,$1C318-ArtLoadCues
+		dc.w $1C31A-ArtLoadCues,$1C31C-ArtLoadCues
+		dc.w $1C31E-ArtLoadCues,$1C320-ArtLoadCues
+
+; macro for a pattern load request
+plreq macro toVRAMaddr,fromROMaddr
+	dc.l	fromROMaddr				; art to load
+	dc.w	(toVRAMaddr<<5)				; VRAM address to load it at (multiplied by $20)
+	endm
+
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Standard 1 - loaded for every level
+; --------------------------------------------------------------------------------------
+PLC_Main:	dc.w ((PLC_Main_End-PLC_Main)/6)-1
+		plreq $47C, Nem_Lamppost
+		plreq $6CA, Nem_HUD
+		plreq $7D4, Nem_Lives
+		plreq $6BC, Nem_Ring
+		plreq $4AC, Nem_Points
+PLC_Main_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Standard 2 - loaded for every level
+; --------------------------------------------------------------------------------------
+PLC_Main2:	dc.w ((PLC_Main2_End-PLC_Main2)/6)-1
+		plreq $680, Nem_Monitors
+		plreq $4BE, Nem_Shield
+		plreq $4DE, Nem_Stars
+PLC_Main2_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Explosion - loaded for every level AFTER the title card
+; --------------------------------------------------------------------------------------
+PLC_Explode:	dc.w ((PLC_Explode_End-PLC_Explode)/6)-1
+		plreq $5A0, Nem_Explosion
+PLC_Explode_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Game/Time over
+; --------------------------------------------------------------------------------------
+PLC_GameOver:	dc.w ((PLC_GameOver_End-PLC_GameOver)/6)-1
+		plreq $55E, Nem_GameOver
+PLC_GameOver_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Green Hill Zone primary
+; --------------------------------------------------------------------------------------
+PLC_GHZ:	dc.w ((PLC_GHZ_End-PLC_GHZ)/6)-1
+		plreq 0, Nem_GHZ
+		plreq $470, Nem_GHZ_Piranha
+		plreq $4A0, Nem_VSpikes
+		plreq $4A8, Nem_HSpring
+		plreq $4B8, Nem_VSpring
+		plreq $4C6, Nem_GHZ_Bridge
+		plreq $4D0, Nem_SwingPlatform
+		plreq $4E0, Nem_Motobug
+		plreq $6C0, Nem_GHZ_Rock
+PLC_GHZ_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Green Hill Zone secondary
+; --------------------------------------------------------------------------------------
+PLC_GHZ2:	dc.w ((PLC_GHZ2_End-PLC_GHZ2)/6)-1
+		plreq $470, Nem_GHZ_Piranha
+PLC_GHZ2_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Chemical Plant Zone primary
+; --------------------------------------------------------------------------------------
+PLC_CPZ:	dc.w ((PLC_CPZ_End-PLC_CPZ)/6)-1
+		plreq 0, Nem_CPZ
+		plreq $3D0, Nem_CPZ_Buildings
+		plreq $400, Nem_CPZ_FloatingPlatform
+PLC_CPZ_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Chemical Plant Zone secondary
+; --------------------------------------------------------------------------------------
+PLC_CPZ2:	dc.w ((PLC_CPZ2_End-PLC_CPZ2)/6)-1
+		plreq $434, Nem_VSpikes
+		plreq $43C, Nem_DSpring
+		plreq $45C, Nem_VSpring2
+		plreq $470, Nem_HSpring2
+PLC_CPZ2_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Emerald Hill Zone primary
+; --------------------------------------------------------------------------------------
+PLC_EHZ:	dc.w ((PLC_EHZ_End-PLC_EHZ)/6)-1
+		plreq 0, Nem_EHZ
+		plreq $39E, Nem_EHZ_Fireball
+		plreq $3AE, Nem_EHZ_Waterfall
+		plreq $3C6, Nem_EHZ_Bridge
+		plreq $3CE, Nem_HTZ_Seesaw
+		plreq $434, Nem_VSpikes
+		plreq $43C, Nem_DSpring
+		plreq $45C, Nem_VSpring2
+		plreq $470, Nem_HSpring2
+PLC_EHZ_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Emerald Hill Zone secondary
+; --------------------------------------------------------------------------------------
+PLC_EHZ2:	dc.w ((PLC_EHZ2_End-PLC_EHZ2)/6)-1
+		plreq $560, Nem_Shield
+		plreq $4AC, Nem_Points
+		plreq $3E6, Nem_Buzzer
+		plreq $402, Nem_Snail
+		plreq $41C, Nem_Masher
+PLC_EHZ2_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Hidden Palace Zone primary
+; --------------------------------------------------------------------------------------
+PLC_HPZ:	dc.w ((PLC_HPZ_End-PLC_HPZ)/6)-1
+		plreq 0, Nem_HPZ
+		plreq $300, Nem_HPZ_Bridge
+		plreq $315, Nem_HPZ_Waterfall
+		plreq $34A, Nem_HPZ_Platform
+		plreq $35A, Nem_HPZ_PulsingBall
+		plreq $37C, Nem_HPZ_Various
+		plreq $392, Nem_HPZ_Emerald
+		plreq $400, Nem_WaterSurface
+PLC_HPZ_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Hidden Palace Zone secondary
+; --------------------------------------------------------------------------------------
+PLC_HPZ2:	dc.w ((PLC_HPZ2_End-PLC_HPZ2)/6)-1
+		plreq $500, Nem_Redz
+		plreq $530, Nem_Bat
+PLC_HPZ2_End:
+		; unused PLR entries
+		plreq $300, Nem_Crocobot
+		plreq $32C, Nem_Buzzer
+		plreq $350, Nem_Bat
+		plreq $3C4, Nem_Triceratops
+		plreq $500, Nem_Redz
+		plreq $530, Nem_HPZ_Piranha
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Hill Top Zone primary
+; --------------------------------------------------------------------------------------
+PLC_HTZ:	dc.w ((PLC_HTZ_End-PLC_HTZ)/6)-1
+		plreq 0, Nem_EHZ
+		plreq $1FC, Nem_HTZ
+		plreq $500, Nem_HTZ_AniPlaceholders
+		plreq $39E, Nem_EHZ_Fireball
+		plreq $3AE, Nem_HTZ_Fireball
+		plreq $3BE, Nem_HTZ_AutomaticDoor
+		plreq $3C6, Nem_EHZ_Bridge
+		plreq $3CE, Nem_HTZ_Seesaw
+		plreq $434, Nem_VSpikes
+		plreq $43C, Nem_DSpring
+PLC_HTZ_End:
+		; unused PLR entries
+		plreq $45C, Nem_VSpring2
+		plreq $470, Nem_HSpring2
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Hill Top Zone secondary
+; --------------------------------------------------------------------------------------
+PLC_HTZ2:	dc.w ((PLC_HTZ2_End-PLC_HTZ2)/6)-1
+		plreq $3E6, Nem_HTZ_Lift
+PLC_HTZ2_End:
+		; unused PLR entries
+		plreq $3E6, Nem_Buzzer
+		plreq $402, Nem_Snail
+		plreq $41C, Nem_Masher
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Sonic 1 title card
+; --------------------------------------------------------------------------------------
+PLC_S1TitleCard:dc.w ((PLC_S1TitleCard_End-PLC_S1TitleCard)/6)-1
+		plreq $580, Nem_S1TitleCard
+PLC_S1TitleCard_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; End of zone bosses
+; --------------------------------------------------------------------------------------
+PLC_Boss:	dc.w ((PLC_Boss_End-PLC_Boss)/6)-1
+		plreq $460, Nem_BossShip
+		plreq $4C0, Nem_EHZ_Boss
+		plreq $540, Nem_EHZ_Boss_Blades
+PLC_Boss_End:
+		; unused PLR entries
+		plreq $400, Nem_BossShip
+		plreq $460, Nem_CPZ_ProtoBoss
+		plreq $4D0, Nem_BossShipBoost
+		plreq $4D8, Nem_Smoke
+		plreq $4E8, Nem_EHZ_Boss
+		plreq $568, Nem_EHZ_Boss_Blades
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; End of level signpost
+; --------------------------------------------------------------------------------------
+PLC_Signpost:	dc.w ((PLC_Signpost_End-PLC_Signpost)/6)-1
+		plreq $680, Nem_Signpost
+		plreq $4B6, Nem_S1BonusPoints
+		plreq $462, Nem_BigFlash
+PLC_Signpost_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Sonic 1 Special Stage, although since it's blank, using it will crash the game
+; unless you remove the +$10
+; --------------------------------------------------------------------------------------
+; PLC_Invalid:
+PLC_S1SpecialStage:	dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)+$10
+PLC_S1SpecialStage_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Green Hill Zone animals
+; --------------------------------------------------------------------------------------
+PLC_GHZAnimals:	dc.w ((PLC_GHZAnimals_End-PLC_GHZAnimals)/6)-1
+		plreq $580, Nem_Bunny
+		plreq $592, Nem_Flicky
+PLC_GHZAnimals_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Labyrinth Zone animals
+; --------------------------------------------------------------------------------------
+PLC_LZAnimals:	dc.w ((PLC_LZAnimals_End-PLC_LZAnimals)/6)-1
+		plreq $580, Nem_Penguin
+		plreq $592, Nem_Seal
+PLC_LZAnimals_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Chemical Plant Zone animals
+; --------------------------------------------------------------------------------------
+PLC_CPZAnimals:	dc.w ((PLC_CPZAnimals_End-PLC_CPZAnimals)/6)-1
+		plreq $580, Nem_Squirrel
+		plreq $592, Nem_Seal
+PLC_CPZAnimals_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Emerald Hill Zone animals
+; --------------------------------------------------------------------------------------
+PLC_EHZAnimals:	dc.w ((PLC_EHZAnimals_End-PLC_EHZAnimals)/6)-1
+		plreq $580, Nem_Pig
+		plreq $592, Nem_Flicky
+PLC_EHZAnimals_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Hidden Palace Zone animals
+; --------------------------------------------------------------------------------------
+PLC_HPZAnimals:	dc.w ((PLC_HPZAnimals_End-PLC_HPZAnimals)/6)-1
+		plreq $580, Nem_Pig
+		plreq $592, Nem_Chicken
+PLC_HPZAnimals_End:
+; --------------------------------------------------------------------------------------
+; PATTERN LOAD REQUEST LIST
+; Hill Top Zone animals
+; --------------------------------------------------------------------------------------
+PLC_HTZAnimals:	dc.w ((PLC_HTZAnimals_End-PLC_HTZAnimals)/6)-1
+		plreq $580, Nem_Bunny
+		plreq $592, Nem_Chicken
+PLC_HTZAnimals_End:
+
 ; --------------------------------------------------------------------------------------
 ; Leftover art from an unknown game, overwrites the other Sonic 1 PLC entries
 ; --------------------------------------------------------------------------------------
