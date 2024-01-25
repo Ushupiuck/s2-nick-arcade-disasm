@@ -160,15 +160,15 @@ enable_ints:	macro
 
 out_of_range_s1:	macro exit,pos
 		if ("pos"<>"")
-		move.w	pos,d0				; get object position (if specified as not obX)
+		move.w	pos,d0		; get object position (if specified as not obX)
 		else
-		move.w	obX(a0),d0			; get object position
+		move.w	obX(a0),d0	; get object position
 		endif
-		andi.w	#$FF80,d0			; round down to nearest $80
-		move.w	(Camera_X_pos).w,d1		; get screen position
+		andi.w	#$FF80,d0	; round down to nearest $80
+		move.w	(Camera_X_pos).w,d1 ; get screen position
 		subi.w	#128,d1
 		andi.w	#$FF80,d1
-		sub.w	d1,d0				; approx distance between object and screen
+		sub.w	d1,d0		; approx distance between object and screen
 		cmpi.w	#128+320+192,d0
 		bhi.ATTRIBUTE	exit
 		endm
@@ -180,14 +180,27 @@ out_of_range_s1:	macro exit,pos
 
 out_of_range:	macro exit,position
 		if ("position"<>"")
-		move.w	position,d0			; get object position (if specified as not obX)
+		move.w	position,d0	; get object position (if specified as not obX)
 		else
-		move.w	obX(a0),d0			; get object position
+		move.w	obX(a0),d0	; get object position
 		endif
-		andi.w	#$FF80,d0			; round down to nearest $80
-		sub.w	(Camera_X_pos_coarse).w,d0	; approx distance between object and screen
+		andi.w	#$FF80,d0	; round down to nearest $80
+		sub.w	(Camera_X_pos_coarse).w,d0		; approx distance between object and screen
 		cmpi.w	#128+320+192,d0
 		bhi.ATTRIBUTE	exit
+		endm
+		
+; ---------------------------------------------------------------------------
+; Copy a tilemap from 68K (ROM/RAM) to the VRAM without using DMA
+; input: source, destination, width [cells], height [cells]
+; ---------------------------------------------------------------------------
+
+copyTilemap:	macro source,destination,width,height
+		lea	(source).l,a1
+		locVRAM	destination,d0
+		moveq	#width,d1
+		moveq	#height,d2
+		bsr.w	PlaneMapToVRAM_H40
 		endm
 		
 ; macros to convert from tile index to art tiles, block mapping or VRAM address.
