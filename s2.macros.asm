@@ -3,46 +3,62 @@
 ; to let them work in both 16-bit and 32-bit addressing modes.
 ramaddr function x,-(-x)&$FFFFFFFF
 
-; makes a VDP address difference
-vdpCommDelta function addr,((addr&$3FFF)<<16)|((addr&$C000)>>14)
+; ---------------------------------------------------------------------------
+; Set a VRAM address via the VDP control port.
+; input: 16-bit VRAM address, control port (default is (vdp_control_port).l)
+; ---------------------------------------------------------------------------
 
-; makes a VDP command
-vdpComm function addr,type,rwd,(((type&rwd)&3)<<30)|((addr&$3FFF)<<16)|(((type&rwd)&$FC)<<2)|((addr&$C000)>>14)
+locVRAM:	macro loc,controlport
+		if ("controlport"=="")
+		move.l	#($40000000+(((loc)&$3FFF)<<16)+(((loc)&$C000)>>14)),(vdp_control_port).l
+		else
+		move.l	#($40000000+(((loc)&$3FFF)<<16)+(((loc)&$C000)>>14)),controlport
+		endif
+		endm
 
-; values for the type argument
-VRAM = %100001
-CRAM = %101011
-VSRAM = %100101
+; ---------------------------------------------------------------------------
+; DMA copy data from 68K (ROM/RAM) to the VRAM
+; input: source, length, destination
+; ---------------------------------------------------------------------------
 
-; values for the rwd argument
-READ = %001100
-WRITE = %000111
-DMA = %100111
+writeVRAM:	macro source,length,destination
+		lea	(vdp_control_port).l,a5
+		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
+		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
+		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
+		move.w	#$4000+((destination)&$3FFF),(a5)
+		move.w	#$80+(((destination)&$C000)>>14),(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		endm
 
-; tells the VDP to copy a region of 68k memory to VRAM or CRAM or VSRAM
-dma68kToVDP macro source,dest,length,type
-	lea	(vdp_control_port).l,a5
-	move.l	#(($9400|((((length)>>1)&$FF00)>>8))<<16)|($9300|(((length)>>1)&$FF)),(a5)
-	move.l	#(($9600|((((source)>>1)&$FF00)>>8))<<16)|($9500|(((source)>>1)&$FF)),(a5)
-	move.w	#$9700|(((((source)>>1)&$FF0000)>>16)&$7F),(a5)
-	move.w	#((vdpComm(dest,type,DMA)>>16)&$FFFF),(a5)
-	move.w	#(vdpComm(dest,type,DMA)&$FFFF),(v_vdp_buffer2).w
-	move.w	(v_vdp_buffer2).w,(a5)
-    endm
+; ---------------------------------------------------------------------------
+; DMA copy data from 68K (ROM/RAM) to the CRAM
+; input: source, length, destination
+; ---------------------------------------------------------------------------
 
-; tells the VDP to fill a region of VRAM with a certain byte
-dmaFillVRAM macro byte,addr,length
-	lea	(vdp_control_port).l,a5
-	move.w	#$8F01,(a5)				; VRAM pointer increment: $0001
-	move.l	#(($9400|((((length)-1)&$FF00)>>8))<<16)|($9300|(((length)-1)&$FF)),(a5) ; DMA length ...
-	move.w	#$9780,(a5)				; VRAM fill
-	move.l	#$40000080|(((addr)&$3FFF)<<16)|(((addr)&$C000)>>14),(a5) ; Start at ...
-	move.w	#(byte)<<8,(vdp_data_port).l		; Fill with byte
-.loop:	move.w	(a5),d1
-	btst	#1,d1
-	bne.s	.loop ; busy loop until the VDP is finished filling...
-	move.w	#$8F02,(a5)				; VRAM pointer increment: $0002
-    endm
+writeCRAM:	macro source,length,destination
+		lea	(vdp_control_port).l,a5
+		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
+		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
+		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
+		move.w	#$C000+(destination&$3FFF),(a5)
+		move.w	#$80+((destination&$C000)>>14),(v_vdp_buffer2).w
+		move.w	(v_vdp_buffer2).w,(a5)
+		endm
+
+; ---------------------------------------------------------------------------
+; DMA fill VRAM with a value
+; input: value, length, destination
+; ---------------------------------------------------------------------------
+
+fillVRAM:	macro value,length,loc
+		lea	(vdp_control_port).l,a5
+		move.w	#$8F01,(a5)
+		move.l	#$94000000+((length&$FF00)<<8)+$9300+(length&$FF),(a5)
+		move.w	#$9780,(a5)
+		move.l	#$40000080+((loc&$3FFF)<<16)+((loc&$C000)>>14),(a5)
+		move.w	#value,(vdp_data_port).l
+		endm
 
 ; calculates initial loop counter value for a dbf loop
 ; that writes n bytes total at 4 bytes per iteration

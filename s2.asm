@@ -148,44 +148,77 @@ InitValues:	dc.w $8000
 		dc.l vdp_control_port			; VDP control port
 
 VDPInitValues:						; values for VDP registers
-		dc.b 4					; Command $8004 - HInt off, Enable HV counter read
-		dc.b $14				; Command $8114 - Display off, VInt off, DMA on, PAL off
-		dc.b $30				; Command $8230 - Scroll A Address $C000
-		dc.b $3C				; Command $833C - Window Address $F000
-		dc.b 7					; Command $8407 - Scroll B Address $E000
-		dc.b $6C				; Command $856C - Sprite Table Address $D800
-		dc.b 0					; Command $8600 - Null
-		dc.b 0					; Command $8700 - Background color Pal 0 Color 0
-		dc.b 0					; Command $8800 - Null
-		dc.b 0					; Command $8900 - Null
-		dc.b $FF				; Command $8AFF - Hint timing $FF scanlines
-		dc.b 0					; Command $8B00 - Ext Int off, VScroll full, HScroll full
-		dc.b $81				; Command $8C81 - 40 cell mode, shadow/highlight off, no interlace
-		dc.b $37				; Command $8D37 - HScroll Table Address $DC00
-		dc.b 0					; Command $8E00 - Null
-		dc.b 1					; Command $8F01 - VDP auto increment 1 byte
-		dc.b 1					; Command $9001 - 64x32 cell scroll size
-		dc.b 0					; Command $9100 - Window H left side, Base Point 0
-		dc.b 0					; Command $9200 - Window V upside, Base Point 0
-		dc.b $FF				; Command $93FF - DMA Length Counter $FFFF
-		dc.b $FF				; Command $94FF - See above
-		dc.b 0					; Command $9500 - DMA Source Address $0
-		dc.b 0					; Command $9600 - See above
-		dc.b $80				; Command $9780	- See above + VRAM fill mode
+		dc.b 4			; VDP $80 - 8-colour mode
+		dc.b $14		; VDP $81 - Megadrive mode, DMA enable
+		dc.b ($C000>>10)	; VDP $82 - foreground nametable address
+		dc.b ($F000>>10)	; VDP $83 - window nametable address
+		dc.b ($E000>>13)	; VDP $84 - background nametable address
+		dc.b ($D800>>9)		; VDP $85 - sprite table address
+		dc.b 0			; VDP $86 - unused
+		dc.b 0			; VDP $87 - background colour
+		dc.b 0			; VDP $88 - unused
+		dc.b 0			; VDP $89 - unused
+		dc.b 255		; VDP $8A - HBlank register
+		dc.b 0			; VDP $8B - full screen scroll
+		dc.b $81		; VDP $8C - 40 cell display
+		dc.b ($DC00>>10)	; VDP $8D - hscroll table address
+		dc.b 0			; VDP $8E - unused
+		dc.b 1			; VDP $8F - VDP increment
+		dc.b 1			; VDP $90 - 64 cell hscroll size
+		dc.b 0			; VDP $91 - window h position
+		dc.b 0			; VDP $92 - window v position
+		dc.w $FFFF		; VDP $93/94 - DMA length
+		dc.w 0			; VDP $95/96 - DMA source
+		dc.b $80		; VDP $97 - DMA fill VRAM
 VDPInitValues_End:
 
-		dc.l vdpComm($0000,VRAM,DMA)		; value	for VRAM fill
+		dc.l $40000080		; value	for VRAM fill
 
 Z80StartupCodeBegin:
-		dc.b $AF,  1,$D9,$1F,$11,$27,  0,$21,$26,  0,$F9,$77,$ED,$B0,$DD,$E1 ; 0	; Z80 instructions
-		dc.b $FD,$E1,$ED,$47,$ED,$4F,$D1,$E1,$F1,  8,$D9,$C1,$D1,$E1,$F1,$F9 ; 16
-		dc.b $F3,$ED,$56,$36,$E9,$E9		; 32
+	; Z80 instructions (not the sound driver; that gets loaded later)
+    if (*)+$26 < $10000
+    save
+    CPU Z80 ; start assembling Z80 code
+    phase 0 ; pretend we're at address 0
+	xor	a	; clear a to 0
+	ld	bc,((z80_ram_end-z80_ram)-zStartupCodeEndLoc)-1 ; prepare to loop this many times
+	ld	de,zStartupCodeEndLoc+1	; initial destination address
+	ld	hl,zStartupCodeEndLoc	; initial source address
+	ld	sp,hl	; set the address the stack starts at
+	ld	(hl),a	; set first byte of the stack to 0
+	ldir		; loop to fill the stack (entire remaining available Z80 RAM) with 0
+	pop	ix	; clear ix
+	pop	iy	; clear iy
+	ld	i,a	; clear i
+	ld	r,a	; clear r
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ex	af,af'	; swap af with af'
+	exx		; swap bc/de/hl with their shadow registers too
+	pop	bc	; clear bc
+	pop	de	; clear de
+	pop	hl	; clear hl
+	pop	af	; clear af
+	ld	sp,hl	; clear sp
+	di		; clear iff1 (for interrupt handler)
+	im	1	; interrupt handling mode = 1
+	ld	(hl),0E9h ; replace the first instruction with a jump to itself
+	jp	(hl)	  ; jump to the first instruction (to stay there forever)
+zStartupCodeEndLoc:
+    dephase ; stop pretending
+	restore
+    padding off ; unfortunately our flags got reset so we have to set them again...
+    else ; due to an address range limitation I could work around but don't think is worth doing so:
+	message "Warning: using pre-assembled Z80 startup code."
+	dc.w $AF01,$D91F,$1127,$0021,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47,$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636,$E9E9
+    endif
 Z80StartupCodeEnd:
 
 		dc.w $8104				; VDP display mode
 		dc.w $8F02				; VDP increment
-		dc.l vdpComm($0000,CRAM,WRITE)		; value	for CRAM Write mode
-		dc.l vdpComm($0000,VSRAM,WRITE)		; value	for VSRAM write	mode
+		dc.l $C0000000				; value	for CRAM Write mode
+		dc.l $40000010				; value	for VSRAM write	mode
 
 PSGInitValues:
 		dc.b  $9F, $BF,	$DF, $FF		; 0 ; values for PSG channel volumes
@@ -527,12 +560,12 @@ loc_BBE:
 		waitZ80
 		tst.b	(f_wtr_state).w
 		bne.s	loc_C02
-		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_dry,$80,0
 		bra.s	loc_C26
 ; ---------------------------------------------------------------------------
 
 loc_C02:
-		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_water,$80,0
 
 loc_C26:
 		move.w	(v_hbla_hreg).w,(a5)
@@ -604,12 +637,12 @@ Vint_Level:
 		tst.b	(f_wtr_state).w
 		bne.s	loc_D24
 
-		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_dry,$80,0
 		bra.s	loc_D48
 ; ---------------------------------------------------------------------------
 
 loc_D24:
-		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_water,$80,0
 
 loc_D48:
 		move.w	(v_hbla_hreg).w,(a5)
@@ -706,12 +739,12 @@ Vint_TitleCard:
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	loc_EE4
-		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_dry,$80,0
 		bra.s	loc_F08
 ; ---------------------------------------------------------------------------
 
 loc_EE4:
-		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_water,$80,0
 
 loc_F08:
 		move.w	(v_hbla_hreg).w,(a5)
@@ -796,12 +829,12 @@ Do_ControllerPal:
 		bsr.w	ReadJoypads
 		tst.b	(f_wtr_state).w
 		bne.s	loc_107E
-		dma68kToVDP v_pal_dry,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_dry,$80,0
 		bra.s	loc_10A2
 ; ---------------------------------------------------------------------------
 
 loc_107E:
-		dma68kToVDP v_pal_water,$0000,($10*2)*4,CRAM
+		writeCRAM	v_pal_water,$80,0
 
 loc_10A2:
 		lea	(vdp_control_port).l,a5
@@ -977,7 +1010,14 @@ VDP_ClrCRAM:
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 		move.l	d1,-(sp)
-		dmaFillVRAM 0,$0000,$10000
+		fillVRAM	0,$FFFF,0
+
+.waitforDMA:
+		move.w	(a5),d1
+		btst	#1,d1		; is DMA (fillVRAM) still running?
+		bne.s	.waitforDMA	; if yes, branch
+
+		move.w	#$8F02,(a5)	; set VDP increment size
 		move.l	(sp)+,d1
 		rts
 ; End of function VDPSetupGame
@@ -1008,8 +1048,22 @@ VDPSetupArray_End:
 
 
 ClearScreen:
-		dmaFillVRAM 0,vram_fg,$1000
-		dmaFillVRAM 0,vram_bg,$1000
+		fillVRAM	0,$FFF,vram_fg ; clear foreground namespace
+
+.wait1:
+		move.w	(a5),d1
+		btst	#1,d1
+		bne.s	.wait1
+
+		move.w	#$8F02,(a5)
+		fillVRAM	0,$FFF,vram_bg ; clear background namespace
+
+.wait2:
+		move.w	(a5),d1
+		btst	#1,d1
+		bne.s	.wait2
+
+		move.w	#$8F02,(a5)
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 	if FixBugs
