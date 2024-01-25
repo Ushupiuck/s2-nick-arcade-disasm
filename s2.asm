@@ -3,11 +3,16 @@
 
 ; Updated by Alex Field, Filter, and RepellantMold
 
+	CPU 68000
+
+EnableSRAM	  = 0	; change to 1 to enable SRAM
+BackupSRAM	  = 1
+AddressSRAM	  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
+
 FixBugs		  = 0					; change to 1 to enable bugfixes
 
 zeroOffsetOptimization = 0				; if 1, makes a handful of zero-offset instructions smaller
 
-	CPU 68000
 	include	"s2.macrosetup.asm"
 	include	"s2.macros.asm"
 	include	"s2.constants.asm"
@@ -40,7 +45,11 @@ Checksum:	dc.w $AFC7				; Checksum (patched later if incorrect)
 ROMEndLoc:	dc.l $7FFFF				; End address of ROM (leftover from Sonic 1)
 		dc.l v_startofram&$FFFFFF		; Start address of RAM
 		dc.l (v_endofram-1)&$FFFFFF		; End address of RAM
-		dc.l $20202020				; Backup RAM ID
+		if EnableSRAM=1
+		dc.b $52, $41, $A0+(BackupSRAM<<6)+(AddressSRAM<<3), $20 ; Backup RAM ID
+		else
+		dc.l $20202020
+		endif
 		dc.l $20202020				; Backup RAM start address
 		dc.l $20202020				; Backup RAM end address
 		dc.l $20202020				; Modem support
@@ -66,10 +75,10 @@ PortA_OK:
 		lea	InitValues(pc),a5
 		movem.w	(a5)+,d5-d7
 		movem.l	(a5)+,a0-a4
-		move.b	-$10FF(a1),d0			; get hardware version
+		move.b	z80_version-z80_bus_request(a1),d0			; get hardware version
 		andi.b	#$F,d0
 		beq.s	SkipSecurity
-		move.l	#'SEGA',$2F00(a1)
+		move.l	#'SEGA',security_addr-z80_bus_request(a1)
 
 SkipSecurity:
 		move.w	(a4),d0
@@ -119,7 +128,7 @@ ClearVSRAMLoop:
 		moveq	#PSGInitValues_End-PSGInitValues-1,d5
 
 PSGInitLoop:
-		move.b	(a5)+,$11(a3)
+		move.b	(a5)+,psg_input-vdp_data_port(a3)
 		dbf	d5,PSGInitLoop
 		move.w	d0,(a2)
 		movem.l	(a6),d0-a6
@@ -165,7 +174,7 @@ VDPInitValues:						; values for VDP registers
 		dc.b $80				; Command $9780	- See above + VRAM fill mode
 VDPInitValues_End:
 
-		dc.l $40000080				; value	for VRAM fill
+		dc.l vdpComm($0000,VRAM,DMA)		; value	for VRAM fill
 
 Z80StartupCodeBegin:
 		dc.b $AF,  1,$D9,$1F,$11,$27,  0,$21,$26,  0,$F9,$77,$ED,$B0,$DD,$E1 ; 0	; Z80 instructions
