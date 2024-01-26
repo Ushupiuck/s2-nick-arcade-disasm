@@ -247,9 +247,9 @@ ChecksumLoop:
 		cmp.w	(a1),d1				; compare correct checksum to one in ROM...
 		nop					; ...and do nothing since this has been noped out...
 		nop
-		lea	(v_systemstack).w,a6
+		lea	(v_crossresetram).w,a6
 		moveq	#0,d7
-		move.w	#$7F,d6
+		move.w	#(v_endofram-v_crossresetram)/4-1,d6
 
 loc_350:
 		move.l	d7,(a6)+
@@ -262,7 +262,7 @@ loc_350:
 GameInit:
 		lea	(v_startofram&$FFFFFF).l,a6
 		moveq	#0,d7
-		move.w	#$3F7F,d6
+		move.w	#(v_crossresetram-v_startofram)/4-1,d6
 
 GameClrRAM:
 		move.l	d7,(a6)+
@@ -14696,7 +14696,7 @@ RunObjects:
 
 ; sub_CB44:
 RunObject:
-		move.b	(a0),d0				; get the object's ID
+		move.b	obID(a0),d0			; get the object's ID
 		beq.s	loc_CB54			; if it's obj00, skip it
 		add.w	d0,d0
 		add.w	d0,d0				; d0 = object ID * 4
@@ -14705,7 +14705,7 @@ RunObject:
 		moveq	#0,d0
 
 loc_CB54:
-		lea	$40(a0),a0			; load obj address
+		lea	object_size(a0),a0		; load obj address
 		dbf	d7,RunObject
 		rts
 ; ---------------------------------------------------------------------------
@@ -14721,14 +14721,14 @@ RunObjectsWhenPlayerIsDead:
 ; loc_CB64:
 RunObjectsDisplayOnly:
 		moveq	#0,d0
-		move.b	(a0),d0				; get the object's ID
+		move.b	obID(a0),d0			; get the object's ID
 		beq.s	loc_CB74			; if it's obj00, skip it
 		tst.b	obRender(a0)			; should we render it?
 		bpl.s	loc_CB74			; if not, skip it
 		bsr.w	DisplaySprite
 
 loc_CB74:
-		lea	$40(a0),a0			; load obj address
+		lea	object_size(a0),a0		; load obj address
 		dbf	d7,RunObjectsDisplayOnly
 		rts
 ; End of function RunObjects
@@ -16736,11 +16736,25 @@ ObjectsManager_Init:
 		move.l	a0,(Obj_load_addr_left_P2).w
 		lea	(v_objstate).w,a2
 		move.w	#$101,(a2)+
-		move.w	#$5E,d0
+	if FixBugs
+		move.w	#(v_objstate_end-v_objstate-2)/4-1,d0
+	else
+		; This clears longwords, but the loop counter is measured in words!
+		; This causes $17C bytes to be cleared instead of $BE.
+		move.w	#(v_objstate_end-v_objstate-2)/2-1,d0
+	endif
 
 loc_DC9C:
 		clr.l	(a2)+
 		dbf	d0,loc_DC9C
+		
+	if FixBugs
+		; Clear the last word, since the above loop only does longwords.
+	if (v_objstate_end-v_objstate-2)&2
+		clr.w	(a2)+
+	endif
+	endif
+
 		lea	(v_objstate).w,a2
 		moveq	#0,d2
 		move.w	(Camera_RAM).w,d6
@@ -17368,13 +17382,13 @@ locret_E180:
 
 ; loc_E182: SingleObjectLoad:
 FindFreeObj:
-		lea	(v_objspace+$800).w,a1		; a1=object
-		move.w	#$5F,d0				; search to end of table
+		lea	(v_lvlobjspace).w,a1		; a1=object
+		move.w	#(v_lvlobjend-v_lvlobjspace)/object_size-1,d0	; search to end of table
 
 loc_E18A:
-		tst.b	(a1)				; is object RAM slot empty?
+		tst.b	obID(a1)			; is object RAM slot empty?
 		beq.s	locret_E196			; if yes, branch
-		lea	$40(a1),a1			; load obj address ; goto next object RAM slot
+		lea	object_size(a1),a1		; load obj address ; goto next object RAM slot
 		dbf	d0,loc_E18A			; repeat until end
 
 locret_E196:
@@ -17392,16 +17406,16 @@ locret_E196:
 ; loc_E198: S1SingleObjectLoad2:
 FindNextFreeObj:
 		movea.l	a0,a1
-		move.w	#$D000,d0
+		move.w	#v_lvlobjend,d0
 		sub.w	a0,d0				; subtract current object location
 		lsr.w	#6,d0				; divide by $40
 		subq.w	#1,d0				; keep from going over the object zone
 		bcs.s	locret_E1B2
 
 loc_E1A6:
-		tst.b	(a1)				; is object RAM slot empty?
+		tst.b	obID(a1)			; is object RAM slot empty?
 		beq.s	locret_E1B2			; if yes, branch
-		lea	$40(a1),a1			; load obj address ; goto next object RAM slot
+		lea	object_size(a1),a1		; load obj address ; goto next object RAM slot
 		dbf	d0,loc_E1A6			; repeat until end
 
 locret_E1B2:
@@ -17422,9 +17436,9 @@ FindFreeObj3:
 		move.w	#$B,d0
 
 loc_E1BA:
-		tst.b	(a1)				; is object RAM slot empty?
+		tst.b	obID(a1)			; is object RAM slot empty?
 		beq.s	locret_E1C6			; if yes, branch
-		lea	$40(a1),a1			; load obj address ; goto next object RAM slot
+		lea	object_size(a1),a1		; load obj address ; goto next object RAM slot
 		dbf	d0,loc_E1BA			; repeat until end
 
 locret_E1C6:
@@ -17611,14 +17625,14 @@ loc_E3C2:
 		andi.b	#$C,d0
 		cmpi.b	#4,d0
 		bne.s	loc_E3D8
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 
 loc_E3D8:
 		cmpi.b	#8,d0
 		bne.s	loc_E3EA
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_E3EA:
 		move.w	#sfx_Spring,d0
@@ -17722,14 +17736,14 @@ loc_E508:
 		andi.b	#$C,d0
 		cmpi.b	#4,d0
 		bne.s	loc_E51E
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 
 loc_E51E:
 		cmpi.b	#8,d0
 		bne.s	loc_E530
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_E530:
 		bclr	#5,obStatus(a0)
@@ -17876,14 +17890,14 @@ loc_E6AE:
 		andi.b	#$C,d0
 		cmpi.b	#4,d0
 		bne.s	loc_E6C4
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 
 loc_E6C4:
 		cmpi.b	#8,d0
 		bne.s	loc_E6D6
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_E6D6:
 		bset	#1,obStatus(a1)
@@ -17984,14 +17998,14 @@ loc_E7F6:
 		andi.b	#$C,d0
 		cmpi.b	#4,d0
 		bne.s	loc_E80C
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 
 loc_E80C:
 		cmpi.b	#8,d0
 		bne.s	loc_E81E
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_E81E:
 		move.w	#sfx_Spring,d0
@@ -18071,14 +18085,14 @@ loc_E902:
 		andi.b	#$C,d0
 		cmpi.b	#4,d0
 		bne.s	loc_E918
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 
 loc_E918:
 		cmpi.b	#8,d0
 		bne.s	loc_E92A
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_E92A:
 		move.w	#sfx_Spring,d0
@@ -19561,8 +19575,8 @@ Obj01_Init:
 		move.w	#$600,(Sonic_top_speed).w	; set Sonic's top speed
 		move.w	#$C,(Sonic_acceleration).w	; set Sonic's acceleration
 		move.w	#$80,(Sonic_deceleration).w	; set Sonic's deceleration
-		move.b	#$C,$3E(a0)
-		move.b	#$D,$3F(a0)
+		move.b	#$C,obTopSolidBit(a0)
+		move.b	#$D,obLRBSolidBit(a0)
 		move.b	#0,$2C(a0)
 		move.b	#4,$2D(a0)
 		move.w	#0,(Sonic_Pos_Record_Index).w
@@ -20813,12 +20827,12 @@ locret_104FA:
 ; Sonic_Floor:
 Sonic_DoLevelCollision:
 		move.l	#v_colladdr1,(Collision_addr).w
-		cmpi.b	#$C,$3E(a0)
+		cmpi.b	#$C,obTopSolidBit(a0)
 		beq.s	loc_10514
 		move.l	#v_colladdr2,(Collision_addr).w
 
 loc_10514:
-		move.b	$3F(a0),d5
+		move.b	obLRBSolidBit(a0),d5
 		move.w	obVelX(a0),d1
 		move.w	obVelY(a0),d2
 		jsr	(CalcAngle).l
@@ -21543,8 +21557,8 @@ Obj02_Init:
 		move.w	#$600,(Sonic_top_speed).w
 		move.w	#$C,(Sonic_acceleration).w
 		move.w	#$80,(Sonic_deceleration).w
-		move.b	#$C,$3E(a0)
-		move.b	#$D,$3F(a0)
+		move.b	#$C,obTopSolidBit(a0)
+		move.b	#$D,obLRBSolidBit(a0)
 		move.b	#0,$2C(a0)
 		move.b	#4,$2D(a0)
 		move.b	#5,(v_objspace+$1C0).w		; load Tails' tails at $B1C0
@@ -22684,7 +22698,7 @@ locret_11674:
 
 
 Tails_Floor:
-		move.b	$3F(a0),d5
+		move.b	obLRBSolidBit(a0),d5
 		move.w	obVelX(a0),d1
 		move.w	obVelY(a0),d2
 		jsr	(CalcAngle).l
@@ -22973,8 +22987,8 @@ Tails_GameOver:
 		move.w	d0,obY(a0)
 		move.b	#2,obRoutine(a0)
 		andi.w	#$7FFF,2(a0)
-		move.b	#$C,$3E(a0)
-		move.b	#$D,$3F(a0)
+		move.b	#$C,obTopSolidBit(a0)
+		move.b	#$D,obLRBSolidBit(a0)
 		nop
 
 locret_11986:
@@ -24051,12 +24065,12 @@ Map_obj08:	binclude	"mappings/sprite/obj08.bin"
 ; Sonic_AnglePos:
 AnglePos:
 		move.l	#v_colladdr1,(Collision_addr).w
-		cmpi.b	#$C,$3E(a0)
+		cmpi.b	#$C,obTopSolidBit(a0)
 		beq.s	loc_12A14
 		move.l	#v_colladdr2,(Collision_addr).w
 
 loc_12A14:
-		move.b	$3E(a0),d5
+		move.b	obTopSolidBit(a0),d5
 		btst	#3,obStatus(a0)
 		beq.s	loc_12A2C
 		moveq	#0,d0
@@ -24806,12 +24820,12 @@ loc_13074:
 ; Sonic_WalkSpeed:
 CalcRoomInFront:
 		move.l	#v_colladdr1,(Collision_addr).w
-		cmpi.b	#$C,$3E(a0)
+		cmpi.b	#$C,obTopSolidBit(a0)
 		beq.s	loc_13094
 		move.l	#v_colladdr2,(Collision_addr).w
 
 loc_13094:
-		move.b	$3F(a0),d5
+		move.b	obLRBSolidBit(a0),d5
 		move.l	obX(a0),d3
 		move.l	obY(a0),d2
 		move.w	obVelX(a0),d1
@@ -24871,12 +24885,12 @@ sub_13102:
 ; FUNCTION CHUNK AT 00013408 SIZE 00000068 BYTES
 
 		move.l	#v_colladdr1,(Collision_addr).w
-		cmpi.b	#$C,$3E(a0)
+		cmpi.b	#$C,obTopSolidBit(a0)
 		beq.s	loc_1311A
 		move.l	#v_colladdr2,(Collision_addr).w
 
 loc_1311A:
-		move.b	$3F(a0),d5
+		move.b	obLRBSolidBit(a0),d5
 		move.b	d0,(Primary_Angle).w
 		move.b	d0,(Secondary_Angle).w
 		addi.b	#$20,d0
@@ -24890,12 +24904,12 @@ loc_1311A:
 
 loc_13146:
 		move.l	#v_colladdr1,(Collision_addr).w
-		cmpi.b	#$C,$3E(a0)
+		cmpi.b	#$C,obTopSolidBit(a0)
 		beq.s	loc_1315E
 		move.l	#v_colladdr2,(Collision_addr).w
 
 loc_1315E:
-		move.b	$3E(a0),d5
+		move.b	obTopSolidBit(a0),d5
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 		moveq	#0,d0
@@ -24976,7 +24990,7 @@ ChkFloorEdge:
 		ext.w	d0
 		add.w	d0,d2
 		move.l	#v_colladdr1,(Collision_addr).w
-		cmpi.b	#$C,$3E(a0)
+		cmpi.b	#$C,obTopSolidBit(a0)
 		beq.s	loc_1322E
 		move.l	#v_colladdr2,(Collision_addr).w
 
@@ -24985,7 +24999,7 @@ loc_1322E:
 		move.b	#0,(a4)
 		movea.w	#$10,a3
 		move.w	#0,d6
-		move.b	$3E(a0),d5
+		move.b	obTopSolidBit(a0),d5
 		bsr.w	FindFloor
 		move.b	(Primary_Angle).w,d3
 		btst	#0,d3
@@ -26070,12 +26084,12 @@ loc_13F26:
 		move.w	obX(a1),d4
 		cmp.w	obX(a0),d4
 		bcs.s	loc_13F62
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 		btst	#3,d0
 		beq.s	loc_13F4E
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_13F4E:
 		bclr	#7,2(a1)
@@ -26086,12 +26100,12 @@ loc_13F4E:
 ; ---------------------------------------------------------------------------
 
 loc_13F62:
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 		btst	#4,d0
 		beq.s	loc_13F80
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_13F80:
 		bclr	#7,2(a1)
@@ -26166,12 +26180,12 @@ loc_14028:
 		move.w	obY(a1),d4
 		cmp.w	obY(a0),d4
 		bcs.s	loc_14064
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 		btst	#3,d0
 		beq.s	loc_14050
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_14050:
 		bclr	#7,2(a1)
@@ -26182,12 +26196,12 @@ loc_14050:
 ; ---------------------------------------------------------------------------
 
 loc_14064:
-		move.b	#$C,$3E(a1)
-		move.b	#$D,$3F(a1)
+		move.b	#$C,obTopSolidBit(a1)
+		move.b	#$D,obLRBSolidBit(a1)
 		btst	#4,d0
 		beq.s	loc_14082
-		move.b	#$E,$3E(a1)
-		move.b	#$F,$3F(a1)
+		move.b	#$E,obTopSolidBit(a1)
+		move.b	#$F,obLRBSolidBit(a1)
 
 loc_14082:
 		bclr	#7,2(a1)

@@ -34,8 +34,8 @@ obAngle:	equ $26					; angle
 obSubtype:	equ $28					; object subtype
 obSolid:	equ ob2ndRout				; solid status flag
 
-ObTopSolidBit:	equ $3E					; bit to check for top solidity (either $C or $E)
-ObLRBSolidBit:	equ $3F					; bit to check for left/right/bottom solidity (either $D or $F)
+obTopSolidBit:	equ $3E					; bit to check for top solidity (either $C or $E)
+obLRBSolidBit:	equ $3F					; bit to check for left/right/bottom solidity (either $D or $F)
 
 ; Object variables used by Sonic/Tails
 flashtime:	equ $30					; time between flashes after getting hit
@@ -732,7 +732,7 @@ v_objstate:		ds.b	$C0			; object state list
 v_objstate_end:
 			ds.b	$140			; stack
 v_systemstack:
-
+v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot
 			ds.b	2
 Level_Inactive_flag:	ds.w	1			; (2 bytes)
 Timer_frames:		ds.w	1			; (2 bytes)
