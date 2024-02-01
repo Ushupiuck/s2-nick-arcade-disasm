@@ -3127,11 +3127,11 @@ MusicList:	dc.b bgm_GHZ
 Level:
 		bset	#GameModeFlag_TitleCard,(v_gamemode).w
 		tst.w	(f_demo).w
-		bmi.s	loc_3B38
+		bmi.s	Level_NoMusicFade
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special
 
-loc_3B38:
+Level_NoMusicFade:
 		bsr.w	ClearPLC
 		bsr.w	Pal_FadeToBlack
 		tst.w	(f_demo).w
@@ -3175,11 +3175,11 @@ loc_3BB6:
 		clearRAM v_levelvariables,v_levelvariables_end
 		clearRAM v_timingvariables,v_timingvariables_end
 		cmpi.b	#4,(Current_Zone).w
-		bne.s	loc_3C1A
+		bne.s	.skipwater
 		move.b	#1,(Water_flag).w
 		move.w	#0,(Two_player_mode).w
 
-loc_3C1A:
+.skipwater:
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B03,(a6)
 		move.w	#$8230,(a6)
@@ -3190,12 +3190,12 @@ loc_3C1A:
 		move.w	#$8720,(a6)
 		move.w	#$8ADF,(v_hbla_hreg).w
 		tst.w	(Two_player_mode).w
-		beq.s	loc_3C56
+		beq.s	.no2p
 		move.w	#$8A6B,(v_hbla_hreg).w
 		move.w	#$8014,(a6)
 		move.w	#$8C87,(a6)
 
-loc_3C56:
+.no2p:
 		move.w	(v_hbla_hreg).w,(a6)
 		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w	; reset the DMA Queue
 		tst.b	(Water_flag).w
@@ -3218,40 +3218,40 @@ LevelInit_NoWater:
 		moveq	#3,d0
 		bsr.w	PalLoad2
 		tst.b	(Water_flag).w
-		beq.s	loc_3CC6
+		beq.s	Level_GetBgm
 		moveq	#$F,d0
 		cmpi.b	#3,(Current_Act).w
-		bne.s	loc_3CB6
+		bne.s	Level_WaterPal
 		moveq	#$10,d0
 
-loc_3CB6:
+Level_WaterPal:
 		bsr.w	PalLoad3_Water
 		tst.b	(v_lastlamp).w
-		beq.s	loc_3CC6
+		beq.s	Level_GetBgm
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
 
-loc_3CC6:
+Level_GetBgm:
 		tst.w	(f_demo).w
-		bmi.s	loc_3D2A
+		bmi.s	Level_SkipTtlCard
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
 		cmpi.w	#$103,(Current_ZoneAndAct).w
-		bne.s	loc_3CDC
+		bne.s	Level_BgmNotLZ4
 		moveq	#5,d0
 
-loc_3CDC:
+Level_BgmNotLZ4:
 		cmpi.w	#$502,(Current_ZoneAndAct).w
-		bne.s	loc_3CE6
+		bne.s	Level_PlayBgm
 		moveq	#6,d0
 
-loc_3CE6:
+Level_PlayBgm:
 		lea	MusicList(pc),a1
 		nop
 		move.b	(a1,d0.w),d0
 		bsr.w	PlaySound
 		move.b	#$34,(v_objspace+$80).w
 
-LevelInit_TitleCard:
+Level_TtlCardLoop:
 		move.b	#VintID_TitleCard,(v_vbla_routine).w
 		bsr.w	WaitForVint
 		jsr	(RunObjects).l
@@ -3259,12 +3259,12 @@ LevelInit_TitleCard:
 		bsr.w	RunPLC_RAM
 		move.w	(v_objspace+$100+obX).w,d0
 		cmp.w	(v_objspace+$100+$30).w,d0
-		bne.s	LevelInit_TitleCard
+		bne.s	Level_TtlCardLoop
 		tst.l	(v_plc_buffer).w
-		bne.s	LevelInit_TitleCard
+		bne.s	Level_TtlCardLoop
 		jsr	(HUD_Base).l
 
-loc_3D2A:
+Level_SkipTtlCard:
 		moveq	#3,d0
 		bsr.w	PalLoad1
 		bsr.w	LevelSizeLoad
@@ -3278,10 +3278,10 @@ loc_3D2A:
 		bsr.w	WaterEffects
 		move.b	#1,(v_player).w
 		tst.w	(f_demo).w
-		bmi.s	loc_3D6C
+		bmi.s	Level_ChkDebug
 		move.b	#$21,(v_hud).w
 
-loc_3D6C:
+Level_ChkDebug:
 		tst.w	(Two_player_mode).w
 		bne.s	LevelInit_LoadTails
 		cmpi.b	#3,(Current_Zone).w
@@ -3295,22 +3295,22 @@ LevelInit_LoadTails:
 
 LevelInit_SkipTails:
 		tst.b	(f_debugcheat).w
-		beq.s	loc_3DA6
+		beq.s	Level_ChkWater
 		btst	#6,(v_jpadhold1).w
-		beq.s	loc_3DA6
+		beq.s	Level_ChkWater
 		move.b	#1,(Debug_mode_flag).w
 
-loc_3DA6:
+Level_ChkWater:
 		move.w	#0,(v_jpadhold2).w
 		move.w	#0,(v_jpadhold1).w
 		tst.b	(Water_flag).w
-		beq.s	loc_3DD0
+		beq.s	Level_LoadObj
 		move.b	#4,(v_objspace+$780).w
 		move.w	#$60,(v_objspace+$780+obX).w
 		move.b	#4,(v_objspace+$7C0).w
 		move.w	#$120,(v_objspace+$7C0+obX).w
 
-loc_3DD0:
+Level_LoadObj:
 		jsr	(ObjectsManager).l
 		jsr	(RingsManager).l
 		jsr	(RunObjects).l
@@ -3318,12 +3318,12 @@ loc_3DD0:
 		bsr.w	j_AniArt_Load
 		moveq	#0,d0
 		tst.b	(v_lastlamp).w
-		bne.s	loc_3E00
+		bne.s	Level_SkipClr
 		move.w	d0,(v_rings).w
 		move.l	d0,(v_time).w
 		move.b	d0,(v_lifecount).w
 
-loc_3E00:
+Level_SkipClr:
 		move.b	d0,(f_timeover).w
 		move.b	d0,(v_shield).w
 		move.b	d0,(v_invinc).w
@@ -3346,14 +3346,14 @@ loc_3E00:
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
 		tst.w	(f_demo).w
-		bpl.s	loc_3E78
+		bpl.s	Level_Demo
 		lea	(Demo_S1EndIndex).l,a1		; garbage, leftover from Sonic 1's ending sequence demos
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
 
-loc_3E78:
+Level_Demo:
 		move.b	1(a1),(Demo_press_counter).w
 		subq.b	#1,(Demo_press_counter).w
 		lea	(Demo_EHZ_2P).l,a1
@@ -3361,30 +3361,30 @@ loc_3E78:
 		subq.b	#1,(Demo_press_counter_2P).w
 		move.w	#$668,(v_demolength).w
 		tst.w	(f_demo).w
-		bpl.s	loc_3EB2
+		bpl.s	Level_ChkWaterPal
 		move.w	#$21C,(v_demolength).w
 		cmpi.w	#4,(v_creditsnum).w
-		bne.s	loc_3EB2
+		bne.s	Level_ChkWaterPal
 		move.w	#$1FE,(v_demolength).w
 
-loc_3EB2:
+Level_ChkWaterPal:
 		tst.b	(Water_flag).w
-		beq.s	loc_3EC8
+		beq.s	Level_Delay
 		moveq	#$B,d0
 		cmpi.b	#3,(Current_Act).w
-		bne.s	loc_3EC4
+		bne.s	Level_WtrNotHtz
 		moveq	#$D,d0
 
-loc_3EC4:
+Level_WtrNotHtz:
 		bsr.w	PalLoad4_Water
 
-loc_3EC8:
+Level_Delay:
 		move.w	#3,d1
 
-loc_3ECC:
+Level_DelayLoop:
 		move.b	#VintID_Level,(v_vbla_routine).w
 		bsr.w	WaitForVint
-		dbf	d1,loc_3ECC
+		dbf	d1,Level_DelayLoop
 		move.w	#$202F,(v_pfade_start).w
 		bsr.w	Pal_FadeFromBlack2
 		tst.w	(f_demo).w
@@ -3421,14 +3421,14 @@ Level_MainLoop:
 		tst.w	(Level_Inactive_flag).w
 		bne.w	Level
 		tst.w	(Debug_placement_mode).w
-		bne.s	loc_3F50
+		bne.s	Level_DoScroll
 		cmpi.b	#6,(v_objspace+obRoutine).w
-		bcc.s	loc_3F54
+		bcc.s	Level_SkipScroll
 
-loc_3F50:
+Level_DoScroll:
 		bsr.w	DeformBGLayer
 
-loc_3F54:
+Level_SkipScroll:
 		bsr.w	ChangeWaterSurfacePos
 		jsr	(RingsManager).l
 		bsr.w	j_AniArt_Load
@@ -3440,37 +3440,37 @@ loc_3F54:
 		jsr	(BuildSprites).l
 		jsr	(ObjectsManager).l
 		cmpi.b	#GameModeID_Demo,(v_gamemode).w
-		beq.s	loc_3F96
+		beq.s	Level_ChkDemo
 		cmpi.b	#GameModeID_Level,(v_gamemode).w
 		beq.w	Level_MainLoop
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_3F96:
+Level_ChkDemo:
 		tst.w	(Level_Inactive_flag).w
-		bne.s	loc_3FB4
+		bne.s	Level_EndDemo
 		tst.w	(v_demolength).w
-		beq.s	loc_3FB4
+		beq.s	Level_EndDemo
 		cmpi.b	#GameModeID_Demo,(v_gamemode).w
 		beq.w	Level_MainLoop
 		move.b	#GameModeID_SegaScreen,(v_gamemode).w
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_3FB4:
+Level_EndDemo:
 		cmpi.b	#GameModeID_Demo,(v_gamemode).w
-		bne.s	loc_3FCE
+		bne.s	Level_FadeDemo
 		move.b	#GameModeID_SegaScreen,(v_gamemode).w
 		tst.w	(f_demo).w
-		bpl.s	loc_3FCE
+		bpl.s	Level_FadeDemo
 		move.b	#GameModeID_S1Credits,(v_gamemode).w
 
-loc_3FCE:
+Level_FadeDemo:
 		move.w	#$3C,(v_demolength).w
 		move.w	#$3F,(v_pfade_start).w
 		clr.w	(PalChangeSpeed).w
 
-loc_3FDE:
+Level_FDLoop:
 		move.b	#VintID_Level,(v_vbla_routine).w
 		bsr.w	WaitForVint
 		bsr.w	MoveSonicInDemo
@@ -3484,7 +3484,7 @@ loc_3FDE:
 
 loc_400E:
 		tst.w	(v_demolength).w
-		bne.s	loc_3FDE
+		bne.s	Level_FDLoop
 		rts
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -3584,14 +3584,14 @@ DynWater_Index:	dc.w DynWater_HPZ1-DynWater_Index	; 0
 ; ---------------------------------------------------------------------------
 
 DynWater_HPZ1:						; This uses the 2nd controller to make the water level move up or down
-		btst	#0,(v_2Pjpadhold1).w
+		btst	#button_up,(v_2Pjpadhold1).w
 		beq.s	loc_40E2
 		tst.w	(v_waterpos3).w
 		beq.s	loc_40E2
 		subq.w	#1,(v_waterpos3).w
 
 loc_40E2:
-		btst	#1,(v_2Pjpadhold1).w
+		btst	#button_down,(v_2Pjpadhold1).w
 		beq.s	locret_40F6
 		cmpi.w	#$700,(v_waterpos3).w
 		beq.s	locret_40F6
