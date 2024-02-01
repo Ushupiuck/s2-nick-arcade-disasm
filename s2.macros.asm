@@ -190,6 +190,19 @@ out_of_range:	macro exit,pos
 		bhi.ATTRIBUTE	exit
 		endm
 		
+; ---------------------------------------------------------------------------
+; Copy a tilemap from 68K (ROM/RAM) to the VRAM without using DMA
+; input: source, destination, width [cells], height [cells]
+; ---------------------------------------------------------------------------
+
+copyTilemap:	macro source,destination,width,height
+		lea	(source).l,a1
+		locVRAM	destination,d0
+		moveq	#width,d1
+		moveq	#height,d2
+		bsr.w	PlaneMapToVRAM_H40
+		endm
+		
 ; macros to convert from tile index to art tiles, block mapping or VRAM address.
 make_art_tile function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|(addr&tile_mask)
 make_art_tile_2p function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|((addr&tile_mask)>>1)
