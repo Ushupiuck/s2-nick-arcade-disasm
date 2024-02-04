@@ -1386,7 +1386,7 @@ ProcessDPLC_Pop:
 loc_17D2:
 		move.l	6(a0),(a0)+
 		dbf	d0,loc_17D2
-		
+
 	if FixBugs
 		; The above code does not properly 'pop' the 16th PLC entry.
 		; Because of this, occupying the 16th slot will cause it to
@@ -2288,7 +2288,7 @@ TitleScreen:
 		move.w	#$8C81,(a6)
 		bsr.w	ClearScreen
 		clearRAM v_spritequeue,v_spritequeue_end
-		clearRAM v_objspace,v_objspace_end
+		clearRAM v_objspace,v_objend
 		clearRAM v_levelvariables,v_levelvariables_end
 		clearRAM Camera_RAM,Camera_RAM_End
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
@@ -2951,7 +2951,7 @@ loc_3BB0:
 
 loc_3BB6:
 		clearRAM v_spritequeue,v_spritequeue_end
-		clearRAM v_objspace,v_objspace_end
+		clearRAM v_objspace,v_objend
 		clearRAM v_misc_variables,v_misc_variables_end
 		clearRAM v_levelvariables,v_levelvariables_end
 		clearRAM v_timingvariables,v_timingvariables_end
@@ -3086,10 +3086,10 @@ Level_ChkWater:
 		move.w	#0,(v_jpadhold1).w
 		tst.b	(Water_flag).w
 		beq.s	Level_LoadObj
-		move.b	#4,(v_objspace+$780).w
-		move.w	#$60,(v_objspace+$780+obX).w
-		move.b	#4,(v_objspace+$7C0).w
-		move.w	#$120,(v_objspace+$7C0+obX).w
+		move.b	#4,(v_watersurface1).w
+		move.w	#$60,(v_watersurface1+obX).w
+		move.b	#4,(v_watersurface2).w
+		move.w	#$120,(v_watersurface2+obX).w
 
 Level_LoadObj:
 		jsr	(ObjectsManager).l
@@ -3293,7 +3293,7 @@ LoadCollisionIndexes:
 
 
 Col_Load:
-		move.w	#$2FF,d1
+		move.w	#(v_colladdr1_end-v_colladdr1)/2-1,d1
 		moveq	#0,d2
 
 loc_4616:
@@ -3587,7 +3587,7 @@ loc_5214:
 		move.w	d0,(v_ringbonus).w
 		move.w	#bgm_GotThrough,d0
 		jsr	(PlaySound_Special).l
-		clearRAM v_objspace,v_objspace_end
+		clearRAM v_objspace,v_objend
 		move.b	#$7E,(v_objspace+$5C0).w
 
 loc_529C:
@@ -5655,16 +5655,16 @@ loc_689E:
 		tst.b	(byte_FFFFF720).w
 		beq.s	loc_68E6
 		move.b	#0,(byte_FFFFF720).w
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		moveq	#$F,d6
 
 loc_68BE:
 		movem.l	d4-d6,-(sp)
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		move.w	d4,d1
 		bsr.w	sub_7084
 		move.w	d1,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_6D8C
 		movem.l	(sp)+,d4-d6
 		addi.w	#$10,d4
@@ -5678,40 +5678,40 @@ loc_68E6:
 		beq.s	locret_694A
 		bclr	#0,(a2)
 		beq.s	loc_6900
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_7084
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_6D8C
 
 loc_6900:
 		bclr	#1,(a2)
 		beq.s	loc_691A
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_7084
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_6D8C
 
 loc_691A:
 		bclr	#2,(a2)
 		beq.s	loc_6930
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_7084
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_6CFE
 
 loc_6930:
 		bclr	#3,(a2)
 		beq.s	locret_694A
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		move.w	#$140,d5
 		bsr.w	sub_7084
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		move.w	#$140,d5
 		bsr.w	sub_6CFE
 
@@ -5728,40 +5728,40 @@ sub_694C:
 		beq.s	locret_69B0
 		bclr	#0,(a2)
 		beq.s	loc_6966
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_70C0
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_6D8C
 
 loc_6966:
 		bclr	#1,(a2)
 		beq.s	loc_6980
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_70C0
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_6D8C
 
 loc_6980:
 		bclr	#2,(a2)
 		beq.s	loc_6996
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_70C0
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_6CFE
 
 loc_6996:
 		bclr	#3,(a2)
 		beq.s	locret_69B0
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		move.w	#$140,d5
 		bsr.w	sub_70C0
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		move.w	#$140,d5
 		bsr.w	sub_6CFE
 
@@ -5778,50 +5778,50 @@ sub_69B2:
 		beq.w	locret_6A80
 		bclr	#0,(a2)
 		beq.s	loc_69CE
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_7084
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_6D8C
 
 loc_69CE:
 		bclr	#1,(a2)
 		beq.s	loc_69E8
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_7084
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_6D8C
 
 loc_69E8:
 		bclr	#2,(a2)
 		beq.s	loc_69FE
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_7084
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_6CFE
 
 loc_69FE:
 		bclr	#3,(a2)
 		beq.s	loc_6A18
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		move.w	#$140,d5
 		bsr.w	sub_7084
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		move.w	#$140,d5
 		bsr.w	sub_6CFE
 
 loc_6A18:
 		bclr	#4,(a2)
 		beq.s	loc_6A30
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		moveq	#0,d5
 		bsr.w	sub_7086
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		moveq	#0,d5
 		moveq	#$1F,d6
 		bsr.w	sub_6D90
@@ -5840,11 +5840,11 @@ loc_6A30:
 loc_6A4C:
 		bclr	#6,(a2)
 		beq.s	loc_6A64
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		bsr.w	sub_7084
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		moveq	#$1F,d6
 		bsr.w	sub_6D84
 
@@ -5852,10 +5852,10 @@ loc_6A64:
 		bclr	#7,(a2)
 		beq.s	locret_6A80
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_7084
 		move.w	#$E0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		moveq	#$1F,d6
 		bsr.w	sub_6D84
 
@@ -5875,10 +5875,10 @@ sub_6A82:
 		bclr	#0,(a2)
 		beq.s	loc_6AAE
 		move.w	#$70,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_7084
 		move.w	#$70,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		moveq	#2,d6
 		bsr.w	sub_6D00
 
@@ -5903,7 +5903,7 @@ byte_6AD1:	dc.b   0,  0,  0,  0,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  4,  4 
 ; ---------------------------------------------------------------------------
 
 loc_6AF2:
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		bclr	#0,(a2)
 		bne.s	loc_6B04
 		bclr	#1,(a2)
@@ -5920,7 +5920,7 @@ loc_6B04:
 		lea	(word_6C78).l,a3
 		movea.w	(a3,d0.w),a3
 		beq.s	loc_6B38
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		movem.l	d4-d5,-(sp)
 		bsr.w	sub_7084
 		movem.l	(sp)+,d4-d5
@@ -5943,8 +5943,8 @@ loc_6B4C:
 ; ---------------------------------------------------------------------------
 
 loc_6B52:
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		move.b	(a2),d0
 		andi.b	#$A8,d0
 		beq.s	loc_6B66
@@ -5973,10 +5973,10 @@ sub_6B7C:
 		bclr	#0,(a2)
 		beq.s	loc_6BA8
 		move.w	#$40,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		bsr.w	sub_7084
 		move.w	#$40,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		moveq	#2,d6
 		bsr.w	sub_6D00
 
@@ -5995,7 +5995,7 @@ locret_6BC8:
 		rts
 ; ---------------------------------------------------------------------------
 byte_6BCA:	dc.b 0
-byte_6BCB:	dc.b   2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ; 0
+		dc.b   2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 ; 0
 		dc.b   2,  2,  2,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4 ; 16
 		dc.b   4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4 ; 32
 		dc.b   4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4 ; 48
@@ -6003,7 +6003,7 @@ byte_6BCB:	dc.b   2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2 
 ; ---------------------------------------------------------------------------
 
 loc_6C0C:
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		bclr	#0,(a2)
 		bne.s	loc_6C1E
 		bclr	#1,(a2)
@@ -6011,14 +6011,14 @@ loc_6C0C:
 		move.w	#$E0,d4
 
 loc_6C1E:
-		lea	byte_6BCB(pc),a0
+		lea	byte_6BCA+1(pc),a0
 		move.w	(Camera_BG_Y_pos).w,d0
 		add.w	d4,d0
 		andi.w	#$3F0,d0
 		lsr.w	#4,d0
 		move.b	(a0,d0.w),d0
 		movea.w	word_6C78(pc,d0.w),a3
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		movem.l	d4-d5,-(sp)
 		bsr.w	sub_7084
 		movem.l	(sp)+,d4-d5
@@ -6031,8 +6031,8 @@ loc_6C48:
 ; ---------------------------------------------------------------------------
 
 loc_6C4E:
-		moveq	#$FFFFFFF0,d4
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d4
+		moveq	#-16,d5
 		move.b	(a2),d0
 		andi.b	#$A8,d0
 		beq.s	loc_6C62
@@ -6688,7 +6688,7 @@ loc_711E:
 
 
 LoadTilesFromStart2:
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		moveq	#$F,d6
 
 loc_7144:
@@ -6713,7 +6713,7 @@ loc_7144:
 
 
 LoadTilesFromStart_2p:
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		moveq	#$F,d6
 
 loc_7174:
@@ -6755,12 +6755,12 @@ loc_71A4:
 ; ---------------------------------------------------------------------------
 byte_71CA:	dc.b   0,  0,  0,  0,  6,  6,  6,  4,  4,  4,  0,  0,  0,  0,  0,  0 ; 0
 ; ---------------------------------------------------------------------------
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		moveq	#$F,d6
 
 loc_71DE:
 		movem.l	d4-d6,-(sp)
-		lea	byte_6BCB(pc),a0
+		lea	byte_6BCA+1(pc),a0
 		move.w	(Camera_BG_Y_pos).w,d0
 		add.w	d4,d0
 		andi.w	#$3F0,d0
@@ -6770,7 +6770,7 @@ loc_71DE:
 		dbf	d6,loc_71DE
 		rts
 ; ---------------------------------------------------------------------------
-		moveq	#$FFFFFFF0,d4
+		moveq	#-16,d4
 		moveq	#$F,d6
 
 loc_7206:
@@ -6798,7 +6798,7 @@ sub_7232:
 		move.b	(a0,d0.w),d0
 		movea.w	word_722A(pc,d0.w),a3
 		beq.s	loc_725A
-		moveq	#$FFFFFFF0,d5
+		moveq	#-16,d5
 		movem.l	d4-d5,-(sp)
 		bsr.w	sub_7084
 		movem.l	(sp)+,d4-d5
@@ -6845,7 +6845,7 @@ MainLevelLoadBlock_Skip16Convert:			; leftover from a previous build
 
 MainLevelLoadBlock_Convert16:
 		lea	(v_16x16).w,a1
-		move.w	#$BFF,d2
+		move.w	#(v_16x16_end-v_16x16)/2-1,d2
 
 MainLevelLoadBlock_ConvertLoop:
 		move.w	(a0)+,d0
@@ -6910,7 +6910,7 @@ loc_732C:
 
 loc_7338:
 		lea	(v_128x128).l,a1
-		move.w	#$3FFF,d0
+		move.w	#(v_128x128_end-v_128x128)/2-1,d0
 
 loc_7342:
 		move.w	(a0)+,(a1)+
@@ -13786,7 +13786,7 @@ word_CAF0:	dc.w 8
 ; ObjectsLoad:
 RunObjects:
 		lea	(v_objspace).w,a0
-		moveq	#$7F,d7				; run the first $80 objects out of levels
+		moveq	#(v_objend-v_objspace)/object_size-1,d7	; run the first $80 objects out of levels
 		moveq	#0,d0
 		cmpi.b	#6,(v_player+obRoutine).w	; is Sonic dead?
 		bcc.s	RunObjectsWhenPlayerIsDead	; if yes, branch
