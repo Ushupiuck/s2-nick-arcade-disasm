@@ -15708,13 +15708,7 @@ byte_DB4C:	dc.b   0,  0,  1,  1			; 0
 
 ; RingsManager2:
 RingsManager_Setup:
-		lea	(Ring_Positions).w,a1
-		moveq	#0,d0
-		move.w	#$17F,d1
-
-loc_DB66:
-		move.l	d0,(a1)+
-		dbf	d1,loc_DB66
+		clearRAM Ring_Positions, Ring_Positions_End
 		moveq	#0,d0
 		move.w	(Current_ZoneAndAct).w,d0
 		lsl.b	#6,d0
