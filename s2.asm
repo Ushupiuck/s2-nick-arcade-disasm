@@ -7343,7 +7343,7 @@ DynResize_LZ_Null:
 DynResize_LZ3:
 		tst.b	(f_switch+$F).w
 		beq.s	loc_76EA
-		lea	($FFFF8206).w,a1
+		lea	(v_lvllayout+$206).w,a1
 		cmpi.b	#7,(a1)
 		beq.s	loc_76EA
 		move.b	#7,(a1)
