@@ -206,6 +206,7 @@ v_128x128:	ds.b	$8000				; 128x128 tile mappings ($8000 bytes)
 v_128x128_end:
 
 v_lvllayout:	ds.b	$1000				; level layout buffer ($1000 bytes)
+v_lvllayout_end:
 v_lvllayoutbg:	= v_lvllayout+$80
 
 v_16x16:	ds.b	$1800				; 16x16 tile mappings ($1800 bytes)

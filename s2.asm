@@ -6864,7 +6864,7 @@ MainLevelLoadBlock_Not2p:
 loc_72C2:
 		cmpi.b	#5,(Current_Zone).w
 		bne.s	loc_72F4
-		lea	($FFFF9980).w,a1
+		lea	(v_16x16+$980).w,a1
 		lea	(Map16_HTZ).l,a0
 		move.w	#$3FF,d2
 
@@ -6957,7 +6957,7 @@ locret_7382:
 
 LevelLayoutLoad:
 		lea	(v_lvllayout).w,a3
-		move.w	#$3FF,d1
+		move.w	#(v_lvllayout_end-v_lvllayout)/4-1,d1
 		moveq	#0,d0
 
 loc_738E:
