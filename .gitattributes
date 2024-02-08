@@ -1,0 +1,10 @@
+*.lua text eol=lf
+
+*.asm text=auto
+
+*.bin binary
+
+*.nem binary
+*.kos binary
+*.eni binary
+*.kc binary
