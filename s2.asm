@@ -3464,21 +3464,23 @@ loc_507C:
 		bsr.w	S1_SSBGLoad
 		moveq	#$14,d0
 		bsr.w	RunPLC_ROM
-		lea	(v_colladdr1).w,a1
+	if FixBugs
+		clearRAM v_objspace,v_objend
+	else
+		; DANGER!
+		; This does not actually clear the object space!
+		; this actually clears some of the collision
+		; addresses instead!
+		lea	(v_objspace+$2000).w,a1
 		moveq	#0,d0
-		move.w	#$7FF,d1
+		move.w	#(v_objend-v_objspace)/4-1,d1
 
 loc_509C:
 		move.l	d0,(a1)+
 		dbf	d1,loc_509C
+	endif
 		clearRAM v_levelvariables,v_levelvariables_end
-		lea	($FFFFFE60).w,a1
-		moveq	#0,d0
-		move.w	#$27,d1
-
-loc_50BC:
-		move.l	d0,(a1)+
-		dbf	d1,loc_50BC
+		clearRAM v_timingvariables,v_timingvariables_end-$80
 		clearRAM v_ngfx_buffer,v_ngfx_buffer_end
 		clr.b	(f_wtr_state).w
 		clr.w	(Level_Inactive_flag).w
