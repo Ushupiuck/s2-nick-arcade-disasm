@@ -3491,8 +3491,8 @@ loc_509C:
 		move.l	#0,(Camera_Y_pos).w
 		move.b	#9,(v_player).w
 		bsr.w	PalCycle_S1SS
-		clr.w	($FFFFF780).w
-		move.w	#$40,($FFFFF782).w
+		clr.w	(v_ssangle).w
+		move.w	#$40,(v_ssrotate).w
 		move.w	#bgm_SS,d0
 		bsr.w	PlaySound
 		move.w	#0,(Demo_button_index).w
@@ -32068,7 +32068,7 @@ S1SS_ShowLayout:
 		bsr.w	sub_19F02
 		move.w	d5,-(sp)
 		lea	(v_ssbuffer3).w,a1
-		move.b	($FFFFF780).w,d0
+		move.b	(v_ssangle).w,d0
 		andi.b	#$FC,d0
 		jsr	(CalcSine).l
 		move.w	d0,d4
@@ -32190,7 +32190,7 @@ loc_19CBA:
 sub_19CC2:
 		lea	(v_ssbuffer2+$C).l,a1
 		moveq	#0,d0
-		move.b	($FFFFF780).w,d0
+		move.b	(v_ssangle).w,d0
 		lsr.b	#2,d0
 		andi.w	#$F,d0
 		moveq	#$23,d1
@@ -32873,9 +32873,9 @@ Obj09_Display:
 		bsr.w	Obj09_ChkItems2
 		jsr	(ObjectMove).l
 		bsr.w	S1SS_FixCamera
-		move.w	($FFFFF780).w,d0
-		add.w	($FFFFF782).w,d0
-		move.w	d0,($FFFFF780).w
+		move.w	(v_ssangle).w,d0
+		add.w	(v_ssrotate).w,d0
+		move.w	d0,(v_ssangle).w
 		jsr	(Sonic_Animate).l
 		rts
 
@@ -32917,7 +32917,7 @@ loc_1A4DC:
 		move.w	d0,obInertia(a0)
 
 loc_1A4E0:
-		move.b	($FFFFF780).w,d0
+		move.b	(v_ssangle).w,d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
 		neg.b	d0
@@ -33012,7 +33012,7 @@ Obj09_Jump:
 		move.b	(v_jpadpress2).w,d0
 		andi.b	#$70,d0
 		beq.s	locret_1A5D0
-		move.b	($FFFFF780).w,d0
+		move.b	(v_ssangle).w,d0
 		andi.b	#$FC,d0
 		neg.b	d0
 		subi.b	#$40,d0
@@ -33077,23 +33077,23 @@ locret_1A616:
 ; ---------------------------------------------------------------------------
 
 loc_1A618:
-		addi.w	#$40,($FFFFF782).w
-		cmpi.w	#$1800,($FFFFF782).w
+		addi.w	#$40,(v_ssrotate).w
+		cmpi.w	#$1800,(v_ssrotate).w
 		bne.s	loc_1A62C
 		move.b	#GameModeID_Level,(v_gamemode).w
 
 loc_1A62C:
-		cmpi.w	#$3000,($FFFFF782).w
+		cmpi.w	#$3000,(v_ssrotate).w
 		blt.s	loc_1A64A
-		move.w	#0,($FFFFF782).w
-		move.w	#$4000,($FFFFF780).w
+		move.w	#0,(v_ssrotate).w
+		move.w	#$4000,(v_ssangle).w
 		addq.b	#2,obRoutine(a0)
 		move.w	#$3C,$38(a0)
 
 loc_1A64A:
-		move.w	($FFFFF780).w,d0
-		add.w	($FFFFF782).w,d0
-		move.w	d0,($FFFFF780).w
+		move.w	(v_ssangle).w,d0
+		add.w	(v_ssrotate).w,d0
+		move.w	d0,(v_ssangle).w
 		jsr	(Sonic_Animate).l
 		jsr	(LoadSonicDynPLC).l
 		bsr.w	S1SS_FixCamera
@@ -33117,7 +33117,7 @@ loc_1A678:
 Obj09_Fall:
 		move.l	obY(a0),d2
 		move.l	obX(a0),d3
-		move.b	($FFFFF780).w,d0
+		move.b	(v_ssangle).w,d0
 		andi.b	#$FC,d0
 		jsr	(CalcSine).l
 		move.w	obVelX(a0),d4
@@ -33439,7 +33439,7 @@ loc_1A974:
 		move.b	#$1E,$36(a0)
 		btst	#6,($FFFFF783).w
 		beq.s	loc_1A99E
-		asl	($FFFFF782).w
+		asl	(v_ssrotate).w
 		movea.l	$32(a0),a1
 		subq.l	#1,a1
 		move.b	#$2A,(a1)
@@ -33457,7 +33457,7 @@ loc_1A9A8:
 		move.b	#$1E,$36(a0)
 		btst	#6,($FFFFF783).w
 		bne.s	loc_1A9D2
-		asr	($FFFFF782).w
+		asr	(v_ssrotate).w
 		movea.l	$32(a0),a1
 		subq.l	#1,a1
 		move.b	#$29,(a1)
@@ -33481,7 +33481,7 @@ loc_1A9DC:
 		move.l	d0,4(a2)
 
 loc_1AA04:
-		neg.w	($FFFFF782).w
+		neg.w	(v_ssrotate).w
 		move.w	#sfx_SSItem,d0
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------

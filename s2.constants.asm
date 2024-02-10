@@ -854,6 +854,8 @@ v_endofram:
 	dephase
 
 ; Special stage
+v_ssangle		= ramaddr($FFFFF780)
+v_ssrotate		= ramaddr($FFFFF782)
 v_ssbuffer1		= v_128x128
 v_ssblockbuffer		= v_ssbuffer1+$1020		; ($2000 bytes)
 v_ssblockbuffer_end	= v_ssblockbuffer+$80*$40
