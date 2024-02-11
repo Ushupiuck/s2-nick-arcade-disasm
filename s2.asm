@@ -588,13 +588,7 @@ loc_C66:
 		move.w	(v_hbla_hreg).w,(vdp_control_port).l
 		move.w	#$8230,(vdp_control_port).l
 		move.l	(v_bg3scrposy_vdp).w,(Camera_X_pos_copy).w
-		lea	(vdp_control_port).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		writeVRAM	Sprite_Table,$280,vram_sprites
 		bra.w	Vint_SoundDriver
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_CAA: VintSub2:
@@ -603,10 +597,10 @@ Vint_SEGA:
 ; loc_CAE: VintSub14:
 Vint_PCM:
 		tst.w	(v_demolength).w
-		beq.w	locret_CBA
+		beq.w	.end
 		subq.w	#1,(v_demolength).w
 
-locret_CBA:
+.end:
 		rts
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_CBC: VintSub4:
@@ -614,10 +608,10 @@ Vint_Title:
 		bsr.w	Do_ControllerPal
 		bsr.w	ProcessDPLC
 		tst.w	(v_demolength).w
-		beq.w	locret_CD0
+		beq.w	.end
 		subq.w	#1,(v_demolength).w
 
-locret_CD0:
+.end:
 		rts
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_CD2: VintSub6:
@@ -647,20 +641,8 @@ loc_D24:
 loc_D48:
 		move.w	(v_hbla_hreg).w,(a5)
 		move.w	#$8230,(vdp_control_port).l
-		lea	(vdp_control_port).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96F09500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		writeVRAM	Sprite_Table,$280,vram_sprites
 		bsr.w	ProcessDMAQueue
 		startZ80
 		movem.l	(Camera_RAM).w,d0-d7
@@ -701,35 +683,17 @@ Vint_S1SS:
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96F09500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		writeCRAM	v_pal_dry,$80,0
+		writeVRAM	Sprite_Table,$280,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		bsr.w	ProcessDMAQueue
 		startZ80
 		bsr.w	PalCycle_S1SS
 		tst.w	(v_demolength).w
-		beq.w	locret_EA0
+		beq.w	.end
 		subq.w	#1,(v_demolength).w
 
-locret_EA0:
+.end:
 		rts
 ; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ; loc_EA2: VintSubC: VintSub18:
@@ -748,20 +712,8 @@ loc_EE4:
 
 loc_F08:
 		move.w	(v_hbla_hreg).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96F09500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
+		writeVRAM	Sprite_Table,$280,vram_sprites
 		bsr.w	ProcessDMAQueue
 		startZ80
 		movem.l	(Camera_RAM).w,d0-d7
@@ -791,27 +743,9 @@ Vint_SSResults:
 		stopZ80
 		waitZ80
 		bsr.w	ReadJoypads
-		lea	(vdp_control_port).l,a5
-		move.l	#$94009340,(a5)
-		move.l	#$96FD9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$C000,(a5)
-		move.w	#$80,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96F09500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		writeCRAM	v_pal_dry,$80,0
+		writeVRAM	Sprite_Table,$280,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		startZ80
 		tst.w	(v_demolength).w
 		beq.w	locret_103A
@@ -837,20 +771,8 @@ loc_107E:
 		writeCRAM	v_pal_water,$80,0
 
 loc_10A2:
-		lea	(vdp_control_port).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96FC9500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
-		lea	(vdp_control_port).l,a5
-		move.l	#$940193C0,(a5)
-		move.l	#$96F09500,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7C00,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		writeVRAM	Sprite_Table,$280,vram_sprites
+		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		startZ80
 		rts
 ; End of function Do_ControllerPal
@@ -3030,7 +2952,7 @@ Level_PlayBgm:
 		nop
 		move.b	(a1,d0.w),d0
 		bsr.w	PlaySound
-		move.b	#$34,(v_objspace+$80).w
+		move.b	#$34,(v_titlecard).w
 
 Level_TtlCardLoop:
 		move.b	#VintID_TitleCard,(v_vbla_routine).w
@@ -3038,8 +2960,8 @@ Level_TtlCardLoop:
 		jsr	(RunObjects).l
 		jsr	(BuildSprites).l
 		bsr.w	RunPLC_RAM
-		move.w	(v_objspace+$100+obX).w,d0
-		cmp.w	(v_objspace+$100+$30).w,d0
+		move.w	(v_ttlcardact+obX).w,d0
+		cmp.w	(v_ttlcardact+$30).w,d0
 		bne.s	Level_TtlCardLoop
 		tst.l	(v_plc_buffer).w
 		bne.s	Level_TtlCardLoop
@@ -3170,10 +3092,10 @@ Level_DelayLoop:
 		bsr.w	Pal_FadeFromBlack2
 		tst.w	(f_demo).w
 		bmi.s	Level_ClrTitleCard
-		addq.b	#2,(v_objspace+$80+obRoutine).w
-		addq.b	#4,(v_objspace+$C0+obRoutine).w
-		addq.b	#4,(v_objspace+$100+obRoutine).w
-		addq.b	#4,(v_objspace+$140+obRoutine).w
+		addq.b	#2,(v_ttlcardname+obRoutine).w
+		addq.b	#4,(v_ttlcardzone+obRoutine).w
+		addq.b	#4,(v_ttlcardact+obRoutine).w
+		addq.b	#4,(v_ttlcardoval+obRoutine).w
 		bra.s	Level_StartGame
 ; ===========================================================================
 
