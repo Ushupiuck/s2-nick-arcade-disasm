@@ -2237,29 +2237,17 @@ loc_32C4:
 		lea	(Eni_TitleMap).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(v_startofram).l,a1
-		move.l	#$40000003,d0
-		moveq	#$27,d1
-		moveq	#$1B,d2
-		bsr.w	PlaneMapToVRAM_H40
+		copyTilemap	v_startofram,$C000,$27,$1B
 		lea	(v_startofram).l,a1
 		lea	(Eni_TitleBg1).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(v_startofram).l,a1
-		move.l	#$60000003,d0
-		moveq	#$1F,d1
-		moveq	#$1B,d2
-		bsr.w	PlaneMapToVRAM_H40
+		copyTilemap	v_startofram,$E000,$1F,$1B
 		lea	(v_startofram).l,a1
 		lea	(Eni_TitleBg2).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(v_startofram).l,a1
-		move.l	#$60400003,d0
-		moveq	#$1F,d1
-		moveq	#$1B,d2
-		bsr.w	PlaneMapToVRAM_H40
+		copyTilemap	v_startofram,$E040,$1F,$1B
 		moveq	#1,d0
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
@@ -2279,7 +2267,7 @@ loc_339A:
 		move.b	#1,(v_titletails+obFrame).w
 		jsr	(RunObjects).l
 		jsr	(BuildSprites).l
-		moveq	#0,d0
+		moveq	#plcid_Main,d0
 		bsr.w	LoadPLC2
 		move.w	#0,(v_title_dcount).w
 		move.w	#0,(v_title_ccount).w
@@ -2860,7 +2848,7 @@ loc_3B84:
 		bsr.w	LoadPLC
 
 loc_3BB0:
-		moveq	#1,d0
+		moveq	#plcid_Main2,d0
 		bsr.w	LoadPLC
 
 loc_3BB6:
@@ -2909,7 +2897,7 @@ loc_3BB6:
 		move.b	#1,(f_water).w
 
 LevelInit_NoWater:
-		move.w	#$1E,(v_air).w
+		move.w	#30,(v_air).w
 		moveq	#3,d0
 		bsr.w	PalLoad2
 		tst.b	(Water_flag).w
@@ -3092,11 +3080,11 @@ Level_DelayLoop:
 ; ===========================================================================
 
 Level_ClrTitleCard:
-		moveq	#2,d0
+		moveq	#plcid_Explode,d0
 		jsr	(LoadPLC).l
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
-		addi.w	#$15,d0
+		addi.w	#plcid_GHZAnimals,d0
 		jsr	(LoadPLC).l
 
 Level_StartGame:
@@ -3310,7 +3298,7 @@ SignpostArtLoad:
 		cmp.w	(Camera_Min_X_pos).w,d1
 		beq.s	locret_47E2
 		move.w	d1,(Camera_Min_X_pos).w
-		moveq	#$12,d0
+		moveq	#plcid_Signpost,d0
 		bra.w	LoadPLC2
 ; ---------------------------------------------------------------------------
 
@@ -3492,9 +3480,9 @@ loc_5214:
 		move	#$2300,sr
 		moveq	#$11,d0
 		bsr.w	PalLoad2
-		moveq	#0,d0
+		moveq	#plcid_Main,d0
 		bsr.w	LoadPLC2
-		moveq	#$1B,d0
+		moveq	#plcid_SSResult,d0
 		bsr.w	LoadPLC
 		move.b	#1,(f_scorecount).w
 		move.b	#1,(f_endactbonus).w
@@ -7226,7 +7214,7 @@ loc_7692:
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#$11,d0
+		moveq	#plcid_Boss,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7282,7 +7270,7 @@ loc_770C:
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#$11,d0
+		moveq	#plcid_Boss,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7464,7 +7452,7 @@ DynResize_CPZ3_BossCheck:
 		_move.b	#$55,obID(a1)			; load Obj55 (EHZ boss, likely CPZ boss at one point)
 		move.w	#$680,obX(a1)
 		move.w	#$540,obY(a1)
-		moveq	#$11,d0
+		moveq	#plcid_Boss,d0
 		bra.w	LoadPLC
 ; ===========================================================================
 
@@ -7518,7 +7506,7 @@ loc_7946:
 		move.w	#bgm_Boss,d0
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
-		moveq	#$11,d0
+		moveq	#plcid_Boss,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7584,7 +7572,7 @@ loc_79BC:
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#$11,d0
+		moveq	#plcid_Boss,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7664,7 +7652,7 @@ loc_7A64:
 		move.w	#bgm_Boss,d0
 		bsr.w	PlaySound
 		move.b	#1,(f_lockscreen).w
-		moveq	#$11,d0
+		moveq	#plcid_Boss,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7734,7 +7722,7 @@ loc_7AF4:
 		bne.s	locret_7B10
 		move.b	#$83,(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#$1E,d0
+		moveq	#plcid_EggmanSBZ2,d0
 		bra.w	LoadPLC
 ; ---------------------------------------------------------------------------
 
@@ -7785,7 +7773,7 @@ loc_7B5A:
 		cmpi.w	#$2148,(Camera_RAM).w
 		bcs.s	loc_7B6C
 		addq.b	#2,(Dynamic_Resize_Routine).w
-		moveq	#$1F,d0
+		moveq	#plcid_FZBoss,d0
 		bsr.w	LoadPLC
 
 loc_7B6C:
@@ -7797,7 +7785,7 @@ loc_7B6E:
 		bcs.s	loc_7B8A
 		bsr.w	FindFreeObj
 		bne.s	loc_7B8A
-		move.b	#$85,(a1)
+		move.b	#$85,obID(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 		move.b	#1,(f_lockscreen).w
 
@@ -12458,11 +12446,11 @@ Obj34_NoDisplay2:
 Obj34_ChangeArt:
 		cmpi.b	#4,obRoutine(a0)
 		bne.s	Obj34_Delete
-		moveq	#2,d0
+		moveq	#plcid_Explode,d0
 		jsr	(LoadPLC).l
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
-		addi.w	#$15,d0
+		addi.w	#plcid_GHZAnimals,d0
 		jsr	(LoadPLC).l
 
 Obj34_Delete:
@@ -17611,7 +17599,7 @@ Load_EndOfAct:
 		clr.b	(v_invinc).w
 		clr.b	(f_timecount).w
 		move.b	#$3A,(v_objspace+$5C0).w
-		moveq	#$10,d0
+		moveq	#plcid_TitleCard,d0
 		jsr	(LoadPLC2).l
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
@@ -20171,7 +20159,7 @@ Sonic_GameOver:
 loc_10876:
 		move.w	#bgm_GameOver,d0
 		jsr	(PlaySound).l
-		moveq	#3,d0
+		moveq	#plcid_GameOver,d0
 		jmp	(LoadPLC).l
 ; ---------------------------------------------------------------------------
 
@@ -32074,9 +32062,14 @@ loc_19C42:
 		add.w	d1,d1
 		adda.w	(a1,d1.w),a1
 		movea.w	(a5)+,a3
+	if ~~FixBugs
 		moveq	#0,d1
 		move.b	(a1)+,d1
 		subq.b	#1,d1
+	else
+		move.w	(a1)+,d1
+		subq.w	#1,d1
+	endif
 		bmi.s	loc_19C9A
 		jsr	(loc_D1CE).l
 
@@ -35059,220 +35052,240 @@ LevelArtPointers:
 ; Table of pattern load request lists. Remember to use word-length data when adding lists
 ; otherwise you'll break the array.
 ;---------------------------------------------------------------------------------------
-ArtLoadCues:	dc.w PLC_Main-ArtLoadCues,PLC_Main2-ArtLoadCues
-		dc.w PLC_Explode-ArtLoadCues,PLC_GameOver-ArtLoadCues
-		dc.w PLC_GHZ-ArtLoadCues,PLC_GHZ2-ArtLoadCues
-		dc.w PLC_CPZ-ArtLoadCues,PLC_CPZ2-ArtLoadCues
-		dc.w PLC_CPZ-ArtLoadCues,PLC_CPZ2-ArtLoadCues
-		dc.w PLC_EHZ-ArtLoadCues,PLC_EHZ2-ArtLoadCues
-		dc.w PLC_HPZ-ArtLoadCues,PLC_HPZ2-ArtLoadCues
-		dc.w PLC_HTZ-ArtLoadCues,PLC_HTZ2-ArtLoadCues
-		dc.w PLC_S1TitleCard-ArtLoadCues,PLC_Boss-ArtLoadCues
-		dc.w PLC_Signpost-ArtLoadCues,PLC_S1SpecialStage-ArtLoadCues
-		dc.w PLC_S1SpecialStage-ArtLoadCues,PLC_GHZAnimals-ArtLoadCues
-		dc.w PLC_LZAnimals-ArtLoadCues,PLC_CPZAnimals-ArtLoadCues
-		dc.w PLC_EHZAnimals-ArtLoadCues,PLC_HPZAnimals-ArtLoadCues
-		dc.w PLC_HTZAnimals-ArtLoadCues,$1C318-ArtLoadCues
-		dc.w $1C31A-ArtLoadCues,$1C31C-ArtLoadCues
-		dc.w $1C31E-ArtLoadCues,$1C320-ArtLoadCues
+ArtLoadCues:
 
-; macro for a pattern load request
-plreq macro toVRAMaddr,fromROMaddr
-	dc.l	fromROMaddr				; art to load
-	dc.w	(toVRAMaddr<<5)				; VRAM address to load it at (multiplied by $20)
+ptr_PLC_Main:		dc.w PLC_Main-ArtLoadCues
+ptr_PLC_Main2:		dc.w PLC_Main2-ArtLoadCues
+ptr_PLC_Explode:	dc.w PLC_Explode-ArtLoadCues
+ptr_PLC_GameOver:	dc.w PLC_GameOver-ArtLoadCues
+PLC_Levels:
+ptr_PLC_GHZ:		dc.w PLC_GHZ-ArtLoadCues
+ptr_PLC_GHZ2:		dc.w PLC_GHZ2-ArtLoadCues
+ptr_PLC_LZ:		dc.w PLC_CPZ-ArtLoadCues
+ptr_PLC_LZ2:		dc.w PLC_CPZ2-ArtLoadCues
+ptr_PLC_CPZ:		dc.w PLC_CPZ-ArtLoadCues
+ptr_PLC_CPZ2:		dc.w PLC_CPZ2-ArtLoadCues
+ptr_PLC_EHZ:		dc.w PLC_EHZ-ArtLoadCues
+ptr_PLC_EHZ2:		dc.w PLC_EHZ2-ArtLoadCues
+ptr_PLC_HPZ:		dc.w PLC_HPZ-ArtLoadCues
+ptr_PLC_HPZ2:		dc.w PLC_HPZ2-ArtLoadCues
+ptr_PLC_HTZ:		dc.w PLC_HTZ-ArtLoadCues
+ptr_PLC_HTZ2:		dc.w PLC_HTZ2-ArtLoadCues
+
+ptr_PLC_TitleCard:	dc.w PLC_S1TitleCard-ArtLoadCues
+ptr_PLC_Boss:		dc.w PLC_Boss-ArtLoadCues
+ptr_PLC_Signpost:	dc.w PLC_Signpost-ArtLoadCues
+ptr_PLC_Warp:		dc.w PLC_S1SpecialStage-ArtLoadCues
+ptr_PLC_SpecialStage:	dc.w PLC_S1SpecialStage-ArtLoadCues
+PLC_Animals:
+ptr_PLC_GHZAnimals:	dc.w PLC_GHZAnimals-ArtLoadCues
+ptr_PLC_LZAnimals:	dc.w PLC_LZAnimals-ArtLoadCues
+ptr_PLC_CPZAnimals:	dc.w PLC_CPZAnimals-ArtLoadCues
+ptr_PLC_EHZAnimals:	dc.w PLC_EHZAnimals-ArtLoadCues
+ptr_PLC_HPZAnimals:	dc.w PLC_HPZAnimals-ArtLoadCues
+ptr_PLC_HTZAnimals:	dc.w PLC_HTZAnimals-ArtLoadCues
+
+ptr_PLC_SSResult:	dc.w $1C318-ArtLoadCues
+ptr_PLC_Ending:		dc.w $1C31A-ArtLoadCues
+ptr_PLC_TryAgain:	dc.w $1C31C-ArtLoadCues
+ptr_PLC_EggmanSBZ2:	dc.w $1C31E-ArtLoadCues
+ptr_PLC_FZBoss:		dc.w $1C320-ArtLoadCues
+
+plcm:	macro gfx,vram
+	dc.l gfx
+	dc.w (vram<<5)
 	endm
-
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Standard 1 - loaded for every level
 ; --------------------------------------------------------------------------------------
 PLC_Main:	dc.w ((PLC_Main_End-PLC_Main)/6)-1
-		plreq $47C, Nem_Lamppost
-		plreq $6CA, Nem_HUD
-		plreq $7D4, Nem_Lives
-		plreq $6BC, Nem_Ring
-		plreq $4AC, Nem_Points
+		plcm	Nem_Lamppost, $47C
+		plcm	Nem_HUD, $6CA
+		plcm	Nem_Lives, $7D4
+		plcm	Nem_Ring, $6BC
+		plcm	Nem_Points, $4AC
 PLC_Main_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Standard 2 - loaded for every level
 ; --------------------------------------------------------------------------------------
 PLC_Main2:	dc.w ((PLC_Main2_End-PLC_Main2)/6)-1
-		plreq $680, Nem_Monitors
-		plreq $4BE, Nem_Shield
-		plreq $4DE, Nem_Stars
+		plcm	Nem_Monitors, $680
+		plcm	Nem_Shield, $4BE
+		plcm	Nem_Stars, $4DE
 PLC_Main2_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Explosion - loaded for every level AFTER the title card
 ; --------------------------------------------------------------------------------------
 PLC_Explode:	dc.w ((PLC_Explode_End-PLC_Explode)/6)-1
-		plreq $5A0, Nem_Explosion
+		plcm	Nem_Explosion, $5A0
 PLC_Explode_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Game/Time over
 ; --------------------------------------------------------------------------------------
 PLC_GameOver:	dc.w ((PLC_GameOver_End-PLC_GameOver)/6)-1
-		plreq $55E, Nem_GameOver
+		plcm	Nem_GameOver, $55E
 PLC_GameOver_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Green Hill Zone primary
 ; --------------------------------------------------------------------------------------
 PLC_GHZ:	dc.w ((PLC_GHZ_End-PLC_GHZ)/6)-1
-		plreq 0, Nem_GHZ
-		plreq $470, Nem_GHZ_Piranha
-		plreq $4A0, Nem_VSpikes
-		plreq $4A8, Nem_HSpring
-		plreq $4B8, Nem_VSpring
-		plreq $4C6, Nem_GHZ_Bridge
-		plreq $4D0, Nem_SwingPlatform
-		plreq $4E0, Nem_Motobug
-		plreq $6C0, Nem_GHZ_Rock
+		plcm	Nem_GHZ, 0
+		plcm	Nem_GHZ_Piranha, $470
+		plcm	Nem_VSpikes, $4A0
+		plcm	Nem_HSpring, $4A8
+		plcm	Nem_VSpring, $4B8
+		plcm	Nem_GHZ_Bridge, $4C6
+		plcm	Nem_SwingPlatform, $4D0
+		plcm	Nem_Motobug, $4E0
+		plcm	Nem_GHZ_Rock, $6C0
 PLC_GHZ_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Green Hill Zone secondary
 ; --------------------------------------------------------------------------------------
 PLC_GHZ2:	dc.w ((PLC_GHZ2_End-PLC_GHZ2)/6)-1
-		plreq $470, Nem_GHZ_Piranha
+		plcm	Nem_GHZ_Piranha, $470
 PLC_GHZ2_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Chemical Plant Zone primary
 ; --------------------------------------------------------------------------------------
 PLC_CPZ:	dc.w ((PLC_CPZ_End-PLC_CPZ)/6)-1
-		plreq 0, Nem_CPZ
-		plreq $3D0, Nem_CPZ_Buildings
-		plreq $400, Nem_CPZ_FloatingPlatform
+		plcm	Nem_CPZ, 0
+		plcm	Nem_CPZ_Buildings, $3D0
+		plcm	Nem_CPZ_FloatingPlatform, $400
 PLC_CPZ_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Chemical Plant Zone secondary
 ; --------------------------------------------------------------------------------------
 PLC_CPZ2:	dc.w ((PLC_CPZ2_End-PLC_CPZ2)/6)-1
-		plreq $434, Nem_VSpikes
-		plreq $43C, Nem_DSpring
-		plreq $45C, Nem_VSpring2
-		plreq $470, Nem_HSpring2
+		plcm	Nem_VSpikes, $434
+		plcm	Nem_DSpring, $43C
+		plcm	Nem_VSpring2, $45C
+		plcm	Nem_HSpring2, $470
 PLC_CPZ2_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Emerald Hill Zone primary
 ; --------------------------------------------------------------------------------------
 PLC_EHZ:	dc.w ((PLC_EHZ_End-PLC_EHZ)/6)-1
-		plreq 0, Nem_EHZ
-		plreq $39E, Nem_EHZ_Fireball
-		plreq $3AE, Nem_EHZ_Waterfall
-		plreq $3C6, Nem_EHZ_Bridge
-		plreq $3CE, Nem_HTZ_Seesaw
-		plreq $434, Nem_VSpikes
-		plreq $43C, Nem_DSpring
-		plreq $45C, Nem_VSpring2
-		plreq $470, Nem_HSpring2
+		plcm	Nem_EHZ, 0
+		plcm	Nem_EHZ_Fireball, $39E
+		plcm	Nem_EHZ_Waterfall, $3AE
+		plcm	Nem_EHZ_Bridge, $3C6
+		plcm	Nem_HTZ_Seesaw, $3CE
+		plcm	Nem_VSpikes, $434
+		plcm	Nem_DSpring, $43C
+		plcm	Nem_VSpring2, $45C
+		plcm	Nem_HSpring2, $470
 PLC_EHZ_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Emerald Hill Zone secondary
 ; --------------------------------------------------------------------------------------
 PLC_EHZ2:	dc.w ((PLC_EHZ2_End-PLC_EHZ2)/6)-1
-		plreq $560, Nem_Shield
-		plreq $4AC, Nem_Points
-		plreq $3E6, Nem_Buzzer
-		plreq $402, Nem_Snail
-		plreq $41C, Nem_Masher
+		plcm	Nem_Shield, $560
+		plcm	Nem_Points, $4AC
+		plcm	Nem_Buzzer, $3E6
+		plcm	Nem_Snail, $402
+		plcm	Nem_Masher, $41C
 PLC_EHZ2_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Hidden Palace Zone primary
 ; --------------------------------------------------------------------------------------
 PLC_HPZ:	dc.w ((PLC_HPZ_End-PLC_HPZ)/6)-1
-		plreq 0, Nem_HPZ
-		plreq $300, Nem_HPZ_Bridge
-		plreq $315, Nem_HPZ_Waterfall
-		plreq $34A, Nem_HPZ_Platform
-		plreq $35A, Nem_HPZ_PulsingBall
-		plreq $37C, Nem_HPZ_Various
-		plreq $392, Nem_HPZ_Emerald
-		plreq $400, Nem_WaterSurface
+		plcm	Nem_HPZ, 0
+		plcm	Nem_HPZ_Bridge, $300
+		plcm	Nem_HPZ_Waterfall, $315
+		plcm	Nem_HPZ_Platform, $34A
+		plcm	Nem_HPZ_PulsingBall, $35A
+		plcm	Nem_HPZ_Various, $37C
+		plcm	Nem_HPZ_Emerald, $392
+		plcm	Nem_WaterSurface, $400
 PLC_HPZ_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Hidden Palace Zone secondary
 ; --------------------------------------------------------------------------------------
 PLC_HPZ2:	dc.w ((PLC_HPZ2_End-PLC_HPZ2)/6)-1
-		plreq $500, Nem_Redz
-		plreq $530, Nem_Bat
+		plcm	Nem_Redz, $500
+		plcm	Nem_Bat, $530
 PLC_HPZ2_End:
 		; unused PLR entries
-		plreq $300, Nem_Crocobot
-		plreq $32C, Nem_Buzzer
-		plreq $350, Nem_Bat
-		plreq $3C4, Nem_Triceratops
-		plreq $500, Nem_Redz
-		plreq $530, Nem_HPZ_Piranha
+		plcm	Nem_Crocobot, $300
+		plcm	Nem_Buzzer, $32C
+		plcm	Nem_Bat, $350
+		plcm	Nem_Triceratops, $3C4
+		plcm	Nem_Redz, $500
+		plcm	Nem_HPZ_Piranha, $530
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Hill Top Zone primary
 ; --------------------------------------------------------------------------------------
 PLC_HTZ:	dc.w ((PLC_HTZ_End-PLC_HTZ)/6)-1
-		plreq 0, Nem_EHZ
-		plreq $1FC, Nem_HTZ
-		plreq $500, Nem_HTZ_AniPlaceholders
-		plreq $39E, Nem_EHZ_Fireball
-		plreq $3AE, Nem_HTZ_Fireball
-		plreq $3BE, Nem_HTZ_AutomaticDoor
-		plreq $3C6, Nem_EHZ_Bridge
-		plreq $3CE, Nem_HTZ_Seesaw
-		plreq $434, Nem_VSpikes
-		plreq $43C, Nem_DSpring
+		plcm	Nem_EHZ, 0
+		plcm	Nem_HTZ, $1FC
+		plcm	Nem_HTZ_AniPlaceholders, $500
+		plcm	Nem_EHZ_Fireball, $39E
+		plcm	Nem_HTZ_Fireball, $3AE
+		plcm	Nem_HTZ_AutomaticDoor, $3BE
+		plcm	Nem_EHZ_Bridge, $3C6
+		plcm	Nem_HTZ_Seesaw, $3CE
+		plcm	Nem_VSpikes, $434
+		plcm	Nem_DSpring, $43C
 PLC_HTZ_End:
 		; unused PLR entries
-		plreq $45C, Nem_VSpring2
-		plreq $470, Nem_HSpring2
+		plcm	Nem_VSpring2, $45C
+		plcm	Nem_HSpring2, $470
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Hill Top Zone secondary
 ; --------------------------------------------------------------------------------------
 PLC_HTZ2:	dc.w ((PLC_HTZ2_End-PLC_HTZ2)/6)-1
-		plreq $3E6, Nem_HTZ_Lift
+		plcm	Nem_HTZ_Lift, $3E6
 PLC_HTZ2_End:
 		; unused PLR entries
-		plreq $3E6, Nem_Buzzer
-		plreq $402, Nem_Snail
-		plreq $41C, Nem_Masher
+		plcm	Nem_Buzzer, $3E6
+		plcm	Nem_Snail, $402
+		plcm	Nem_Masher, $41C
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Sonic 1 title card
 ; --------------------------------------------------------------------------------------
 PLC_S1TitleCard:dc.w ((PLC_S1TitleCard_End-PLC_S1TitleCard)/6)-1
-		plreq $580, Nem_S1TitleCard
+		plcm	Nem_S1TitleCard, $580
 PLC_S1TitleCard_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; End of zone bosses
 ; --------------------------------------------------------------------------------------
 PLC_Boss:	dc.w ((PLC_Boss_End-PLC_Boss)/6)-1
-		plreq $460, Nem_BossShip
-		plreq $4C0, Nem_EHZ_Boss
-		plreq $540, Nem_EHZ_Boss_Blades
+		plcm	Nem_BossShip, $460
+		plcm	Nem_EHZ_Boss, $4C0
+		plcm	Nem_EHZ_Boss_Blades, $540
 PLC_Boss_End:
 		; unused PLR entries
-		plreq $400, Nem_BossShip
-		plreq $460, Nem_CPZ_ProtoBoss
-		plreq $4D0, Nem_BossShipBoost
-		plreq $4D8, Nem_Smoke
-		plreq $4E8, Nem_EHZ_Boss
-		plreq $568, Nem_EHZ_Boss_Blades
+		plcm	Nem_BossShip, $400
+		plcm	Nem_CPZ_ProtoBoss, $460
+		plcm	Nem_BossShipBoost, $4D0
+		plcm	Nem_Smoke, $4D8
+		plcm	Nem_EHZ_Boss, $4E8
+		plcm	Nem_EHZ_Boss_Blades, $568
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; End of level signpost
 ; --------------------------------------------------------------------------------------
 PLC_Signpost:	dc.w ((PLC_Signpost_End-PLC_Signpost)/6)-1
-		plreq $680, Nem_Signpost
-		plreq $4B6, Nem_S1BonusPoints
-		plreq $462, Nem_BigFlash
+		plcm	Nem_Signpost, $680
+		plcm	Nem_S1BonusPoints, $4B6
+		plcm	Nem_BigFlash, $462
 PLC_Signpost_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
@@ -35280,57 +35293,97 @@ PLC_Signpost_End:
 ; unless you remove the +$10
 ; --------------------------------------------------------------------------------------
 ; PLC_Invalid:
-PLC_S1SpecialStage:	dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)+$10
+PLC_S1SpecialStage:
+	if FixBugs
+		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)
+	else
+		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)+$10
+	endif
 PLC_S1SpecialStage_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Green Hill Zone animals
 ; --------------------------------------------------------------------------------------
 PLC_GHZAnimals:	dc.w ((PLC_GHZAnimals_End-PLC_GHZAnimals)/6)-1
-		plreq $580, Nem_Bunny
-		plreq $592, Nem_Flicky
+		plcm	Nem_Bunny, $580
+		plcm	Nem_Flicky, $592
 PLC_GHZAnimals_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Labyrinth Zone animals
 ; --------------------------------------------------------------------------------------
 PLC_LZAnimals:	dc.w ((PLC_LZAnimals_End-PLC_LZAnimals)/6)-1
-		plreq $580, Nem_Penguin
-		plreq $592, Nem_Seal
+		plcm	Nem_Penguin, $580
+		plcm	Nem_Seal, $592
 PLC_LZAnimals_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Chemical Plant Zone animals
 ; --------------------------------------------------------------------------------------
 PLC_CPZAnimals:	dc.w ((PLC_CPZAnimals_End-PLC_CPZAnimals)/6)-1
-		plreq $580, Nem_Squirrel
-		plreq $592, Nem_Seal
+		plcm	Nem_Squirrel, $580
+		plcm	Nem_Seal, $592
 PLC_CPZAnimals_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Emerald Hill Zone animals
 ; --------------------------------------------------------------------------------------
 PLC_EHZAnimals:	dc.w ((PLC_EHZAnimals_End-PLC_EHZAnimals)/6)-1
-		plreq $580, Nem_Pig
-		plreq $592, Nem_Flicky
+		plcm	Nem_Pig, $580
+		plcm	Nem_Flicky, $592
 PLC_EHZAnimals_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Hidden Palace Zone animals
 ; --------------------------------------------------------------------------------------
 PLC_HPZAnimals:	dc.w ((PLC_HPZAnimals_End-PLC_HPZAnimals)/6)-1
-		plreq $580, Nem_Pig
-		plreq $592, Nem_Chicken
+		plcm	Nem_Pig, $580
+		plcm	Nem_Chicken, $592
 PLC_HPZAnimals_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Hill Top Zone animals
 ; --------------------------------------------------------------------------------------
 PLC_HTZAnimals:	dc.w ((PLC_HTZAnimals_End-PLC_HTZAnimals)/6)-1
-		plreq $580, Nem_Bunny
-		plreq $592, Nem_Chicken
+		plcm	Nem_Bunny, $580
+		plcm	Nem_Chicken, $592
 PLC_HTZAnimals_End:
 
+; ---------------------------------------------------------------------------
+; Pattern load cue IDs
+; ---------------------------------------------------------------------------
+plcid_Main:		equ (ptr_PLC_Main-ArtLoadCues)/2	; 0
+plcid_Main2:		equ (ptr_PLC_Main2-ArtLoadCues)/2	; 1
+plcid_Explode:		equ (ptr_PLC_Explode-ArtLoadCues)/2	; 2
+plcid_GameOver:		equ (ptr_PLC_GameOver-ArtLoadCues)/2	; 3
+plcid_GHZ:		equ (ptr_PLC_GHZ-ArtLoadCues)/2		; 4
+plcid_GHZ2:		equ (ptr_PLC_GHZ2-ArtLoadCues)/2	; 5
+plcid_LZ:		equ (ptr_PLC_LZ-ArtLoadCues)/2		; 6
+plcid_LZ2:		equ (ptr_PLC_LZ2-ArtLoadCues)/2		; 7
+plcid_CPZ:		equ (ptr_PLC_CPZ-ArtLoadCues)/2		; 8
+plcid_CPZ2:		equ (ptr_PLC_CPZ2-ArtLoadCues)/2	; 9
+plcid_EHZ:		equ (ptr_PLC_EHZ-ArtLoadCues)/2		; $A
+plcid_EHZ2:		equ (ptr_PLC_EHZ2-ArtLoadCues)/2	; $B
+plcid_HPZ:		equ (ptr_PLC_HPZ-ArtLoadCues)/2		; $C
+plcid_HPZ2:		equ (ptr_PLC_HPZ2-ArtLoadCues)/2	; $D
+plcid_HTZ:		equ (ptr_PLC_HTZ-ArtLoadCues)/2		; $E
+plcid_HTZ2:		equ (ptr_PLC_HTZ2-ArtLoadCues)/2	; $F
+plcid_TitleCard:	equ (ptr_PLC_TitleCard-ArtLoadCues)/2	; $10
+plcid_Boss:		equ (ptr_PLC_Boss-ArtLoadCues)/2	; $11
+plcid_Signpost:		equ (ptr_PLC_Signpost-ArtLoadCues)/2	; $12
+plcid_Warp:		equ (ptr_PLC_Warp-ArtLoadCues)/2	; $13
+plcid_SpecialStage:	equ (ptr_PLC_SpecialStage-ArtLoadCues)/2 ; $14
+plcid_GHZAnimals:	equ (ptr_PLC_GHZAnimals-ArtLoadCues)/2	; $15
+plcid_LZAnimals:	equ (ptr_PLC_LZAnimals-ArtLoadCues)/2	; $16
+plcid_CPZAnimals:	equ (ptr_PLC_CPZAnimals-ArtLoadCues)/2	; $17
+plcid_EHZAnimals:	equ (ptr_PLC_EHZAnimals-ArtLoadCues)/2	; $18
+plcid_HPZAnimals:	equ (ptr_PLC_HPZAnimals-ArtLoadCues)/2	; $19
+plcid_HTZAnimals:	equ (ptr_PLC_HTZAnimals-ArtLoadCues)/2	; $1A
+plcid_SSResult:		equ (ptr_PLC_SSResult-ArtLoadCues)/2	; $1B
+plcid_Ending:		equ (ptr_PLC_Ending-ArtLoadCues)/2	; $1C
+plcid_TryAgain:		equ (ptr_PLC_TryAgain-ArtLoadCues)/2	; $1D
+plcid_EggmanSBZ2:	equ (ptr_PLC_EggmanSBZ2-ArtLoadCues)/2	; $1E
+plcid_FZBoss:		equ (ptr_PLC_FZBoss-ArtLoadCues)/2	; $1F
 ; --------------------------------------------------------------------------------------
 ; Leftover art from an unknown game, overwrites the other Sonic 1 PLC entries
 ; --------------------------------------------------------------------------------------
