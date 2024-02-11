@@ -1219,7 +1219,9 @@ RunPLC_RAM:
 
 loc_16FE:
 		andi.w	#$7FFF,d2
+	if ~~FixBugs
 		move.w	d2,(v_plc_patternsleft).w
+	endif
 		bsr.w	NemDec_BuildCodeTable
 		move.b	(a0)+,d5
 		asl.w	#8,d5
@@ -1233,6 +1235,9 @@ loc_16FE:
 		move.l	d0,(v_plc_previousrow).w
 		move.l	d5,(v_plc_dataword).w
 		move.l	d6,(v_plc_shiftvalue).w
+	if FixBugs
+		move.w	d2,(v_plc_patternsleft).w
+	endif
 
 locret_1730:
 		rts
@@ -2134,32 +2139,19 @@ SegaScreen:
 		lea	(Eni_SegaLogo).l,a0
 		move.w	#0,d0
 		bsr.w	EniDec
-		lea	(v_startofram).l,a1
-		move.l	#$65100003,d0
-		moveq	#$17,d1
-		moveq	#7,d2
-		bsr.w	PlaneMapToVRAM_H40
-		lea	($FFFF0180).l,a1
-		move.l	#$40000003,d0
-		moveq	#$27,d1
-		moveq	#$1B,d2
-		bsr.w	PlaneMapToVRAM_H40
+		copyTilemap	v_startofram,$E510,$17,7
+		copyTilemap	v_startofram+$180,$C000,$27,$1B
 		tst.b	(v_megadrive).w			; is console Japanese?
 		bmi.s	loc_316A			; if not, branch
-		; hide 'TM' symbol
-		lea	($FFFF0A40).l,a1
-		move.l	#$453A0003,d0
-		moveq	#2,d1
-		moveq	#1,d2
-		bsr.w	PlaneMapToVRAM_H40
+		copyTilemap	v_startofram+$A40,$C53A,2,1 ; hide "TM" with a white rectangle
 
 loc_316A:
 		moveq	#0,d0
 		bsr.w	PalLoad2
 		move.w	#-$A,(v_pcyc_num).w
 		move.w	#0,(v_pcyc_time).w
-		move.w	#0,($FFFFF662).w
-		move.w	#0,($FFFFF660).w
+		move.w	#0,(v_pal_buffer+$12).w
+		move.w	#0,(v_pal_buffer+$10).w
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
