@@ -748,10 +748,10 @@ Vint_SSResults:
 		writeVRAM	v_hscrolltablebuffer,$380,vram_hscroll
 		startZ80
 		tst.w	(v_demolength).w
-		beq.w	locret_103A
+		beq.w	.end
 		subq.w	#1,(v_demolength).w
 
-locret_103A:
+.end:
 		rts
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
@@ -1368,17 +1368,26 @@ loc_17EE:
 
 		include	"_inc/PaletteCycle.asm"
 
-Pal_HTZCyc2:	binclude "art/palettes/Hill Top Lava Delay.bin"
-Pal_S1TitleCyc:	binclude "art/palettes/S1 Title Water.bin"
-Pal_GHZCyc:	binclude "art/palettes/GHZ Water.bin"
-Pal_EHZCyc:	binclude "art/palettes/EHZ Water.bin"
-Pal_HTZCyc1:	binclude "art/palettes/Hill Top Lava.bin"
-Pal_CPZCyc1:	binclude "art/palettes/CPZ Cycle 1.bin"
-Pal_CPZCyc2:	binclude "art/palettes/CPZ Cycle 2.bin"
-Pal_CPZCyc3:	binclude "art/palettes/CPZ Cycle 3.bin"
-Pal_HPZCyc1:	binclude "art/palettes/HPZ Water Cycle.bin"
-Pal_HPZCyc2:	binclude "art/palettes/HPZ Underwater Cycle.bin"
-
+Pal_HTZCyc2:	binclude "palette/Hill Top Lava Delay.bin"
+		even
+Pal_S1TitleCyc:	binclude "palette/S1 Title Water.bin"
+		even
+Pal_GHZCyc:	binclude "palette/GHZ Water.bin"
+		even
+Pal_EHZCyc:	binclude "palette/EHZ Water.bin"
+		even
+Pal_HTZCyc1:	binclude "palette/Hill Top Lava.bin"
+		even
+Pal_CPZCyc1:	binclude "palette/CPZ Cycle 1.bin"
+		even
+Pal_CPZCyc2:	binclude "palette/CPZ Cycle 2.bin"
+		even
+Pal_CPZCyc3:	binclude "palette/CPZ Cycle 3.bin"
+		even
+Pal_HPZCyc1:	binclude "palette/HPZ Water Cycle.bin"
+		even
+Pal_HPZCyc2:	binclude "palette/HPZ Underwater Cycle.bin"
+		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Subroutine to fade in from black
@@ -1856,9 +1865,10 @@ loc_2456:
 ; End of function PalCycle_Sega
 
 ; ---------------------------------------------------------------------------
-Pal_Sega1:	dc.w  $EEE, $EEA, $EE4,	$EC0, $EE4, $EEA ; 0
-Pal_Sega2:	dc.w  $EEC, $EEA, $EEA,	$EEA, $EEA, $EEA, $EEC,	$EEA, $EE4, $EC0, $EC0,	$EC0, $EEC, $EEA, $EE4,	$EC0
-		dc.w  $EA0, $E60, $EEA,	$EE4, $EC0, $EA0, $E80,	$E00
+Pal_Sega1:	binclude "palette/Sega1.bin"
+		even
+Pal_Sega2:	binclude "palette/Sega2.bin"
+		even
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -1941,24 +1951,42 @@ PalLoad4_Water:
 ; ---------------------------------------------------------------------------
 ; Palette data
 ; ---------------------------------------------------------------------------
-Pal_SegaBG:		binclude	"art/palettes/Sega screen background.bin"
-Pal_Title:		binclude	"art/palettes/Title screen.bin"
-Pal_LevelSelect:	binclude	"art/palettes/Level select.bin"
-Pal_SonicTails:		binclude	"art/palettes/Sonic and Tails.bin"
-Pal_GHZ:		binclude	"art/palettes/GHZ.bin"
-Pal_HPZWater:		binclude	"art/palettes/HPZ underwater.bin"
-Pal_CPZ:		binclude	"art/palettes/CPZ.bin"
-Pal_EHZ:		binclude	"art/palettes/EHZ.bin"
-Pal_HPZ:		binclude	"art/palettes/HPZ.bin"
-Pal_HTZ:		binclude	"art/palettes/HTZ.bin"
-Pal_S1SpecialStage:	binclude	"art/palettes/S1 Special Stage.bin"
-Pal_LZ4:		binclude	"art/palettes/LZ4.bin"
-Pal_LZ4Water:		binclude	"art/palettes/LZ4 underwater.bin"
-Pal_LZSonicWater:	binclude	"art/palettes/LZ Sonic underwater.bin"
-Pal_LZ4SonicWater:	binclude	"art/palettes/LZ4 Sonic underwater.bin"
-Pal_S1SpeResults:	binclude	"art/palettes/S1 Special Stage results.bin"
-Pal_S1Continue:		binclude	"art/palettes/S1 Continue screen.bin"
-Pal_S1Ending:		binclude	"art/palettes/S1 Ending.bin"
+Pal_SegaBG:		binclude	"palette/Sega Background.bin"
+			even
+Pal_Title:		binclude	"palette/Title Screen.bin"
+			even
+Pal_LevelSelect:	binclude	"palette/Level Select.bin"
+			even
+Pal_SonicTails:		binclude	"palette/Sonic and Tails.bin"
+			even
+Pal_GHZ:		binclude	"palette/GHZ.bin"
+			even
+Pal_HPZWater:		binclude	"palette/HPZ Underwater.bin"
+			even
+Pal_CPZ:		binclude	"palette/CPZ.bin"
+			even
+Pal_EHZ:		binclude	"palette/EHZ.bin"
+			even
+Pal_HPZ:		binclude	"palette/HPZ.bin"
+			even
+Pal_HTZ:		binclude	"palette/HTZ.bin"
+			even
+Pal_S1SpecialStage:	binclude	"palette/S1 Special Stage.bin"
+			even
+Pal_LZ4:		binclude	"palette/LZ4.bin"
+			even
+Pal_LZ4Water:		binclude	"palette/LZ4 Underwater.bin"
+			even
+Pal_LZSonicWater:	binclude	"palette/LZ Sonic Underwater.bin"
+			even
+Pal_LZ4SonicWater:	binclude	"palette/LZ4 Sonic Underwater.bin"
+			even
+Pal_S1SpeResults:	binclude	"palette/S1 Special Stage Results.bin"
+			even
+Pal_S1Continue:		binclude	"palette/S1 Continue Screen.bin"
+			even
+Pal_S1Ending:		binclude	"palette/S1 Ending.bin"
+			even
 ; ===========================================================================
 		nop
 ; ===========================================================================
@@ -2146,7 +2174,7 @@ SegaScreen:
 		copyTilemap	v_startofram+$A40,$C53A,2,1 ; hide "TM" with a white rectangle
 
 loc_316A:
-		moveq	#0,d0
+		moveq	#palid_SegaBG,d0
 		bsr.w	PalLoad2
 		move.w	#-$A,(v_pcyc_num).w
 		move.w	#0,(v_pcyc_time).w
@@ -2206,7 +2234,7 @@ TitleScreen:
 		clearRAM v_levelvariables,v_levelvariables_end
 		clearRAM Camera_RAM,Camera_RAM_End
 		clearRAM v_pal_dry_dup,v_pal_dry_dup+16*4*2
-		moveq	#3,d0
+		moveq	#palid_SonicTails,d0
 		bsr.w	PalLoad1
 		bsr.w	Pal_FadeFromBlack
 		move	#$2700,sr
@@ -2248,7 +2276,7 @@ loc_32C4:
 		move.w	#0,d0
 		bsr.w	EniDec
 		copyTilemap	v_startofram,$E040,$1F,$1B
-		moveq	#1,d0
+		moveq	#palid_Title,d0
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
 		bsr.w	PlaySound_Special
@@ -2344,7 +2372,7 @@ Title_Cheat_NoC:
 Title_CheckLvlSel:
 		tst.b	(f_levselcheat).w
 		beq.w	PlayLevel
-		moveq	#2,d0
+		moveq	#palid_LevelSel,d0
 		bsr.w	PalLoad2
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end
 		move.l	d0,(v_scrposy_vdp).w
@@ -2898,14 +2926,14 @@ loc_3BB6:
 
 LevelInit_NoWater:
 		move.w	#30,(v_air).w
-		moveq	#3,d0
+		moveq	#palid_SonicTails,d0
 		bsr.w	PalLoad2
 		tst.b	(Water_flag).w
 		beq.s	Level_GetBgm
-		moveq	#$F,d0
+		moveq	#palid_LZSonWater,d0
 		cmpi.b	#3,(Current_Act).w
 		bne.s	Level_WaterPal
-		moveq	#$10,d0
+		moveq	#palid_SBZ3SonWat,d0
 
 Level_WaterPal:
 		bsr.w	PalLoad3_Water
@@ -2948,7 +2976,7 @@ Level_TtlCardLoop:
 		jsr	(HUD_Base).l
 
 Level_SkipTtlCard:
-		moveq	#3,d0
+		moveq	#palid_SonicTails,d0
 		bsr.w	PalLoad1
 		bsr.w	LevelSizeLoad
 		bsr.w	DeformBGLayer
@@ -3053,10 +3081,10 @@ Level_Demo:
 Level_ChkWaterPal:
 		tst.b	(Water_flag).w
 		beq.s	Level_Delay
-		moveq	#$B,d0
+		moveq	#palid_HPZWater,d0
 		cmpi.b	#3,(Current_Act).w
 		bne.s	Level_WtrNotHtz
-		moveq	#$D,d0
+		moveq	#palid_SBZ3Water,d0
 
 Level_WtrNotHtz:
 		bsr.w	PalLoad4_Water
@@ -3386,7 +3414,7 @@ loc_509C:
 		clearRAM v_ngfx_buffer,v_ngfx_buffer_end
 		clr.b	(f_wtr_state).w
 		clr.w	(Level_Inactive_flag).w
-		moveq	#$A,d0
+		moveq	#palid_Special,d0
 		bsr.w	PalLoad1
 		jsr	(S1SS_Load).l
 		move.l	#0,(Camera_X_pos).w
@@ -3478,7 +3506,7 @@ loc_5214:
 		bsr.w	NemDec
 		jsr	(HUD_Base).l
 		move	#$2300,sr
-		moveq	#$11,d0
+		moveq	#palid_SSResult,d0
 		bsr.w	PalLoad2
 		moveq	#plcid_Main,d0
 		bsr.w	LoadPLC2
@@ -6770,7 +6798,7 @@ loc_72C2:
 		bne.s	loc_72F4
 		lea	(v_16x16+$980).w,a1
 		lea	(Map16_HTZ).l,a0
-		move.w	#$3FF,d2
+		move.w	#(v_16x16_end-v_16x16)/6-1,d2
 
 loc_72D8:
 		move.w	(a0)+,d0
@@ -6827,7 +6855,7 @@ loc_7348:
 		andi.w	#$FF,d0
 		cmpi.w	#$103,(Current_ZoneAndAct).w
 		bne.s	loc_735E
-		moveq	#$C,d0
+		moveq	#palid_SBZ3,d0
 
 loc_735E:
 		cmpi.w	#$501,(Current_ZoneAndAct).w
@@ -6836,7 +6864,7 @@ loc_735E:
 		bne.s	loc_7370
 
 loc_736E:
-		moveq	#$E,d0
+		moveq	#palid_HTZ2,d0
 
 loc_7370:
 		bsr.w	PalLoad1
@@ -7565,7 +7593,7 @@ loc_79AA:
 		bcs.s	locret_79D4
 		bsr.w	FindFreeObj
 		bne.s	loc_79BC
-		move.b	#$7A,(a1)
+		move.b	#$7A,obID(a1)
 
 loc_79BC:
 		move.w	#bgm_Boss,d0
@@ -7632,7 +7660,7 @@ loc_7A30:
 		bcs.s	locret_7A46
 		bsr.w	FindFreeObj
 		bne.s	locret_7A46
-		move.b	#$76,(a1)
+		move.b	#$76,obID(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 
 locret_7A46:
@@ -7645,7 +7673,7 @@ loc_7A48:
 		move.w	#$4CC,(Camera_Max_Y_pos_target).w
 		bsr.w	FindFreeObj
 		bne.s	loc_7A64
-		move.b	#$75,(a1)
+		move.b	#$75,obID(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 
 loc_7A64:
@@ -7720,7 +7748,7 @@ loc_7AF4:
 		bcs.s	locret_7B10
 		bsr.w	FindFreeObj
 		bne.s	locret_7B10
-		move.b	#$83,(a1)
+		move.b	#$83,obID(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 		moveq	#plcid_EggmanSBZ2,d0
 		bra.w	LoadPLC
@@ -7735,7 +7763,7 @@ loc_7B12:
 		bcs.s	loc_7B2E
 		bsr.w	FindFreeObj
 		bne.s	loc_7B28
-		move.b	#$82,(a1)
+		move.b	#$82,obID(a1)
 		addq.b	#2,(Dynamic_Resize_Routine).w
 
 loc_7B28:
