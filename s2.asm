@@ -33769,9 +33769,9 @@ loc_1AC28:
 		bpl.s	locret_1AC26
 		move.b	#7,(byte_FFFFF721).w
 		move.b	#1,(byte_FFFFF720).w
-		lea	($FFFF7500).l,a1
+		lea	(v_startofram+$7500).l,a1
 		bsr.s	sub_1AC58
-		lea	($FFFF7D00).l,a1
+		lea	(v_startofram+$7D00).l,a1
 
 sub_1AC58:
 		move.w	#7,d1
