@@ -265,7 +265,7 @@ PLC_Signpost_End:
 ; PLC_Invalid:
 PLC_S1SpecialStage:
 	if FixBugs
-		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)
+		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)-1
 	else
 		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)+$10
 	endif

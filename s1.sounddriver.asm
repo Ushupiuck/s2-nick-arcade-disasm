@@ -36,14 +36,14 @@ PSG9:		binclude	"sound/psg/psg9.bin"
 ; their "correct" sped-up main tempos to the list.
 ; byte_71A94:
 SpeedUpIndex:
-		dc.b 7					; GHZ
-		dc.b $72				; LZ
-		dc.b $73				; MZ
-		dc.b $26				; SLZ
-		dc.b $15				; SYZ
-		dc.b 8					; SBZ
-		dc.b $FF				; Invincibility
-		dc.b 5					; Extra Life
+		dc.b 7		; GHZ
+		dc.b $72	; LZ
+		dc.b $73	; MZ
+		dc.b $26	; SLZ
+		dc.b $15	; SYZ
+		dc.b 8		; SBZ
+		dc.b $FF	; Invincibility
+		dc.b 5		; Extra Life
 		;dc.b ?		; Special Stage
 		;dc.b ?		; Title Screen
 		;dc.b ?		; Ending
@@ -108,9 +108,9 @@ SoundPriorities:
 ; sub_71B4C:
 UpdateMusic:
 		stopZ80
-		nop	
-		nop	
-		nop	
+		nop
+		nop
+		nop
 ; loc_71B5A:
 .updateloop:
 		btst	#0,(z80_bus_request).l		; Is the z80 busy?
@@ -119,11 +119,11 @@ UpdateMusic:
 		btst	#7,(z80_dac_status).l		; Is DAC accepting new samples?
 		beq.s	.driverinput			; Branch if yes
 		startZ80
-		nop	
-		nop	
-		nop	
-		nop	
-		nop	
+		nop
+		nop
+		nop
+		nop
+		nop
 		bra.s	UpdateMusic
 ; ===========================================================================
 ; loc_71B82:
