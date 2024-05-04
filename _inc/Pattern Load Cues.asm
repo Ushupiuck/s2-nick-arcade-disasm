@@ -260,7 +260,7 @@ PLC_Signpost_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Sonic 1 Special Stage, although since it's blank, using it will crash the game
-; unless you remove the +$10
+; unless you replace the +$10 with a -1
 ; --------------------------------------------------------------------------------------
 ; PLC_Invalid:
 PLC_S1SpecialStage:

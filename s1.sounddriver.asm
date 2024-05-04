@@ -111,11 +111,7 @@ UpdateMusic:
 		nop
 		nop
 		nop
-; loc_71B5A:
-.updateloop:
-		btst	#0,(z80_bus_request).l		; Is the z80 busy?
-		bne.s	.updateloop			; If so, wait
-
+		waitZ80
 		btst	#7,(z80_dac_status).l		; Is DAC accepting new samples?
 		beq.s	.driverinput			; Branch if yes
 		startZ80

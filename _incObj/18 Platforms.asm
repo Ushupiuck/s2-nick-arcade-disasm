@@ -166,7 +166,7 @@ loc_8974:
 
 loc_8980:
 		move.w	$34(a0),d0
-		move.b	($FFFFFE6C).w,d1
+		move.b	(v_oscillate+$E).w,d1
 		neg.b	d1
 		addi.b	#$30,d1
 		bra.s	loc_89BA
@@ -174,7 +174,7 @@ loc_8980:
 
 loc_8990:
 		move.w	$34(a0),d0
-		move.b	($FFFFFE6C).w,d1
+		move.b	(v_oscillate+$E).w,d1
 		subi.b	#$30,d1
 		bra.s	loc_89BA
 ; ---------------------------------------------------------------------------
@@ -310,5 +310,5 @@ loc_8ABA:
 		move.w	d0,$2C(a0)
 
 loc_8AD2:
-		move.b	($FFFFFE78).w,obAngle(a0)
+		move.b	(v_oscillate+$1A).w,obAngle(a0)
 		rts

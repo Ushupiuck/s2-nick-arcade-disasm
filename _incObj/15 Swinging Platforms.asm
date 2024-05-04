@@ -77,7 +77,7 @@ loc_82F0:
 		addq.b	#1,obSubtype(a0)
 		move.w	a1,d5
 		subi.w	#v_objspace,d5
-		lsr.w	#6,d5
+		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
 		move.b	#8,obRoutine(a1)
@@ -113,7 +113,7 @@ loc_835C:
 loc_8388:
 		move.w	a0,d5
 		subi.w	#v_objspace,d5
-		lsr.w	#6,d5
+		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
 		move.b	d5,(a2)+
 		move.w	#$4080,obAngle(a0)
@@ -142,7 +142,7 @@ loc_83CA:
 
 
 sub_83D2:
-		move.b	($FFFFFE78).w,d0
+		move.b	(v_oscillate+$1A).w,d0
 		move.w	#$80,d1
 		btst	#0,obStatus(a0)
 		beq.s	loc_83E6
@@ -189,7 +189,7 @@ loc_842E:
 loc_8442:
 		moveq	#0,d4
 		move.b	(a2)+,d4
-		lsl.w	#6,d4
+		lsl.w	#object_size_bits,d4
 		addi.l	#v_objspace,d4
 		movea.l	d4,a1
 		moveq	#0,d4
@@ -241,7 +241,7 @@ loc_8472:
 loc_84BA:
 		moveq	#0,d6
 		move.b	-(a2),d6
-		lsl.w	#6,d6
+		lsl.w	#object_size_bits,d6
 		addi.l	#v_objspace,d6
 		movea.l	d6,a1
 		movem.l	d4-d5,-(sp)
@@ -281,7 +281,7 @@ loc_8506:
 loc_850E:
 		moveq	#0,d0
 		move.b	(a2)+,d0
-		lsl.w	#6,d0
+		lsl.w	#object_size_bits,d0
 		addi.l	#v_objspace,d0
 		movea.l	d0,a1
 		bsr.w	DeleteObject2

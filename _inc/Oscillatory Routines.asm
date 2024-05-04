@@ -3,33 +3,32 @@
 
 OscillateNumInit:
 		lea	(v_oscillate).w,a1
-		lea	(Osc_Data).l,a2
-		moveq	#$20,d1
+		lea	(.baselines).l,a2
+		moveq	#bytesToWcnt(.baselines_end-.baselines),d1
 
-loc_465C:
-		move.w	(a2)+,(a1)+
-		dbf	d1,loc_465C
+	.loop:
+		move.w	(a2)+,(a1)+			; copy baseline values to RAM
+		dbf	d1,.loop
 		rts
-; End of function OscillateNumInit
-
-; ---------------------------------------------------------------------------
-Osc_Data:	dc.w   $7C,  $80			; 0
-		dc.w	 0,  $80			; 2
-		dc.w	 0,  $80			; 4
-		dc.w	 0,  $80			; 6
-		dc.w	 0,  $80			; 8
-		dc.w	 0,  $80			; 10
-		dc.w	 0,  $80			; 12
-		dc.w	 0,  $80			; 14
-		dc.w	 0,  $80			; 16
-		dc.w	 0,$50F0			; 18
-		dc.w  $11E,$2080			; 20
-		dc.w   $B4,$3080			; 22
-		dc.w  $10E,$5080			; 24
-		dc.w  $1C2,$7080			; 26
-		dc.w  $276,  $80			; 28
-		dc.w	 0,  $80			; 30
-		dc.w 0
+; ===========================================================================
+.baselines:	dc.w %0000000001111100			; oscillation direction bitfield
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $80, 0
+		dc.w $50F0, $11E
+		dc.w $2080, $B4
+		dc.w $3080, $10E
+		dc.w $5080, $1C2
+		dc.w $7080, $276
+		dc.w $80, 0
+		dc.w $80, 0
+.baselines_end:	even
 
 ; =============== S U B	R O U T	I N E =======================================
 

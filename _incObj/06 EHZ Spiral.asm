@@ -36,7 +36,7 @@ Obj06_Main:
 		lea	(v_player).w,a1
 		moveq	#3,d6
 		bsr.s	sub_149BC
-		lea	(v_2ndplayer).w,a1
+		lea	(v_player2).w,a1
 		addq.b	#1,d6
 
 ; =============== S U B	R O U T	I N E =======================================

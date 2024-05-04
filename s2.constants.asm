@@ -72,6 +72,39 @@ object_size_bits:	equ 6
 object_size:	equ 1<<object_size_bits
 
 ; ---------------------------------------------------------------------------
+; when childsprites are activated (i.e. bit #6 of render_flags set)
+next_subspr		= 6
+mainspr_mapframe	= $B
+mainspr_width		= $E
+mainspr_childsprites 	= $F	; amount of child sprites
+mainspr_height		= $14
+subspr_data		= $10
+sub2_x_pos		= subspr_data+next_subspr*0+0	;x_vel
+sub2_y_pos		= subspr_data+next_subspr*0+2	;y_vel
+sub2_mapframe		= subspr_data+next_subspr*0+5
+sub3_x_pos		= subspr_data+next_subspr*1+0	;y_radius
+sub3_y_pos		= subspr_data+next_subspr*1+2	;priority
+sub3_mapframe		= subspr_data+next_subspr*1+5	;anim_frame
+sub4_x_pos		= subspr_data+next_subspr*2+0	;anim
+sub4_y_pos		= subspr_data+next_subspr*2+2	;anim_frame_duration
+sub4_mapframe		= subspr_data+next_subspr*2+5	;collision_property
+sub5_x_pos		= subspr_data+next_subspr*3+0	;status
+sub5_y_pos		= subspr_data+next_subspr*3+2	;routine
+sub5_mapframe		= subspr_data+next_subspr*3+5
+sub6_x_pos		= subspr_data+next_subspr*4+0	;subtype
+sub6_y_pos		= subspr_data+next_subspr*4+2
+sub6_mapframe		= subspr_data+next_subspr*4+5
+sub7_x_pos		= subspr_data+next_subspr*5+0
+sub7_y_pos		= subspr_data+next_subspr*5+2
+sub7_mapframe		= subspr_data+next_subspr*5+5
+sub8_x_pos		= subspr_data+next_subspr*6+0
+sub8_y_pos		= subspr_data+next_subspr*6+2
+sub8_mapframe		= subspr_data+next_subspr*6+5
+sub9_x_pos		= subspr_data+next_subspr*7+0
+sub9_y_pos		= subspr_data+next_subspr*7+2
+sub9_mapframe		= subspr_data+next_subspr*7+5
+
+; ---------------------------------------------------------------------------
 ; Controller Buttons
 ;
 ; Buttons bit numbers
@@ -93,6 +126,23 @@ button_C_mask:			EQU	1<<button_C	; $20
 button_A_mask:			EQU	1<<button_A	; $40
 button_start_mask:		EQU	1<<button_start	; $80
 
+; ---------------------------------------------------------------------------
+; Art tile stuff
+flip_x              =      (1<<11)
+flip_y              =      (1<<12)
+palette_bit_0       =      5
+palette_bit_1       =      6
+palette_line_0      =      (0<<13)
+palette_line_1      =      (1<<13)
+palette_line_2      =      (2<<13)
+palette_line_3      =      (3<<13)
+high_priority_bit   =      7
+high_priority       =      (1<<15)
+palette_mask        =      $6000
+tile_mask           =      $07FF
+nontile_mask        =      $F800
+drawing_mask        =      $7FFF
+
 Size_of_SegaPCM:	equ $6978
 Size_of_DAC_driver_guess:	equ $1760
 
@@ -105,9 +155,9 @@ psg_input:		equ $C00011
 
 ; Z80 addresses
 z80_ram:		equ $A00000			; start of Z80 RAM
-z80_dac_timpani_pitch:	equ $A000EA
-z80_dac_status:		equ $A01FFD
-z80_dac_sample:		equ $A01FFF
+z80_dac_timpani_pitch:	equ z80_ram+zTimpani_Pitch
+z80_dac_status:		equ z80_ram+zDAC_Status
+z80_dac_sample:		equ z80_ram+zDAC_Sample
 z80_ram_end:		equ $A02000			; end of non-reserved Z80 RAM
 z80_version:		equ $A10001
 z80_port_1_data:	equ $A10002
@@ -139,7 +189,7 @@ TrackSavedDuration:	equ $F				; All tracks
 TrackSavedDAC:		equ $10				; DAC only
 TrackFreq:		equ $10				; FM/PSG only (2 bytes)
 TrackNoteTimeout:	equ $12				; FM/PSG only
-TrackNoteTimeoutMaster:equ $13				; FM/PSG only
+TrackNoteTimeoutMaster:	equ $13				; FM/PSG only
 TrackModulationPtr:	equ $14				; FM/PSG only (4 bytes)
 TrackModulationWait:	equ $18				; FM/PSG only
 TrackModulationSpeed:	equ $19				; FM/PSG only
@@ -220,17 +270,20 @@ v_spritequeue:		ds.b	$400			; sprite display queue, in order of priority
 v_spritequeue_end:
 
 v_objspace:		ds.b	object_size*$80		; object variable space ($40 bytes per object)
+v_objspace_end:
+; 2P mode reserves 6 'blocks' of 12 RAM slots at the end.
+Dynamic_Object_RAM_2P_End = v_objspace_end - ($C * 6) * object_size
 
 ; Title screen objects
-v_titletails	= v_objspace+object_size*2		; object variable space for the "SONIC TEAM PRESENTS" text ($40 bytes)
 v_titlesonic	= v_objspace+object_size*1		; object variable space for Sonic in the title screen ($40 bytes)
+v_titletails	= v_objspace+object_size*2		; object variable space for the "SONIC TEAM PRESENTS" text ($40 bytes)
 v_pressstart	= v_objspace+object_size*2		; object variable space for the "PRESS START BUTTON" text ($40 bytes)
 v_titletm	= v_objspace+object_size*3		; object variable space for the trademark symbol ($40 bytes)
 v_ttlsonichide	= v_objspace+object_size*4		; object variable space for hiding part of Sonic ($40 bytes)
 
 ; Level objects
 v_player	= v_objspace+object_size*0		; object variable space for Sonic ($40 bytes)
-v_2ndplayer	= v_objspace+object_size*1		; object variable space for Tails ($40 bytes)
+v_player2	= v_objspace+object_size*1		; object variable space for Tails ($40 bytes)
 v_hud		= v_objspace+object_size*14		; object variable space for the HUD ($40 bytes)
 
 v_titlecard	= v_objspace+object_size*2		; object variable space for the title card ($100 bytes)
@@ -611,10 +664,10 @@ v_plc_framepatternsleft:ds.w	1
 v_plc_buffer_end:
 
 v_levelvariables:					; variables that are reset between levels
-word_FFFFF700:		ds.w	1
+word_F700:		ds.w	1
 Tails_control_counter:	ds.w	1
 Tails_respawn_counter:	ds.w	1
-word_FFFFF706:		ds.w	1
+word_F706:		ds.w	1
 Tails_CPU_routine:	ds.w	1
 	ds.b	6
 
@@ -626,8 +679,8 @@ Ring_start_addr_P2:	ds.w	1
 Ring_end_addr_P2:	ds.w	1
 	ds.b	6
 
-byte_FFFFF720:		ds.b	1
-byte_FFFFF721:		ds.b	1
+byte_F720:		ds.b	1
+byte_F721:		ds.b	1
 	ds.b	$E
 
 Water_flag:		ds.b	1
@@ -834,10 +887,10 @@ f_creditscheat:		ds.b	1			; hidden credits & press start cheat flag
 v_title_dcount:		ds.w	1			; number of times the d-pad is pressed on title screen
 v_title_ccount:		ds.w	1			; number of times C is pressed on title screen
 Two_player_mode:	ds.w	1
-unk_FFFFFFE9	= Two_player_mode+1
-word_FFFFFFEA:		ds.w	1
-word_FFFFFFEC:		ds.w	1
-word_FFFFFFEE:		ds.w	1
+unk_FFE9	= Two_player_mode+1
+word_FFEA:		ds.w	1
+word_FFEC:		ds.w	1
+word_FFEE:		ds.w	1
 
 f_demo:			ds.w	1			; demo mode flag (0 = no; 1 = yes; $8001 = ending)
 v_demonum:		ds.w	1			; demo level number (not the same as the level number)
@@ -1001,3 +1054,79 @@ flg__Last =	id(ptr_flgend)-1
 
 ; Font
 ArtTile_Credits_Font:		equ $5A0
+
+; ---------------------------------------------------------------------------
+; Level art stuff.
+ArtTile_ArtKos_LevelArt:	equ $000
+
+; EHZ, HTZ
+ArtTile_ArtKos_Checkers:	equ ArtTile_ArtKos_LevelArt+$158
+ArtTile_Art_Flowers1:		equ $394
+ArtTile_Art_Flowers2:		equ $396
+ArtTile_Art_Flowers3:		equ $398
+ArtTile_Art_Flowers4:		equ $39A
+
+; CPZ
+ArtTile_Art_UnkZone_1:		equ $480
+ArtTile_Art_UnkZone_2:		equ $484
+ArtTile_Art_UnkZone_3:		equ $48C
+ArtTile_Art_UnkZone_4:		equ $48E
+ArtTile_Art_UnkZone_5:		equ $490
+ArtTile_Art_UnkZone_6:		equ $491
+ArtTile_Art_UnkZone_7:		equ $495
+ArtTile_Art_UnkZone_8:		equ $498
+
+; HPZ
+ArtTile_Art_HPZPulseOrb_1:	equ $2E8
+ArtTile_Art_HPZPulseOrb_2:	equ $2F0
+ArtTile_Art_HPZPulseOrb_3:	equ $2F8
+ArtTile_ArtNem_HPZ_Bridge:	equ $300
+ArtTile_ArtNem_HPZ_Waterfall:	equ $315
+ArtTile_ArtNem_HPZPlatform:	equ $34A
+ArtTile_ArtNem_HPZOrb:		equ $35A
+ArtTile_ArtNem_HPZ_Emerald:	equ $392
+
+; ---------------------------------------------------------------------------
+; Level-specific objects and badniks.
+
+; EHZ
+ArtTile_Art_EHZPulseBall:	equ $39C
+ArtTile_ArtNem_Waterfall:	equ $39E
+ArtTile_ArtNem_EHZ_Bridge:	equ $3B6
+ArtTile_ArtNem_Buzzer_Fireball:	equ $3BE	; Actually unused
+ArtTile_ArtNem_Masher:		equ $414
+ArtTile_Art_EHZMountains:	equ $500
+
+; General Level Art
+ArtTile_Level:			equ $000
+ArtTile_Ball_Hog:		equ $302
+ArtTile_Bomb:			equ $400
+ArtTile_Crabmeat:		equ $400
+ArtTile_Missile_Disolve:	equ $41C ; Unused
+ArtTile_Buzz_Bomber:		equ $444
+ArtTile_Chopper:		equ $47B
+ArtTile_Yadrin:			equ $47B
+ArtTile_Jaws:			equ $486
+ArtTile_Newtron:		equ $49B
+ArtTile_Burrobot:		equ $4A6
+ArtTile_Basaran:		equ $4B8
+ArtTile_Roller:			equ $4B8
+ArtTile_Moto_Bug:		equ $4F0
+ArtTile_Button:			equ $50F
+ArtTile_Spikes:			equ $51B
+ArtTile_Spring_Horizontal:	equ $523
+ArtTile_Spring_Vertical:	equ $533
+ArtTile_Shield:			equ $541
+ArtTile_Invincibility:		equ $55C
+ArtTile_Game_Over:		equ $55E
+ArtTile_Title_Card:		equ $580
+ArtTile_Animal_1:		equ $580
+ArtTile_Animal_2:		equ $592
+ArtTile_Explosion:		equ $5A0
+ArtTile_Monitor:		equ $680
+ArtTile_HUD:			equ $6CA
+ArtTile_Sonic:			equ $780
+ArtTile_Points:			equ $797
+ArtTile_Lamppost:		equ $7A0
+ArtTile_Ring:			equ $7B2
+ArtTile_Lives_Counter:		equ $7D4

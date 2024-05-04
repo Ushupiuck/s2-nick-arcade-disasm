@@ -89,8 +89,8 @@ sub_7C76:
 		move.w	obGfx(a0),obGfx(a1)
 		move.b	obRender(a0),obRender(a1)
 		bset	#6,obRender(a1)
-		move.b	#$40,$E(a1)
-		move.b	d1,$F(a1)
+		move.b	#$40,mainspr_width(a1)
+		move.b	d1,mainspr_childsprites(a1)
 		subq.b	#1,d1
 		lea	$10(a1),a2
 
@@ -230,7 +230,7 @@ loc_7DA0:
 
 
 sub_7DC0:
-		lea	(v_2ndplayer).w,a1
+		lea	(v_player2).w,a1
 		moveq	#4,d6
 		moveq	#$3B,d5
 		movem.l	d1-d4,-(sp)
@@ -314,7 +314,7 @@ sub_7E60:
 		moveq	#0,d0
 		tst.w	(v_player+obVelX).w
 		bne.s	loc_7E72
-		move.b	($FFFFFE0F).w,d0
+		move.b	(Vint_runcount+3).w,d0
 		andi.w	#$1C,d0
 		lsr.w	#1,d0
 
@@ -324,9 +324,9 @@ loc_7E72:
 		swap	d2
 		move.b	byte_7E9E(pc,d0.w),d2
 		moveq	#0,d0
-		tst.w	(v_2ndplayer+obVelX).w
+		tst.w	(v_player2+obVelX).w
 		bne.s	loc_7E90
-		move.b	($FFFFFE0F).w,d0
+		move.b	(Vint_runcount+3).w,d0
 		andi.w	#$1C,d0
 		lsr.w	#1,d0
 
