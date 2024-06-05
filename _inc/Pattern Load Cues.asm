@@ -54,7 +54,7 @@ ptr_PLC_CPZAnimals:	dc.w PLC_CPZAnimals-ArtLoadCues
 ptr_PLC_EHZAnimals:	dc.w PLC_EHZAnimals-ArtLoadCues
 ptr_PLC_HPZAnimals:	dc.w PLC_HPZAnimals-ArtLoadCues
 ptr_PLC_HTZAnimals:	dc.w PLC_HTZAnimals-ArtLoadCues
-
+; From here onwards, overwritten by random junk
 ptr_PLC_SSResult:	dc.w $1C318-ArtLoadCues
 ptr_PLC_Ending:		dc.w $1C31A-ArtLoadCues
 ptr_PLC_TryAgain:	dc.w $1C31C-ArtLoadCues
@@ -264,11 +264,7 @@ PLC_Signpost_End:
 ; --------------------------------------------------------------------------------------
 ; PLC_Invalid:
 PLC_S1SpecialStage:
-	if FixBugs
 		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)-1
-	else
-		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)+$10
-	endif
 PLC_S1SpecialStage_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
