@@ -1,16 +1,24 @@
+; ---------------------------------------------------------------------------
+; Object 17 - helix of spikes on a pole	(GHZ)
+; ---------------------------------------------------------------------------
+
 Obj17:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
 		move.w	Obj17_Index(pc,d0.w),d1
 		jmp	Obj17_Index(pc,d1.w)
 ; ---------------------------------------------------------------------------
-Obj17_Index:	dc.w loc_8680-Obj17_Index
-		dc.w loc_874A-Obj17_Index
-		dc.w loc_87AC-Obj17_Index
+Obj17_Index:	dc.w Hel_Main-Obj17_Index	; 0
+		dc.w Hel_Action-Obj17_Index	; 2
+		dc.w Hel_Display-Obj17_Index	; 4
+
+hel_frame = objoff_3E		; start frame (different for each spike)
+
+;		$29-38 are used for child object addresses
 ; ---------------------------------------------------------------------------
 
-loc_8680:
-		addq.b	#2,obRoutine(a0)
+Hel_Main:	; Routine 0
+		addq.b	#2,obRoutine(a0)	; -> Hel_Action
 		move.l	#Map_Obj17,obMap(a0)
 		move.w	#$4398,obGfx(a0)
 		bsr.w	Adjust2PArtPointer
@@ -21,28 +29,28 @@ loc_8680:
 		move.w	obY(a0),d2
 		move.w	obX(a0),d3
 		_move.b	obID(a0),d4
-		lea	obSubtype(a0),a2
+		lea	obSubtype(a0),a2 ; move helix length to a2
 		moveq	#0,d1
-		move.b	(a2),d1
-		move.b	#0,(a2)+
+		move.b	(a2),d1		; move helix length to d1
+		move.b	#0,(a2)+	; clear subtype
 		move.w	d1,d0
 		lsr.w	#1,d0
 		lsl.w	#4,d0
-		sub.w	d0,d3
+		sub.w	d0,d3		; d3 is x-axis position of leftmost spike
 		subq.b	#2,d1
-		bcs.s	loc_874A
+		bcs.s	Hel_Action	; skip to action if length is only 1
 		moveq	#0,d6
 
-loc_86D4:
+Hel_Build:
 		bsr.w	FindNextFreeObj
-		bne.s	loc_874A
+		bne.s	Hel_Action
 		addq.b	#1,obSubtype(a0)
 		move.w	a1,d5
 		subi.w	#v_objspace,d5
 		lsr.w	#object_size_bits,d5
 		andi.w	#$7F,d5
-		move.b	d5,(a2)+
-		move.b	#4,obRoutine(a1)
+		move.b	d5,(a2)+	; copy child address to parent RAM
+		move.b	#4,obRoutine(a1)	; -> Hel_Display
 		_move.b	d4,obID(a1)
 		move.w	d2,obY(a1)
 		move.w	d3,obX(a1)
@@ -52,68 +60,64 @@ loc_86D4:
 		move.b	#4,obRender(a1)
 		move.b	#3,obPriority(a1)
 		move.b	#8,obActWid(a1)
-		move.b	d6,$3E(a1)
+		move.b	d6,hel_frame(a1)
 		addq.b	#1,d6
 		andi.b	#7,d6
 		addi.w	#$10,d3
-		cmp.w	obX(a0),d3
-		bne.s	loc_8746
-		move.b	d6,$3E(a0)
+		cmp.w	obX(a0),d3	; is this spike in the centre?
+		bne.s	Hel_NotCentre	; if not, branch
+
+		move.b	d6,hel_frame(a0) ; set parent spike frame
 		addq.b	#1,d6
 		andi.b	#7,d6
-		addi.w	#$10,d3
+		addi.w	#$10,d3		; skip to next spike
 		addq.b	#1,obSubtype(a0)
 
-loc_8746:
-		dbf	d1,loc_86D4
+Hel_NotCentre:
+		dbf	d1,Hel_Build ; repeat d1 times (helix length)
 
-loc_874A:
-		bsr.w	sub_878C
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.w	loc_8766
+Hel_Action:	; Routine 2, 4
+		bsr.w	Hel_RotateSpikes
+		out_of_range.s	Hel_DelAll
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
-loc_8766:
+Hel_DelAll:
 		moveq	#0,d2
-		lea	obSubtype(a0),a2
-		move.b	(a2)+,d2
+		lea	obSubtype(a0),a2 ; move helix length to a2
+		move.b	(a2)+,d2	; move helix length to d2
 		subq.b	#2,d2
-		bcs.s	loc_8788
+		bcs.s	Hel_Delete
 
-loc_8772:
+Hel_DelLoop:
 		moveq	#0,d0
 		move.b	(a2)+,d0
 		lsl.w	#object_size_bits,d0
 		addi.l	#v_objspace,d0
-		movea.l	d0,a1
-		bsr.w	DeleteObject2
-		dbf	d2,loc_8772
+		movea.l	d0,a1		; get child address
+		bsr.w	DeleteObject2	; delete object
+		dbf	d2,Hel_DelLoop ; repeat d2 times (helix length)
 
-loc_8788:
+Hel_Delete:
 		bra.w	DeleteObject
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_878C:
+Hel_RotateSpikes:
 		move.b	(v_ani0_frame).w,d0
-		move.b	#0,obColType(a0)
-		add.b	$3E(a0),d0
+		move.b	#0,obColType(a0) ; make object harmless
+		add.b	hel_frame(a0),d0
 		andi.b	#7,d0
-		move.b	d0,obFrame(a0)
+		move.b	d0,obFrame(a0)	; change current frame
 		bne.s	locret_87AA
-		move.b	#$84,obColType(a0)
+		move.b	#$84,obColType(a0) ; make object harmful
 
 locret_87AA:
 		rts
-; End of function sub_878C
-
+; End of function Hel_RotateSpikes
 ; ---------------------------------------------------------------------------
 
-loc_87AC:
-		bsr.w	sub_878C
+Hel_Display:
+		bsr.w	Hel_RotateSpikes
 		bra.w	DisplaySprite

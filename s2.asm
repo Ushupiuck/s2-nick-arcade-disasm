@@ -609,8 +609,7 @@ Vint_Title:
 ; ===========================================================================
 ; loc_CD2: VintSub6:
 Vint_Unused6:
-		bsr.w	Do_ControllerPal
-		rts
+		bra.w	Do_ControllerPal
 ; ===========================================================================
 ; loc_CD8: VintSub10:
 Vint_Pause:
@@ -715,8 +714,7 @@ loc_F08:
 		movem.l	d0-d1,(Scroll_flags_copy).w
 		bsr.w	LoadTilesAsYouMove
 		jsr	(HudUpdate).l
-		bsr.w	ProcessDPLC
-		rts
+		bra.w	ProcessDPLC
 ; ===========================================================================
 ; loc_F88: VintSubE:
 Vint_UnusedE:
@@ -981,13 +979,8 @@ ClearScreen:
 		move.w	#$8F02,(a5)
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
-	if FixBugs
 		clearRAM Sprite_Table,Sprite_Table_End
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded
-	else
-		clearRAM Sprite_Table,Sprite_Table_End+4 ; Clears too much RAM, clearing the first 4 bytes of v_pal_water.
-		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded+4 ; Clears too much RAM, clearing the first 4 bytes of v_objspace.
-	endif
 		rts
 ; End of function ClearScreen
 
@@ -1212,9 +1205,6 @@ RunPLC_RAM:
 
 loc_16FE:
 		andi.w	#$7FFF,d2
-	if ~~FixBugs
-		move.w	d2,(v_plc_patternsleft).w
-	endif
 		bsr.w	NemDec_BuildCodeTable
 		move.b	(a0)+,d5
 		asl.w	#8,d5
@@ -1228,9 +1218,7 @@ loc_16FE:
 		move.l	d0,(v_plc_previousrow).w
 		move.l	d5,(v_plc_dataword).w
 		move.l	d6,(v_plc_shiftvalue).w
-	if FixBugs
 		move.w	d2,(v_plc_patternsleft).w
-	endif
 
 locret_1730:
 		rts
@@ -1307,7 +1295,6 @@ loc_17D2:
 		move.l	6(a0),(a0)+
 		dbf	d0,loc_17D2
 
-	if FixBugs
 		; The above code does not properly 'pop' the 16th PLC entry.
 		; Because of this, occupying the 16th slot will cause it to
 		; be repeatedly decompressed infinitely.
@@ -1320,8 +1307,6 @@ loc_17D2:
 	endif
 
 		clr.l	(v_plc_buffer_only_end-6).w
-	endif
-
 		rts
 ; End of function ProcessDPLC
 
@@ -1981,8 +1966,6 @@ Pal_S1Continue:		binclude	"palette/S1 Continue Screen.bin"
 Pal_S1Ending:		binclude	"palette/S1 Ending.bin"
 			even
 ; ===========================================================================
-		nop
-; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Subroutine to perform vertical synchronization
 ; ---------------------------------------------------------------------------
@@ -2129,8 +2112,6 @@ CalcAngle_Zero:
 AngleData:	binclude "misc/angles.bin"
 		even
 ; ===========================================================================
-		nop
-; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Sega logo, exact same as Sonic 1's
 ; ---------------------------------------------------------------------------
@@ -2200,8 +2181,6 @@ Sega_WaitEnd:
 Sega_GoToTitleScreen:
 		move.b	#GameModeID_TitleScreen,(v_gamemode).w
 		rts
-; ===========================================================================
-		dc.w 0
 ; ===========================================================================
 
 TitleScreen:
@@ -2421,10 +2400,9 @@ loc_354C:
 
 loc_355A:
 		move.b	#GameModeID_S1Credits,(v_gamemode).w
-		move.b	#bgm_Credits,d0
-		bsr.w	PlaySound_Special
 		move.w	#0,(v_creditsnum).w
-		rts
+		move.b	#bgm_Credits,d0
+		bra.w	PlaySound_Special
 ; ---------------------------------------------------------------------------
 
 loc_3570:
@@ -2485,8 +2463,7 @@ PlayLevel:
 		move.b	d0,(v_continues).w
 		move.l	#5000,(v_scorelife).w
 		move.b	#bgm_Fade,d0
-		bsr.w	PlaySound_Special
-		rts
+		bra.w	PlaySound_Special
 ; ---------------------------------------------------------------------------
 LvlSelCode_J:	dc.b   1,  2,  2,  2,  2,  1,  0,$FF	; up, down, down, down, down, up
 LvlSelCode_US:	dc.b   1,  2,  2,  2,  2,  1,  0,$FF	; up, down, down, down, down, up
@@ -2587,8 +2564,7 @@ loc_3726:
 
 loc_3736:
 		move.w	d0,(v_levselitem).w
-		bsr.w	LevelSelect_TextLoad
-		rts
+		bra.w	LevelSelect_TextLoad
 ; ---------------------------------------------------------------------------
 
 loc_3740:
@@ -2614,7 +2590,7 @@ loc_3762:
 
 loc_3772:
 		move.w	d0,(v_levselsound).w
-		bsr.w	LevelSelect_TextLoad
+		bra.w	LevelSelect_TextLoad
 
 locret_377A:
 		rts
@@ -2665,8 +2641,7 @@ loc_37E6:
 		lsr.b	#4,d0
 		bsr.w	sub_3808
 		move.b	d2,d0
-		bsr.w	sub_3808
-		rts
+		bra.w	sub_3808
 ; End of function LevelSelect_TextLoad
 
 
@@ -2821,8 +2796,6 @@ loc_3AFC:
 		rts
 ; End of function UnknownSub_4
 
-; ---------------------------------------------------------------------------
-		nop
 ; ---------------------------------------------------------------------------
 MusicList:	dc.b bgm_GHZ
 		dc.b bgm_LZ
@@ -2987,7 +2960,6 @@ Level_SkipTtlCard:
 		bsr.w	MainLevelLoadBlock
 		jsr	(LoadAnimatedBlocks).l
 		bsr.w	LoadTilesFromStart
-		jsr	(ApplySonic1Collision).l
 		bsr.w	LoadCollisionIndexes
 		bsr.w	WaterEffects
 		move.b	#1,(v_player).w
@@ -3029,7 +3001,7 @@ Level_LoadObj:
 		jsr	(RingsManager).l
 		jsr	(ExecuteObjects).l
 		jsr	(BuildSprites).l
-		bsr.w	j_AniArt_Load
+		jsr	(AniArt_Load).l
 		moveq	#0,d0
 		tst.b	(v_lastlamp).w
 		bne.s	Level_SkipClr
@@ -3145,7 +3117,7 @@ Level_DoScroll:
 Level_SkipScroll:
 		bsr.w	ChangeWaterSurfacePos
 		jsr	(RingsManager).l
-		bsr.w	j_AniArt_Load
+		jsr	(AniArt_Load).l
 		bsr.w	PalCycle_Load
 		bsr.w	RunPLC_RAM
 		bsr.w	OscillateNumDo
@@ -3355,12 +3327,6 @@ Demo_S1GHZ:	binclude	"demodata/S1/Intro - GHZ.bin"
 Demo_S1SS:	binclude	"demodata/S1/Intro - Special Stage.bin"
 		even
 ; ---------------------------------------------------------------------------
-
-j_AniArt_Load:
-		jmp	(AniArt_Load).l
-; ---------------------------------------------------------------------------
-		align 4
-
 ; ===========================================================================
 ; Sonic 1 Special Stage; crashes due to bad PLCs and missing pointers, but
 ; is otherwise identical
@@ -3395,21 +3361,7 @@ loc_507C:
 		bsr.w	S1_SSBGLoad
 		moveq	#$14,d0
 		bsr.w	RunPLC_ROM
-	if FixBugs
 		clearRAM v_objspace,v_objend
-	else
-		; DANGER!
-		; This does not actually clear the object space!
-		; this actually clears some of the collision
-		; addresses instead!
-		lea	(v_objspace+$2000).w,a1
-		moveq	#0,d0
-		move.w	#bytesToLcnt(v_objend-v_objspace),d1
-
-loc_509C:
-		move.l	d0,(a1)+
-		dbf	d1,loc_509C
-	endif
 		clearRAM v_levelvariables,v_levelvariables_end
 		clearRAM v_timingvariables,v_timingvariables_end-$80
 		clearRAM v_ngfx_buffer,v_ngfx_buffer_end
@@ -3536,8 +3488,7 @@ loc_529C:
 		bne.s	loc_529C
 		move.w	#sfx_EnterSS,d0
 		bsr.w	PlaySound_Special
-		bsr.w	Pal_MakeFlash
-		rts
+		bra.w	Pal_MakeFlash
 ; ---------------------------------------------------------------------------
 
 loc_52D4:
@@ -3614,8 +3565,7 @@ loc_5360:
 		move.l	#$50000003,d0
 		moveq	#$3F,d1
 		moveq	#$3F,d2
-		bsr.w	PlaneMapToVRAM_H40
-		rts
+		bra.w	PlaneMapToVRAM_H40
 ; End of function S1_SSBGLoad
 
 
@@ -3720,7 +3670,7 @@ Pal_S1SSCyc2:	dc.w  $EEA, $EE0, $AA0,	$880, $660, $440, $EE0,	$AA0, $440, $AA0, 
 		dc.w  $8CA, $6A8, $486,	$264,  $42, $8CA, $6A8,	 $42, $6A8, $6A8, $6A8,	$684, $684, $684, $442,	$442 ; 64
 		dc.w  $442, $400, $400,	$400, $EEC, $CCA, $AA8,	$886, $664, $442, $CCA,	$AA8, $442, $AA8, $AA8,	$AA8 ; 80
 		dc.w  $864, $864, $864,	$642, $642, $642, $400,	$400, $400 ; 96
-
+		even
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -3817,8 +3767,8 @@ byte_56F6:	dc.b   9,$28,$18,$10,$28,$18,$10,$30,$18,  8,$10 ; 0
 byte_5701:	dc.b   6,$30,$30,$30,$28,$18,$18,$18	; 0
 byte_5709:	dc.b   8,  2,  4,$FF,  2,  3,  8,$FF,  4,  2,  2,  3,  8,$FD,  4,  2 ; 0
 		dc.b   2,  3,  2,$FF,  0		; 16
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -3887,8 +3837,9 @@ LevelSizeArray:
 		dc.w	 0,  $2FFF,     0,	$320	; S1 Ending 3
 		dc.w	 0,  $2FFF,     0,	$320	; S1 Ending 4
 ; ===========================================================================
-S1EndingStartLoc:dc.w	$50, $3B0, $EA0, $46C,$1750,  $BD, $A00, $62C
-		dc.w  $BB0,  $4C,$1570,	$16C, $1B0, $72C,$1400,	$2AC
+S1EndingStartLoc:
+		dc.w	$50, $3B0, $EA0, $46C, $1750, $BD, $A00, $62C
+		dc.w	$BB0, $4C, $1570, $16C, $1B0, $72C, $1400, $2AC
 ; ===========================================================================
 
 LevelSize_CheckLamp:
@@ -3947,8 +3898,7 @@ loc_5900:
 loc_590A:
 		move.w	d0,(Camera_Y_pos).w
 		move.w	d0,(Camera_Y_pos_P2).w
-		bsr.w	BgScrollSpeed
-		rts
+		bra.w	BgScrollSpeed
 ; End of function LevelSizeLoad
 
 ; ---------------------------------------------------------------------------
@@ -4756,12 +4706,10 @@ loc_61B2:
 		swap	d3
 		dbf	d1,loc_61B2
 
-	if FixBugs
 		rept 2
 		move.w	d4,(a1)+
 		move.w	d3,(a1)+
 		endm
-	endif
 		rts
 ; End of function Deform_TitleScreen
 
@@ -7572,8 +7520,6 @@ DynResize_EHZ2_03:
 DynResize_EHZ3:
 		rts
 ; ---------------------------------------------------------------------------
-		rts
-; ---------------------------------------------------------------------------
 
 locret_7980:
 		rts
@@ -7622,8 +7568,6 @@ locret_79D4:
 
 loc_79D6:
 		move.w	(Camera_RAM).w,(Camera_Min_X_pos).w
-		rts
-; ---------------------------------------------------------------------------
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -7866,9 +7810,8 @@ Map_obj11_HPZ:	binclude	"mappings/sprite/obj11_HPZ.bin"
 ; Sprite mappings - EHZ bridge
 ; ---------------------------------------------------------------------------
 Map_obj11:	binclude	"mappings/sprite/obj11.bin"
+		even
 ; ===========================================================================
-		nop
-
 		include	"_incObj/15 Swinging Platforms.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj15:	dc.w word_8534-Map_Obj15
@@ -7927,9 +7870,8 @@ word_8648:	dc.w 4
 		dc.w $E80A, $812, $809,	   0		; 4
 		dc.w	$A,$1012,$1009,$FFE8		; 8
 		dc.w	$A,$101B,$100D,	   0		; 12
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"_incObj/17 Spiked Pole Helix.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj17:	dc.w word_87C4-Map_Obj17
@@ -7955,7 +7897,7 @@ word_87F6:	dc.w 1
 word_8800:	dc.w 1
 		dc.w $F400,  $11,    8,$FFFD		; 0
 word_880A:	dc.w 0
-
+		even
 		include	"_incObj/18 Platforms.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj18x:	dc.w word_8ADE-Map_Obj18x
@@ -8002,9 +7944,8 @@ word_8B68:	dc.w $A
 ; Sprite mappings - EHZ platforms
 ; ---------------------------------------------------------------------------
 Map_obj18_EHZ:	binclude	"mappings/sprite/obj18_EHZ.bin"
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"_incObj/1A Collapsing Platforms.asm"
 		include	"_incObj/S1/53 Collapsing Floors.asm"
 ; ---------------------------------------------------------------------------
@@ -8248,9 +8189,8 @@ word_9340:	dc.w $C
 		dc.w	 5, $80C, $806,	   0		; 36
 		dc.w	 5, $80C, $806,	 $10		; 40
 		dc.w	 5, $808, $804,	 $20		; 44
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"_incObj/1C Scenery.asm"
 ; ---------------------------------------------------------------------------
 Ani_Obj1C:	dc.w byte_9494-Ani_Obj1C
@@ -8564,9 +8504,8 @@ word_9A92:	dc.w 1
 		dc.w $F00F,  $40,  $20,$FFF0		; 0
 word_9A9C:	dc.w 1
 		dc.w $F00F,  $50,  $28,$FFF0		; 0
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"_incObj/28 Animals.asm"
 		include	"_incObj/29 Points.asm"
 ; ---------------------------------------------------------------------------
@@ -8621,9 +8560,7 @@ word_A0AA:	dc.w 2
 word_A0BC:	dc.w 2
 		dc.w $F805,   $A,    5,$FFF0		; 0
 		dc.w $F805,   $E,    7,	   0		; 4
-
-; ===========================================================================
-		nop
+		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 1F - Crabmeat from GHZ
@@ -8849,12 +8786,12 @@ byte_A31A:	dc.b  $F,$21,  3,  2,$FF
 byte_A31F:	dc.b  $F,  1,$23,$22,$FF
 byte_A324:	dc.b  $F,  4,$FF
 byte_A327:	dc.b   1,  5,  6,$FF,  0
-
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj1F:	binclude	"mappings/sprite/obj1F.bin"
-
+		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Object 22 - Buzz Bomber from GHZ
@@ -9094,7 +9031,7 @@ Ani_obj23:	dc.w byte_A662-Ani_obj23
 		dc.w byte_A666-Ani_obj23
 byte_A662:	dc.b   7,  0,  1,$FC
 byte_A666:	dc.b   1,  2,  3,$FF
-
+		even
 ; ---------------------------------------------------------------------------
 ; sprite mappings - Buzz Bomber
 ; ---------------------------------------------------------------------------
@@ -9104,9 +9041,7 @@ Map_obj22:	binclude	"mappings/sprite/obj22.bin"
 ; sprite mappings - Buzz Bomber missile
 ; ---------------------------------------------------------------------------
 Map_obj23:	binclude	"mappings/sprite/obj23.bin"
-
-; ===========================================================================
-		nop
+		even
 ; ===========================================================================
 ;----------------------------------------------------------------------------
 ; Object 25 - Rings
@@ -9578,8 +9513,8 @@ word_AE34:	dc.w 4
 		dc.w $E00F, $844, $822,	   0		; 4
 		dc.w	$F,$1044,$1022,$FFE0		; 8
 		dc.w	$F,$1844,$1822,	   0		; 12
+		even
 ; ---------------------------------------------------------------------------
-		nop
 ;----------------------------------------------------
 ; Object 26 - monitor
 ;----------------------------------------------------
@@ -10237,6 +10172,9 @@ Obj34_Index:	dc.w Obj34_CheckLZ4-Obj34_Index		; 0
 		dc.w Obj34_CheckPos-Obj34_Index		; 1
 		dc.w Obj34_Wait-Obj34_Index		; 2
 		dc.w Obj34_Wait-Obj34_Index		; 3
+
+card_mainX = objoff_30		; position for card to display on
+card_finalX = objoff_32		; position for card to finish on
 ; ---------------------------------------------------------------------------
 
 Obj34_CheckLZ4:
@@ -10308,8 +10246,6 @@ loc_B98E:
 		bmi.s	Obj34_NoDisplay
 		cmpi.w	#$200,d0
 		bcc.s	Obj34_NoDisplay
-		rts
-; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
@@ -10321,8 +10257,6 @@ Obj34_Wait:
 		tst.w	obTimeFrame(a0)
 		beq.s	Obj34_CheckPos2
 		subq.w	#1,obTimeFrame(a0)
-		rts
-; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
@@ -10342,8 +10276,6 @@ Obj34_Move2:
 		bmi.s	Obj34_NoDisplay2
 		cmpi.w	#$200,d0
 		bcc.s	Obj34_NoDisplay2
-		rts
-; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
@@ -10476,7 +10408,15 @@ Obj3A:
 Obj3A_Index:	dc.w Obj3A_ChkPLC-Obj3A_Index
 		dc.w Obj3A_ChkPos-Obj3A_Index
 		dc.w Obj3A_Wait-Obj3A_Index
+		dc.w Obj3A_TimeBonus-Obj3A_Index
+		dc.w Obj3A_Wait-Obj3A_Index
 		dc.w Obj3A_NextLevel-Obj3A_Index
+		dc.w Obj3A_Wait-Obj3A_Index
+		dc.w loc_BCF8-Obj3A_Index
+		dc.w loc_G766-Obj3A_Index
+
+got_mainX = objoff_30		; position for card to display on
+got_finalX = objoff_32		; position for card to finish on
 ; ===========================================================================
 ; loc_BB5C:
 Obj3A_ChkPLC:
@@ -10484,7 +10424,6 @@ Obj3A_ChkPLC:
 		beq.s	Obj3A_Config
 		rts
 ; ---------------------------------------------------------------------------
-; loc_BB64:
 Obj3A_Config:
 		movea.l	a0,a1
 		lea	(Obj3A_Conf).l,a2
@@ -10527,8 +10466,6 @@ loc_BBCC:
 		bmi.s	locret_BBDE
 		cmpi.w	#$200,d0
 		bcc.s	locret_BBDE
-		rts
-; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
 ; ===========================================================================
 
@@ -10555,11 +10492,10 @@ Obj3A_Wait:
 		addq.b	#2,obRoutine(a0)
 
 locret_BC0E:
-		rts
-; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
 ; ===========================================================================
-; Obj3A_TimeBonus:
+
+Obj3A_TimeBonus:
 		bsr.w	DisplaySprite
 		move.b	#1,(f_endactbonus).w
 		moveq	#0,d0
@@ -10613,7 +10549,7 @@ Obj3A_NextLevel:
 		tst.w	d0
 		bne.s	Obj3A_ChkSS
 		move.b	#GameModeID_SegaScreen,(v_gamemode).w
-		bra.s	locret_BCC2
+		bra.w	DisplaySprite
 ; ===========================================================================
 ; loc_BCAA:
 Obj3A_ChkSS:
@@ -10621,15 +10557,11 @@ Obj3A_ChkSS:
 		tst.b	(f_bigring).w
 		beq.s	loc_BCBC
 		move.b	#GameModeID_SpecialStage,(v_gamemode).w
-		bra.s	locret_BCC2
+		bra.w	DisplaySprite
 ; ===========================================================================
 
 loc_BCBC:
 		move.w	#1,(Level_Inactive_flag).w
-
-locret_BCC2:
-		rts
-; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
 ; ===========================================================================
 LevelOrder:	dc.w	 1,    2, $200,	   0		; 0
@@ -10669,6 +10601,8 @@ loc_BD1E:
 		move.w	#bgm_FZ,d0
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
+
+loc_G766:
 		addq.w	#2,(Camera_Max_X_pos).w
 		cmpi.w	#$2100,(Camera_Max_X_pos).w
 		beq.w	DeleteObject
@@ -21601,54 +21535,6 @@ loc_13014:
 		rts
 ; End of function FindWall2
 
-; ---------------------------------------------------------------------------
-; This dummied out subroutine takes Green Hill Zone/the Sonic 1 collision
-; format and converts it to the format used in-game - UNLIKE Sonic 1/2 Final,
-; where this instead converts the collision from a bitmap-like format to the
-; one used in game (though both of these would require a cartridge that could
-; write data to itself, not standard carts).
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
-
-; FloorLog_Unk: ConvertCollisionArray:
-ApplySonic1Collision:
-		rts
-; ---------------------------------------------------------------------------
-		lea	(ColArray1_GHZ).l,a1
-		tst.b	(Current_Zone).w
-		beq.s	loc_13038
-		lea	(ColArray1).l,a1
-
-loc_13038:
-		lea	(ColArray1).l,a2
-		move.w	#$7FF,d1
-
-loc_13042:
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_13042
-		lea	(ColArray2).l,a2
-		move.w	#$7FF,d1
-
-loc_13052:
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_13052
-		lea	(AngleMap_GHZ).l,a1
-		tst.b	(Current_Zone).w
-		beq.s	loc_1306A
-		lea	(AngleMap).l,a1
-
-loc_1306A:
-		lea	(AngleMap).l,a2
-		move.w	#$7F,d1
-
-loc_13074:
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_13074
-		rts
-; End of function ApplySonic1Collision
-
-
 ; =============== S U B	R O U T	I N E =======================================
 
 ; Sonic_WalkSpeed:
@@ -31547,9 +31433,9 @@ j_Adjust2PArtPointer_1:
 ; --------------------------------------------------------------------------------------
 ; Leftover art from an unknown game, overwrites the other Sonic 1 PLC entries
 ; --------------------------------------------------------------------------------------
-LeftoverArt_Unknown:
-		binclude	"art/uncompressed/leftovers/1C318.bin"
-		even
+;LeftoverArt_Unknown:
+;		binclude	"art/uncompressed/leftovers/1C318.bin"
+;		even
 AngleMap_GHZ:	binclude	"collision/S1/Angle Map.bin"
 		even
 AngleMap:	binclude	"collision/Curve and resistance mapping.bin"
@@ -31695,33 +31581,33 @@ Art_BigRing:	binclude	"art/uncompressed/Giant Ring.bin"
 ; --------------------------------------------------------------------------------------
 ; leftover level layouts from a	previous build
 ; --------------------------------------------------------------------------------------
-Leftover_LevelLayouts:
-		binclude	"misc/leftovers/2C292.bin"
-		even
+;Leftover_LevelLayouts:
+;		binclude	"misc/leftovers/2C292.bin"
+;		even
 ;----------------------------------------------------
 ; A duplicate copy of the big ring art
 ;----------------------------------------------------
-Leftover_Art_BigRing:
-		binclude	"art/uncompressed/Giant Ring.bin"
-		even
+;Leftover_Art_BigRing:
+;		binclude	"art/uncompressed/Giant Ring.bin"
+;		even
 ; --------------------------------------------------------------------------------------
 ; some level mappings	(16x16 or 256x256?)
 ; --------------------------------------------------------------------------------------
-Leftover_LevelMappings:
-		binclude	"misc/leftovers/2E292.bin"
-		even
+;Leftover_LevelMappings:
+;		binclude	"misc/leftovers/2E292.bin"
+;		even
 ; --------------------------------------------------------------------------------------
 ; leftover art - full 128 character ASCII table
 ; --------------------------------------------------------------------------------------
-Leftover_Art_Alphabet:
-		binclude	"art/uncompressed/leftovers/128 char ASCII.bin"
-		even
+;Leftover_Art_Alphabet:
+;		binclude	"art/uncompressed/leftovers/128 char ASCII.bin"
+;		even
 ; --------------------------------------------------------------------------------------
 ; Leftover level mappings and palettes from a previous build
 ; --------------------------------------------------------------------------------------
-Leftover_31000:
-		binclude	"misc/leftovers/31000.bin"
-		even
+;Leftover_31000:
+;		binclude	"misc/leftovers/31000.bin"
+;		even
 ; --------------------------------------------------------------------------------------
 ; Object layouts
 ; --------------------------------------------------------------------------------------
@@ -31850,8 +31736,8 @@ ObjPos_Null:	dc.w $FFFF,    0,    0
 ; https://clownacy.wordpress.com/2022/03/30/everything-that-i-know-about-sonic-the-hedgehogs-source-code/
 ; https://tcrf.net/Proto:Sonic_the_Hedgehog_2_(Genesis)/Nick_Arcade_Prototype/Symbol_Tables
 ; ---------------------------------------------------------------------------
-Leftover_418A8:	binclude	"misc/leftovers/418A8.bin"
-		even
+;Leftover_418A8:	binclude	"misc/leftovers/418A8.bin"
+;		even
 ; ---------------------------------------------------------------------------
 ; Ring layouts; one entry per act, four entries per zone
 ; ---------------------------------------------------------------------------
@@ -31918,8 +31804,8 @@ RingPos_CPZ1:	binclude	"level/rings/CPZ_1.bin"
 ; It also contains the raw source code for debug mode.
 ; ---------------------------------------------------------------------------
 
-Leftover_50A9C:	binclude	"misc/leftovers/50A9C.bin"
-		even
+;Leftover_50A9C:	binclude	"misc/leftovers/50A9C.bin"
+;		even
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -32242,8 +32128,8 @@ Map128_GHZ:	binclude	"mappings/128x128/GHZ.kc"
 ; --------------------------------------------------------------------------------------
 ; yet another leftover chunk
 ; --------------------------------------------------------------------------------------
-Leftover_E0178:	binclude	"misc/leftovers/E0178.bin"
-		even
+;Leftover_E0178:	binclude	"misc/leftovers/E0178.bin"
+;		even
 S1Nem_EndingGraphics:
 		binclude	"art/nemesis/S1/Ending - Flowers.nem"
 		even
@@ -32258,12 +32144,12 @@ S1Nem_EndingSONICText:
 ; just to remove it given it takes up ONE TENTH of the cartridge space
 ; --------------------------------------------------------------------------------------
 
-Leftover_E1670:
-		binclude	"misc/leftovers/E1670.bin"
-		even
+;Leftover_E1670:
+;		binclude	"misc/leftovers/E1670.bin"
+;		even
 
-		cnop	-1,2<<lastbit(*-1)
-		dc.b	0
+;		cnop	-1,2<<lastbit(*-1)
+;		dc.b	0
 
 ; end of 'ROM'
 		END
