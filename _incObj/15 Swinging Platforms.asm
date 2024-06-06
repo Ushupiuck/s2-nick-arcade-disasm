@@ -267,7 +267,7 @@ locret_84EC:
 loc_84EE:
 		move.w	$3A(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_8506
 		bra.w	DisplaySprite

@@ -208,7 +208,7 @@ out_of_range:	macro exit,pos
 		move.w	obX(a0),d0	; get object position
 		endif
 		andi.w	#$FF80,d0	; round down to nearest $80
-		sub.w	(Camera_X_pos_coarse).w,d0		; approx distance between object and screen
+		sub.w	(v_screenposx_coarse).w,d0		; approx distance between object and screen
 		cmpi.w	#128+320+192,d0
 		bhi.ATTRIBUTE	exit
 		endm

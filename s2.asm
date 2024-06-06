@@ -9106,7 +9106,7 @@ loc_A88A:
 		move.b	(v_ani1_frame).w,obFrame(a0)
 		move.w	$32(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.s	loc_A8DA
 		bra.w	DisplaySprite
@@ -9323,7 +9323,7 @@ loc_AAD6:
 		move.b	(v_ani1_frame).w,obFrame(a0)
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -9382,7 +9382,7 @@ loc_AB7E:
 		bsr.s	sub_AB98
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -9651,7 +9651,7 @@ loc_AFBA:
 loc_AFC4:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -11212,7 +11212,7 @@ loc_C766:
 loc_C770:
 		move.w	$30(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -11335,7 +11335,7 @@ loc_C882:
 		bsr.w	SolidObject
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -11870,7 +11870,7 @@ MarkObjGone:
 loc_CE64:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_CE7C
 		bra.w	DisplaySprite
@@ -11897,7 +11897,7 @@ MarkObjGone2:
 loc_CE9A:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_CEB0
 		rts
@@ -11920,7 +11920,7 @@ MarkObjGone_P1:
 		bne.s	MarkObjGone_P2
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_CEE4
 		bra.w	DisplaySprite
@@ -11942,14 +11942,14 @@ MarkObjGone_P2:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
 		move.w	d0,d1
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_CF14
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
 loc_CF14:
-		sub.w	(Camera_X_pos_coarse_P2).w,d1
+		sub.w	(v_screenposx_coarse_P2).w,d1
 		cmpi.w	#$280,d1
 		bhi.w	loc_CF24
 		bra.w	DisplaySprite
@@ -13661,7 +13661,7 @@ ObjectsManager_Main:
 		move.w	(Camera_RAM).w,d1
 		subi.w	#$80,d1
 		andi.w	#$FF80,d1
-		move.w	d1,(Camera_X_pos_coarse).w
+		move.w	d1,(v_screenposx_coarse).w
 		lea	(v_objstate).w,a2
 		moveq	#0,d2
 		move.w	(Camera_RAM).w,d6
@@ -13816,10 +13816,10 @@ loc_DDE0:
 ObjectsManager_2P_Main:
 		move.w	(Camera_RAM).w,d1
 		andi.w	#$FF00,d1
-		move.w	d1,(Camera_X_pos_coarse).w
+		move.w	d1,(v_screenposx_coarse).w
 		move.w	(Camera_X_pos_P2).w,d1
 		andi.w	#$FF00,d1
-		move.w	d1,(Camera_X_pos_coarse_P2).w
+		move.w	d1,(v_screenposx_coarse_P2).w
 		move.b	(Camera_RAM).w,d6
 		andi.w	#$FF,d6
 		move.w	(Camera_X_pos_last).w,d0
@@ -14344,7 +14344,7 @@ Obj41:
 loc_E1E0:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -15335,7 +15335,7 @@ Obj44_Main:
 Obj44_Display:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -15359,7 +15359,7 @@ Obj0D:
 		bsr.w	AnimateSprite
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -22227,7 +22227,7 @@ Obj7D_Main:
 loc_13804:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.s	loc_13818
 		rts
@@ -22244,7 +22244,7 @@ Obj7D_DelayDelete:
 		bmi.s	loc_13844
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.s	loc_13844
 		jmp	(DisplaySprite).l
@@ -22579,7 +22579,7 @@ loc_13C44:
 loc_13C50:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		move.w	(v_waterpos1).w,d0
@@ -22944,7 +22944,7 @@ Obj12_Display:
 		bsr.w	SolidObject
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -23062,7 +23062,7 @@ loc_1457C:
 loc_14584:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -23074,7 +23074,7 @@ loc_1459C:
 		move.b	d0,obFrame(a1)
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		rts
@@ -23083,7 +23083,7 @@ loc_1459C:
 loc_145BC:
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -23299,7 +23299,7 @@ Obj14:
 		jsr	Obj14_Index(pc,d1.w)
 		move.w	$30(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	DeleteObject
 		bra.w	DisplaySprite
@@ -23683,7 +23683,7 @@ Obj16_Main:
 		move.w	$30(a0),d0
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_152AA
 		bra.w	loc_152A4
@@ -23826,7 +23826,7 @@ Obj19_Main:
 		bsr.w	sub_F78A
 		move.w	$30(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_154C6
 		bra.w	loc_154C0
@@ -23941,7 +23941,7 @@ loc_15418:
 		addq.l	#6,sp
 		move.w	$30(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_154C6
 		rts
@@ -24102,7 +24102,7 @@ Obj49_Main:
 		bne.s	loc_156F6
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_1586E
 
@@ -24637,7 +24637,7 @@ Obj4F_Main:
 		bsr.w	j_AnimateSprite_2
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.w	loc_15E3E
 		bra.w	loc_15EE8
@@ -28539,7 +28539,7 @@ Obj3E:
 		jsr	Obj3E_Index(pc,d1.w)
 		move.w	obX(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.s	loc_1950A
 		jmp	(DisplaySprite).l

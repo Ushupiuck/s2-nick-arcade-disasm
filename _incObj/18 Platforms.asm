@@ -87,7 +87,7 @@ loc_88E8:
 loc_88F2:
 		move.w	$32(a0),d0
 		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
+		sub.w	(v_screenposx_coarse).w,d0
 		cmpi.w	#$280,d0
 		bhi.s	loc_8908
 		bra.w	DisplaySprite

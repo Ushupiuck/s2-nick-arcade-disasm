@@ -702,7 +702,7 @@ Secondary_Angle:	ds.b	1
 
 Obj_placement_routine:	ds.b	1
 	ds.b	1					; $FFFFF76D ; seems unused
-Camera_X_pos_last:	ds.w	1			; Camera_X_pos_coarse from the previous frame
+Camera_X_pos_last:	ds.w	1			; v_screenposx_coarse from the previous frame
 Camera_X_pos_last_End:
 
 Object_Manager_Addresses:
@@ -763,11 +763,11 @@ f_endactbonus:		ds.b	1			; time/ring bonus update flag at the end of an act
 			ds.b	1
 v_lz_deform:		ds.w	1			; LZ deformation offset, in units of $80
 
-Camera_X_pos_coarse:	ds.w	1			; (Camera_X_pos - 128) / 256
-Camera_X_pos_coarse_End:
+v_screenposx_coarse:	ds.w	1			; (Camera_X_pos - 128) / 256
+v_screenposx_coarse_End:
 
-Camera_X_pos_coarse_P2:	ds.w	1
-Camera_X_pos_coarse_P2_End:
+v_screenposx_coarse_P2:	ds.w	1
+v_screenposx_coarse_P2_End:
 
 Tails_LastLoadedDPLC:	ds.b	1
 TailsTails_LastLoadedDPLC:	ds.b	1
