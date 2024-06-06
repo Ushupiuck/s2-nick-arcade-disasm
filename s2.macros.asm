@@ -225,7 +225,14 @@ copyTilemap:	macro source,destination,width,height
 		moveq	#height,d2
 		bsr.w	PlaneMapToVRAM_H40
 		endm
-		
+
+copyUncTilemap:	macro destination,width,height	; taken from S1beta
+		move.l	#$40000000+((destination&$3FFF)<<16)+((destination&$C000)>>14),d0
+		moveq	#width,d1
+		moveq	#height,d2
+		bsr.w	PlaneMapToVRAM_H40
+		endm
+
 ; macros to convert from tile index to art tiles, block mapping or VRAM address.
 make_art_tile function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|(addr&tile_mask)
 make_art_tile_2p function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|((addr&tile_mask)>>1)
