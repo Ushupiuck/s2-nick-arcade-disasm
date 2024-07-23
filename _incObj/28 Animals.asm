@@ -64,9 +64,9 @@ loc_9B92:
 		add.w	d0,d0
 		move.l	off_9B50(pc,d0.w),obMap(a0)
 		lea	word_9B24(pc),a1
-		move.w	(a1,d0.w),$32(a0)
+		move.w	(a1,d0.w),objoff_32(a0)
 		move.w	(a1,d0.w),obVelX(a0)
-		move.w	2(a1,d0.w),$34(a0)
+		move.w	2(a1,d0.w),objoff_34(a0)
 		move.w	2(a1,d0.w),obVelY(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#$C,obHeight(a0)
@@ -88,15 +88,15 @@ loc_9C00:
 		add.w	d0,d1
 		lea	byte_9AE0(pc),a1
 		move.b	(a1,d1.w),d0
-		move.b	d0,$30(a0)
+		move.b	d0,objoff_30(a0)
 		lsl.w	#3,d0
 		lea	word_9AEC(pc),a1
 		adda.w	d0,a1
-		move.w	(a1)+,$32(a0)
-		move.w	(a1)+,$34(a0)
+		move.w	(a1)+,objoff_32(a0)
+		move.w	(a1)+,objoff_34(a0)
 		move.l	(a1)+,obMap(a0)
 		move.w	#$580,obGfx(a0)
-		btst	#0,$30(a0)
+		btst	#0,objoff_30(a0)
 		beq.s	loc_9C4A
 		move.w	#$592,obGfx(a0)
 
@@ -109,15 +109,15 @@ loc_9C4A:
 		move.b	#8,obActWid(a0)
 		move.b	#7,obTimeFrame(a0)
 		move.b	#2,obFrame(a0)
-		move.w	#$FC00,obVelY(a0)
+		move.w	#-$400,obVelY(a0)
 		tst.b	($FFFFF7A7).w
 		bne.s	loc_9CAA
 		bsr.w	FindFreeObj
 		bne.s	loc_9CA6
-		_move.b	#$29,obID(a1)
+		_move.b	#id_Obj29,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	$3E(a0),d0
+		move.w	objoff_3E(a0),d0
 		lsr.w	#1,d0
 		move.b	d0,obFrame(a1)
 
@@ -141,16 +141,16 @@ loc_9CB8:
 		tst.w	d1
 		bpl.s	loc_9D0E
 		add.w	d1,obY(a0)
-		move.w	$32(a0),obVelX(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_32(a0),obVelX(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 		move.b	#1,obFrame(a0)
-		move.b	$30(a0),d0
+		move.b	objoff_30(a0),d0
 		add.b	d0,d0
 		addq.b	#4,d0
 		move.b	d0,obRoutine(a0)
 		tst.b	($FFFFF7A7).w
 		beq.s	loc_9D0E
-		btst	#4,($FFFFFE0F).w
+		btst	#4,(Vint_runcount+3).w
 		beq.s	loc_9D0E
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
@@ -169,7 +169,7 @@ loc_9D12:
 		tst.w	d1
 		bpl.s	loc_9D3C
 		add.w	d1,obY(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 
 loc_9D3C:
 		tst.b	obSubtype(a0)
@@ -188,7 +188,7 @@ loc_9D4E:
 		tst.w	d1
 		bpl.s	loc_9D8A
 		add.w	d1,obY(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 		tst.b	obSubtype(a0)
 		beq.s	loc_9D8A
 		cmpi.b	#$A,obSubtype(a0)
@@ -227,7 +227,7 @@ loc_9DCA:
 loc_9DCE:
 		tst.b	obRender(a0)
 		bpl.w	DeleteObject
-		subq.w	#1,$36(a0)
+		subq.w	#1,objoff_36(a0)
 		bne.w	loc_9DEA
 		move.b	#2,obRoutine(a0)
 		move.b	#3,obPriority(a0)
@@ -239,8 +239,8 @@ loc_9DEA:
 loc_9DEE:
 		bsr.w	sub_9F92
 		bcc.s	loc_9E0A
-		move.w	$32(a0),obVelX(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_32(a0),obVelX(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 		move.b	#$E,obRoutine(a0)
 		bra.w	loc_9D4E
 ; ---------------------------------------------------------------------------
@@ -253,7 +253,7 @@ loc_9E0E:
 		bsr.w	sub_9F92
 		bpl.s	loc_9E44
 		clr.w	obVelX(a0)
-		clr.w	$32(a0)
+		clr.w	objoff_32(a0)
 		bsr.w	ObjectMove
 		addi.w	#$18,obVelY(a0)
 		bsr.w	sub_9F52
@@ -271,8 +271,8 @@ loc_9E44:
 loc_9E48:
 		bsr.w	sub_9F92
 		bpl.s	loc_9E9E
-		move.w	$32(a0),obVelX(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_32(a0),obVelX(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 		move.b	#4,obRoutine(a0)
 		bra.w	loc_9D12
 ; ---------------------------------------------------------------------------
@@ -286,14 +286,14 @@ loc_9E64:
 		jsr	(ObjHitFloor).l
 		tst.w	d1
 		bpl.s	loc_9E9E
-		not.b	$29(a0)
+		not.b	objoff_29(a0)
 		bne.s	loc_9E94
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
 
 loc_9E94:
 		add.w	d1,obY(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 
 loc_9E9E:
 		bra.w	loc_9DB2
@@ -303,7 +303,7 @@ loc_9EA2:
 		bsr.w	sub_9F92
 		bpl.s	loc_9EBC
 		clr.w	obVelX(a0)
-		clr.w	$32(a0)
+		clr.w	objoff_32(a0)
 		bsr.w	ObjectMoveAndFall
 		bsr.w	sub_9F52
 		bsr.w	sub_9F7A
@@ -326,7 +326,7 @@ loc_9EC0:
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
 		add.w	d1,obY(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 
 loc_9EFA:
 		bra.w	loc_9DB2
@@ -342,14 +342,14 @@ loc_9EFE:
 		jsr	(ObjHitFloor).l
 		tst.w	d1
 		bpl.s	loc_9F38
-		not.b	$29(a0)
+		not.b	objoff_29(a0)
 		bne.s	loc_9F2E
 		neg.w	obVelX(a0)
 		bchg	#0,obRender(a0)
 
 loc_9F2E:
 		add.w	d1,obY(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 
 loc_9F38:
 		subq.b	#1,obTimeFrame(a0)
@@ -373,7 +373,7 @@ sub_9F52:
 		tst.w	d1
 		bpl.s	locret_9F78
 		add.w	d1,obY(a0)
-		move.w	$34(a0),obVelY(a0)
+		move.w	objoff_34(a0),obVelY(a0)
 
 locret_9F78:
 		rts

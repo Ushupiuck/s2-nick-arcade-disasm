@@ -28,21 +28,21 @@ loc_8D8E:
 loc_8D9C:
 		ori.b	#4,obRender(a0)
 		move.b	#4,obPriority(a0)
-		move.b	#7,$38(a0)
+		move.b	#7,objoff_38(a0)
 		move.b	#$44,obActWid(a0)
 
 loc_8DB4:
-		tst.b	$3A(a0)
+		tst.b	objoff_3A(a0)
 		beq.s	loc_8DC6
-		tst.b	$38(a0)
+		tst.b	objoff_38(a0)
 		beq.w	loc_8E3E
-		subq.b	#1,$38(a0)
+		subq.b	#1,objoff_38(a0)
 
 loc_8DC6:
 		move.b	obStatus(a0),d0
 		andi.b	#$18,d0
 		beq.s	sub_8DD6
-		move.b	#1,$3A(a0)
+		move.b	#1,objoff_3A(a0)
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -58,17 +58,17 @@ sub_8DD6:
 ; ---------------------------------------------------------------------------
 
 loc_8DEA:
-		tst.b	$38(a0)
+		tst.b	objoff_38(a0)
 		beq.s	loc_8E2E
-		tst.b	$3A(a0)
+		tst.b	objoff_3A(a0)
 		bne.s	loc_8DFE
-		subq.b	#1,$38(a0)
+		subq.b	#1,objoff_38(a0)
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
 loc_8DFE:
 		bsr.w	sub_8DD6
-		subq.b	#1,$38(a0)
+		subq.b	#1,objoff_38(a0)
 		bne.s	locret_8E2C
 		lea	(v_player).w,a1
 		bsr.s	sub_8E12

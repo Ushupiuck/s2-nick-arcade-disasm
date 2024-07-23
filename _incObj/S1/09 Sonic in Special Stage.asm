@@ -38,12 +38,12 @@ loc_1A3DC:
 loc_1A41C:
 		tst.w	(Debug_mode_flag).w
 		beq.s	loc_1A430
-		btst	#4,(v_jpadpress1).w
+		btst	#bitB,(v_jpadpress1).w
 		beq.s	loc_1A430
 		move.w	#1,(Debug_placement_mode).w
 
 loc_1A430:
-		move.b	#0,$30(a0)
+		move.b	#0,objoff_30(a0)
 		moveq	#0,d0
 		move.b	obStatus(a0),d0
 		andi.w	#2,d0
@@ -83,18 +83,18 @@ Obj09_Display:
 
 
 Obj09_Move:
-		btst	#2,(v_jpadhold2).w
+		btst	#bitL,(v_jpadhold2).w
 		beq.s	loc_1A4A4
 		bsr.w	Obj09_MoveLeft
 
 loc_1A4A4:
-		btst	#3,(v_jpadhold2).w
+		btst	#bitR,(v_jpadhold2).w
 		beq.s	loc_1A4B0
 		bsr.w	Obj09_MoveRight
 
 loc_1A4B0:
 		move.b	(v_jpadhold2).w,d0
-		andi.b	#$C,d0
+		andi.b	#btnL+btnR,d0
 		bne.s	loc_1A4E0
 		move.w	obInertia(a0),d0
 		beq.s	loc_1A4E0
@@ -210,7 +210,7 @@ locret_1A58C:
 
 Obj09_Jump:
 		move.b	(v_jpadpress2).w,d0
-		andi.b	#$70,d0
+		andi.b	#btnA+btnB+btnC,d0
 		beq.s	locret_1A5D0
 		move.b	(v_ssangle).w,d0
 		andi.b	#$FC,d0
@@ -240,11 +240,11 @@ nullsub_2:
 ; End of function nullsub_2
 
 ; ---------------------------------------------------------------------------
-		move.w	#$FC00,d1
+		move.w	#-$400,d1
 		cmp.w	obVelY(a0),d1
 		ble.s	locret_1A5EC
 		move.b	(v_jpadhold2).w,d0
-		andi.b	#$70,d0
+		andi.b	#btnA+btnB+btnC,d0
 		bne.s	locret_1A5EC
 		move.w	d1,obVelY(a0)
 
@@ -288,7 +288,7 @@ loc_1A62C:
 		move.w	#0,(v_ssrotate).w
 		move.w	#$4000,(v_ssangle).w
 		addq.b	#2,obRoutine(a0)
-		move.w	#$3C,$38(a0)
+		move.w	#$3C,objoff_38(a0)
 
 loc_1A64A:
 		move.w	(v_ssangle).w,d0
@@ -301,7 +301,7 @@ loc_1A64A:
 ; ---------------------------------------------------------------------------
 
 loc_1A66C:
-		subq.w	#1,$38(a0)
+		subq.w	#1,objoff_38(a0)
 		bne.s	loc_1A678
 		move.b	#GameModeID_Level,(v_gamemode).w
 
@@ -450,7 +450,7 @@ Obj09_ChkItems:
 		adda.w	d4,a1
 		move.b	(a1),d4
 		bne.s	loc_1A7C4
-		tst.b	$3A(a0)
+		tst.b	objoff_3A(a0)
 		bne.w	loc_1A894
 		moveq	#0,d4
 		rts
@@ -466,7 +466,7 @@ loc_1A7C4:
 
 loc_1A7D8:
 		jsr	(sub_A8DE).l
-		cmpi.w	#$32,(v_rings).w
+		cmpi.w	#50,(v_rings).w
 		bcs.s	loc_1A7FC
 		bset	#0,(v_lifecount).w
 		bne.s	loc_1A7FC
@@ -526,14 +526,14 @@ loc_1A862:
 loc_1A870:
 		cmpi.b	#$41,d4
 		bne.s	loc_1A87C
-		move.b	#1,$3A(a0)
+		move.b	#1,objoff_3A(a0)
 
 loc_1A87C:
 		cmpi.b	#$4A,d4
 		bne.s	loc_1A890
-		cmpi.b	#1,$3A(a0)
+		cmpi.b	#1,objoff_3A(a0)
 		bne.s	loc_1A890
-		move.b	#2,$3A(a0)
+		move.b	#2,objoff_3A(a0)
 
 loc_1A890:
 		moveq	#-1,d4
@@ -541,7 +541,7 @@ loc_1A890:
 ; ---------------------------------------------------------------------------
 
 loc_1A894:
-		cmpi.b	#2,$3A(a0)
+		cmpi.b	#2,objoff_3A(a0)
 		bne.s	loc_1A8BE
 		lea	(v_ssblockbuffer).l,a1
 		moveq	#(v_ssblockbuffer_end-v_ssblockbuffer)/$80-1,d1
@@ -561,7 +561,7 @@ loc_1A8B0:
 		dbf	d1,loc_1A8A4
 
 loc_1A8BE:
-		clr.b	$3A(a0)
+		clr.b	objoff_3A(a0)
 		moveq	#0,d4
 		rts
 ; End of function Obj09_ChkItems
@@ -571,16 +571,16 @@ loc_1A8BE:
 
 
 Obj09_ChkItems2:
-		move.b	$30(a0),d0
+		move.b	objoff_30(a0),d0
 		bne.s	loc_1A8E6
-		subq.b	#1,$36(a0)
+		subq.b	#1,objoff_36(a0)
 		bpl.s	loc_1A8D8
-		move.b	#0,$36(a0)
+		move.b	#0,objoff_36(a0)
 
 loc_1A8D8:
-		subq.b	#1,$37(a0)
+		subq.b	#1,objoff_37(a0)
 		bpl.s	locret_1A8E4
-		move.b	#0,$37(a0)
+		move.b	#0,objoff_37(a0)
 
 locret_1A8E4:
 		rts
@@ -603,17 +603,17 @@ loc_1A8E6:
 		sub.w	obY(a0),d2
 		jsr	(CalcAngle).l
 		jsr	(CalcSine).l
-		muls.w	#$F900,d1
+		muls.w	#-$700,d1
 		asr.l	#8,d1
 		move.w	d1,obVelX(a0)
-		muls.w	#$F900,d0
+		muls.w	#-$700,d0
 		asr.l	#8,d0
 		move.w	d0,obVelY(a0)
 		bset	#1,obStatus(a0)
 		bsr.w	sub_19EEC
 		bne.s	loc_1A954
 		move.b	#2,(a2)
-		move.l	$32(a0),d0
+		move.l	objoff_32(a0),d0
 		subq.l	#1,d0
 		move.l	d0,4(a2)
 
@@ -634,13 +634,13 @@ loc_1A95E:
 loc_1A974:
 		cmpi.b	#$29,d0
 		bne.s	loc_1A9A8
-		tst.b	$36(a0)
+		tst.b	objoff_36(a0)
 		bne.w	locret_1AA58
-		move.b	#$1E,$36(a0)
-		btst	#6,($FFFFF783).w
+		move.b	#$1E,objoff_36(a0)
+		btst	#6,(v_ssrotate+1).w
 		beq.s	loc_1A99E
 		asl	(v_ssrotate).w
-		movea.l	$32(a0),a1
+		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#$2A,(a1)
 
@@ -652,13 +652,13 @@ loc_1A99E:
 loc_1A9A8:
 		cmpi.b	#$2A,d0
 		bne.s	loc_1A9DC
-		tst.b	$36(a0)
+		tst.b	objoff_36(a0)
 		bne.w	locret_1AA58
-		move.b	#$1E,$36(a0)
-		btst	#6,($FFFFF783).w
+		move.b	#$1E,objoff_36(a0)
+		btst	#6,(v_ssrotate+1).w
 		bne.s	loc_1A9D2
 		asr	(v_ssrotate).w
-		movea.l	$32(a0),a1
+		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.b	#$29,(a1)
 
@@ -670,13 +670,13 @@ loc_1A9D2:
 loc_1A9DC:
 		cmpi.b	#$2B,d0
 		bne.s	loc_1AA12
-		tst.b	$37(a0)
+		tst.b	objoff_37(a0)
 		bne.w	locret_1AA58
-		move.b	#$1E,$37(a0)
+		move.b	#$1E,objoff_37(a0)
 		bsr.w	sub_19EEC
 		bne.s	loc_1AA04
 		move.b	#4,(a2)
-		move.l	$32(a0),d0
+		move.l	objoff_32(a0),d0
 		subq.l	#1,d0
 		move.l	d0,4(a2)
 
@@ -700,7 +700,7 @@ loc_1AA2A:
 		bsr.w	sub_19EEC
 		bne.s	loc_1AA4E
 		move.b	#6,(a2)
-		movea.l	$32(a0),a1
+		movea.l	objoff_32(a0),a1
 		subq.l	#1,a1
 		move.l	a1,4(a2)
 		move.b	(a1),d0

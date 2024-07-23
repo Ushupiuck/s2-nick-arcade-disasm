@@ -58,11 +58,7 @@ loc_9442:
 ; ---------------------------------------------------------------------------
 
 loc_944C:
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.w	DeleteObject
+		out_of_range.w	DeleteObject
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
@@ -75,9 +71,5 @@ loc_9464:
 ; ---------------------------------------------------------------------------
 
 loc_9478:
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.w	DeleteObject
+		out_of_range.w	DeleteObject
 		bra.w	DisplaySprite

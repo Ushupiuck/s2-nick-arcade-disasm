@@ -55,11 +55,19 @@ ptr_PLC_EHZAnimals:	dc.w PLC_EHZAnimals-ArtLoadCues
 ptr_PLC_HPZAnimals:	dc.w PLC_HPZAnimals-ArtLoadCues
 ptr_PLC_HTZAnimals:	dc.w PLC_HTZAnimals-ArtLoadCues
 
+	if FixBugs
+ptr_PLC_SSResult:	dc.w PLC_S1SpecialStage-ArtLoadCues
+ptr_PLC_Ending:		dc.w PLC_S1SpecialStage-ArtLoadCues
+ptr_PLC_TryAgain:	dc.w PLC_S1SpecialStage-ArtLoadCues
+ptr_PLC_EggmanSBZ2:	dc.w PLC_S1SpecialStage-ArtLoadCues
+ptr_PLC_FZBoss:		dc.w PLC_S1SpecialStage-ArtLoadCues
+	else
 ptr_PLC_SSResult:	dc.w $1C318-ArtLoadCues
 ptr_PLC_Ending:		dc.w $1C31A-ArtLoadCues
 ptr_PLC_TryAgain:	dc.w $1C31C-ArtLoadCues
 ptr_PLC_EggmanSBZ2:	dc.w $1C31E-ArtLoadCues
 ptr_PLC_FZBoss:		dc.w $1C320-ArtLoadCues
+	endif
 
 plcm:	macro gfx,vram
 	dc.l gfx
@@ -342,7 +350,7 @@ plcid_TitleCard:	equ (ptr_PLC_TitleCard-ArtLoadCues)/2	; $10
 plcid_Boss:		equ (ptr_PLC_Boss-ArtLoadCues)/2	; $11
 plcid_Signpost:		equ (ptr_PLC_Signpost-ArtLoadCues)/2	; $12
 plcid_Warp:		equ (ptr_PLC_Warp-ArtLoadCues)/2	; $13
-plcid_SpecialStage:	equ (ptr_PLC_SpecialStage-ArtLoadCues)/2 ; $14
+plcid_SpecialStage:	equ (ptr_PLC_SpecialStage-ArtLoadCues)/2; $14
 plcid_GHZAnimals:	equ (ptr_PLC_GHZAnimals-ArtLoadCues)/2	; $15
 plcid_LZAnimals:	equ (ptr_PLC_LZAnimals-ArtLoadCues)/2	; $16
 plcid_CPZAnimals:	equ (ptr_PLC_CPZAnimals-ArtLoadCues)/2	; $17

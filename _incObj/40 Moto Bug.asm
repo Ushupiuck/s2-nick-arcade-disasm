@@ -86,7 +86,7 @@ Obj40_Floor:
 		move.b	#$F,$33(a0)
 		bsr.w	FindFreeObj
 		bne.s	locret_F354
-		_move.b	#$40,obID(a1)
+		_move.b	#id_Obj40,obID(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 		move.b	obStatus(a0),obStatus(a1)

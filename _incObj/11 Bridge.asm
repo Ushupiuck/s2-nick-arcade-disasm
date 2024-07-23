@@ -44,7 +44,7 @@ loc_7C14:
 		move.b	#4,obRender(a0)
 		move.b	#$80,obActWid(a0)
 		move.w	obY(a0),d2
-		move.w	d2,$3C(a0)
+		move.w	d2,objoff_3C(a0)
 		move.w	obX(a0),d3
 		lea	obSubtype(a0),a2
 		moveq	#0,d1
@@ -59,13 +59,13 @@ loc_7C14:
 		move.w	obSubtype(a1),d0
 		subq.w	#8,d0
 		move.w	d0,obX(a1)
-		move.l	a1,$30(a0)
+		move.l	a1,objoff_30(a0)
 		swap	d1
 		subq.w	#8,d1
 		bls.s	loc_7C74
 		move.w	d1,d4
 		bsr.s	sub_7C76
-		move.l	a1,$34(a0)
+		move.l	a1,objoff_34(a0)
 		move.w	d4,d0
 		add.w	d0,d0
 		add.w	d4,d0
@@ -92,7 +92,7 @@ sub_7C76:
 		move.b	#$40,mainspr_width(a1)
 		move.b	d1,mainspr_childsprites(a1)
 		subq.b	#1,d1
-		lea	$10(a1),a2
+		lea	subspr_data(a1),a2
 
 loc_7CB6:
 		move.w	d3,(a2)+
@@ -111,28 +111,28 @@ loc_7CC8:
 		move.b	obStatus(a0),d0
 		andi.b	#$18,d0
 		bne.s	loc_7CDE
-		tst.b	$3E(a0)
+		tst.b	objoff_3E(a0)
 		beq.s	loc_7D0A
-		subq.b	#4,$3E(a0)
+		subq.b	#4,objoff_3E(a0)
 		bra.s	loc_7D06
 ; ---------------------------------------------------------------------------
 
 loc_7CDE:
 		andi.b	#$10,d0
 		beq.s	loc_7CFA
-		move.b	$3F(a0),d0
-		sub.b	$3B(a0),d0
+		move.b	objoff_3F(a0),d0
+		sub.b	objoff_3B(a0),d0
 		beq.s	loc_7CFA
 		bcc.s	loc_7CF6
-		addq.b	#1,$3F(a0)
+		addq.b	#1,objoff_3F(a0)
 		bra.s	loc_7CFA
 ; ---------------------------------------------------------------------------
 
 loc_7CF6:
-		subq.b	#1,$3F(a0)
+		subq.b	#1,objoff_3F(a0)
 
 loc_7CFA:
-		cmpi.b	#$40,$3E(a0)
+		cmpi.b	#$40,objoff_3E(a0)
 		beq.s	loc_7D06
 		addq.b	#4,$3E(a0)
 
@@ -157,20 +157,16 @@ loc_7D22:
 ; ---------------------------------------------------------------------------
 
 loc_7D2A:
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.s	loc_7D3E
+		out_of_range.s	loc_7D3E
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_7D3E:
-		movea.l	$30(a0),a1
+		movea.l	objoff_30(a0),a1
 		bsr.w	DeleteObject2
 		cmpi.b	#8,obSubtype(a0)
 		bls.s	loc_7D56
-		movea.l	$34(a0),a1
+		movea.l	objoff_34(a0),a1
 		bsr.w	DeleteObject2
 
 loc_7D56:
@@ -185,30 +181,30 @@ loc_7D5E:
 		move.b	obStatus(a0),d0
 		andi.b	#$18,d0
 		bne.s	loc_7D74
-		tst.b	$3E(a0)
+		tst.b	objoff_3E(a0)
 		beq.s	loc_7DA0
-		subq.b	#4,$3E(a0)
+		subq.b	#4,objoff_3E(a0)
 		bra.s	loc_7D9C
 ; ---------------------------------------------------------------------------
 
 loc_7D74:
 		andi.b	#$10,d0
 		beq.s	loc_7D90
-		move.b	$3F(a0),d0
-		sub.b	$3B(a0),d0
+		move.b	objoff_3F(a0),d0
+		sub.b	objoff_3B(a0),d0
 		beq.s	loc_7D90
 		bcc.s	loc_7D8C
-		addq.b	#1,$3F(a0)
+		addq.b	#1,objoff_3F(a0)
 		bra.s	loc_7D90
 ; ---------------------------------------------------------------------------
 
 loc_7D8C:
-		subq.b	#1,$3F(a0)
+		subq.b	#1,objoff_3F(a0)
 
 loc_7D90:
-		cmpi.b	#$40,$3E(a0)
+		cmpi.b	#$40,objoff_3E(a0)
 		beq.s	loc_7D9C
-		addq.b	#4,$3E(a0)
+		addq.b	#4,objoff_3E(a0)
 
 loc_7D9C:
 		bsr.w	sub_7F36
@@ -268,10 +264,10 @@ loc_7DFA:
 loc_7E08:
 		lsr.w	#4,d0
 		move.b	d0,(a0,d5.w)
-		movea.l	$30(a0),a2
+		movea.l	objoff_30(a0),a2
 		cmpi.w	#8,d0
 		bcs.s	loc_7E20
-		movea.l	$34(a0),a2
+		movea.l	objoff_34(a0),a2
 		subi.w	#8,d0
 
 loc_7E20:
@@ -342,21 +338,21 @@ byte_7E9F:	dc.b   2,  1,  2,  1,  2,  1,  2,  0,  1,  0,  0,  0,  0,  0,  1 ; 0
 ; ---------------------------------------------------------------------------
 
 loc_7EAE:
-		moveq	#$FFFFFFFE,d3
-		moveq	#$FFFFFFFE,d4
+		moveq	#-2,d3
+		moveq	#-2,d4
 		move.b	obStatus(a0),d0
 		andi.b	#8,d0
 		beq.s	loc_7EC0
-		move.b	$3F(a0),d3
+		move.b	objoff_3F(a0),d3
 
 loc_7EC0:
 		move.b	obStatus(a0),d0
 		andi.b	#$10,d0
 		beq.s	loc_7ECE
-		move.b	$3B(a0),d4
+		move.b	objoff_3B(a0),d4
 
 loc_7ECE:
-		movea.l	$30(a0),a1
+		movea.l	objoff_30(a0),a1
 		lea	$45(a1),a2
 		lea	$15(a1),a1
 		moveq	#0,d1
@@ -411,7 +407,7 @@ loc_7F1E:
 		addq.w	#6,a1
 		cmpa.w	a2,a1
 		bne.s	loc_7F30
-		movea.l	$34(a0),a1
+		movea.l	objoff_34(a0),a1
 		lea	$15(a1),a1
 
 loc_7F30:
@@ -424,7 +420,7 @@ loc_7F30:
 
 
 sub_7F36:
-		move.b	$3E(a0),d0
+		move.b	objoff_3E(a0),d0
 		bsr.w	CalcSine
 		move.w	d0,d4
 		lea	(Obj11_BendData2).l,a4
@@ -432,7 +428,7 @@ sub_7F36:
 		move.b	obSubtype(a0),d0
 		lsl.w	#4,d0
 		moveq	#0,d3
-		move.b	$3F(a0),d3
+		move.b	objoff_3F(a0),d3
 		move.w	d3,d2
 		add.w	d0,d3
 		moveq	#0,d5
@@ -443,7 +439,7 @@ loc_7F64:
 		andi.w	#$F,d3
 		lsl.w	#4,d3
 		lea	(a4,d3.w),a3
-		movea.l	$30(a0),a1
+		movea.l	objoff_30(a0),a1
 		lea	$42(a1),a2
 		lea	obVelY(a1),a1
 
@@ -454,12 +450,12 @@ loc_7F7A:
 		mulu.w	d5,d0
 		mulu.w	d4,d0
 		swap	d0
-		add.w	$3C(a0),d0
+		add.w	objoff_3C(a0),d0
 		move.w	d0,(a1)
 		addq.w	#6,a1
 		cmpa.w	a2,a1
 		bne.s	loc_7F9A
-		movea.l	$34(a0),a1
+		movea.l	objoff_34(a0),a1
 		lea	obVelY(a1),a1
 
 loc_7F9A:
@@ -467,7 +463,7 @@ loc_7F9A:
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
 		moveq	#0,d3
-		move.b	$3F(a0),d3
+		move.b	objoff_3F(a0),d3
 		addq.b	#1,d3
 		sub.b	d0,d3
 		neg.b	d3
@@ -486,12 +482,12 @@ loc_7FC0:
 		mulu.w	d5,d0
 		mulu.w	d4,d0
 		swap	d0
-		add.w	$3C(a0),d0
+		add.w	objoff_3C(a0),d0
 		move.w	d0,(a1)
 		addq.w	#6,a1
 		cmpa.w	a2,a1
 		bne.s	loc_7FE0
-		movea.l	$34(a0),a1
+		movea.l	objoff_34(a0),a1
 		lea	obVelY(a1),a1
 
 loc_7FE0:

@@ -46,10 +46,12 @@ standonobject:	equ $3D					; object Sonic stands on
 ; Miscellaneous object scratch-RAM
 objoff_25:	equ $25
 objoff_26:	equ $26
+objoff_27:	equ $27
 objoff_29:	equ $29
 objoff_2A:	equ $2A
 objoff_2B:	equ $2B
 objoff_2C:	equ $2C
+objoff_2D:	equ $2D
 objoff_2E:	equ $2E
 objoff_2F:	equ $2F
 objoff_30:	equ $30
@@ -104,27 +106,37 @@ sub9_x_pos		= subspr_data+next_subspr*7+0
 sub9_y_pos		= subspr_data+next_subspr*7+2
 sub9_mapframe		= subspr_data+next_subspr*7+5
 
+; Colours
+cBlack:		equ $000		; colour black
+cWhite:		equ $EEE		; colour white
+cBlue:		equ $E00		; colour blue
+cGreen:		equ $0E0		; colour green
+cRed:		equ $00E		; colour red
+cYellow:	equ cGreen+cRed		; colour yellow
+cAqua:		equ cGreen+cBlue	; colour aqua
+cMagenta:	equ cBlue+cRed		; colour magenta
+
 ; ---------------------------------------------------------------------------
 ; Controller Buttons
-;
+
 ; Buttons bit numbers
-button_up:			EQU	0
-button_down:			EQU	1
-button_left:			EQU	2
-button_right:			EQU	3
-button_B:			EQU	4
-button_C:			EQU	5
-button_A:			EQU	6
-button_start:			EQU	7
+bitUp:			EQU	0
+bitDn:			EQU	1
+bitL:			EQU	2
+bitR:			EQU	3
+bitB:			EQU	4
+bitC:			EQU	5
+bitA:			EQU	6
+bitStart:		EQU	7
 ; Buttons masks (1 << x == pow(2, x))
-button_up_mask:			EQU	1<<button_up	; $01
-button_down_mask:		EQU	1<<button_down	; $02
-button_left_mask:		EQU	1<<button_left	; $04
-button_right_mask:		EQU	1<<button_right	; $08
-button_B_mask:			EQU	1<<button_B	; $10
-button_C_mask:			EQU	1<<button_C	; $20
-button_A_mask:			EQU	1<<button_A	; $40
-button_start_mask:		EQU	1<<button_start	; $80
+btnUp:			EQU	1<<bitUp	; $01
+btnDn:			EQU	1<<bitDn	; $02
+btnL:			EQU	1<<bitL	; $04
+btnR:			EQU	1<<bitR	; $08
+btnB:			EQU	1<<bitB	; $10
+btnC:			EQU	1<<bitC	; $20
+btnA:			EQU	1<<bitA	; $40
+btnStart:		EQU	1<<bitStart	; $80
 
 ; ---------------------------------------------------------------------------
 ; Art tile stuff
@@ -139,7 +151,7 @@ palette_line_3      =      (3<<13)
 high_priority_bit   =      7
 high_priority       =      (1<<15)
 palette_mask        =      $6000
-tile_mask           =      $07FF
+tile_mask           =      $7FF
 nontile_mask        =      $F800
 drawing_mask        =      $7FFF
 
@@ -173,44 +185,14 @@ ym2612_d1:		equ $A04003
 
 security_addr:		equ $A14000
 
-; Sound driver constants
-TrackPlaybackControl:	equ 0				; All tracks
-TrackVoiceControl:	equ 1				; All tracks
-TrackTempoDivider:	equ 2				; All tracks
-TrackDataPointer:	equ 4				; All tracks (4 bytes)
-TrackTranspose:		equ 8				; FM/PSG only (sometimes written to as a word, to include TrackVolume)
-TrackVolume:		equ 9				; FM/PSG only
-TrackAMSFMSPan:		equ $A				; FM/DAC only
-TrackVoiceIndex:	equ $B				; FM/PSG only
-TrackVolEnvIndex:	equ $C				; PSG only
-TrackStackPointer:	equ $D				; All tracks
-TrackDurationTimeout:	equ $E				; All tracks
-TrackSavedDuration:	equ $F				; All tracks
-TrackSavedDAC:		equ $10				; DAC only
-TrackFreq:		equ $10				; FM/PSG only (2 bytes)
-TrackNoteTimeout:	equ $12				; FM/PSG only
-TrackNoteTimeoutMaster:	equ $13				; FM/PSG only
-TrackModulationPtr:	equ $14				; FM/PSG only (4 bytes)
-TrackModulationWait:	equ $18				; FM/PSG only
-TrackModulationSpeed:	equ $19				; FM/PSG only
-TrackModulationDelta:	equ $1A				; FM/PSG only
-TrackModulationSteps:	equ $1B				; FM/PSG only
-TrackModulationVal:	equ $1C				; FM/PSG only (2 bytes)
-TrackDetune:		equ $1E				; FM/PSG only
-TrackPSGNoise:		equ $1F				; PSG only
-TrackFeedbackAlgo:	equ $1F				; FM only
-TrackVoicePtr:		equ $20				; FM SFX only (4 bytes)
-TrackLoopCounters:	equ $24				; All tracks (multiple bytes)
-TrackGoSubStack:	equ TrackSz			; All tracks (multiple bytes. This constant won't get to be used because of an optimisation that just uses TrackSz)
-
-TrackSz:	equ $30
-
 ; VRAM data
 vram_window:	equ $A000				; window namespace
 vram_fg:	equ $C000				; foreground namespace
 vram_bg:	equ $E000				; background namespace
 vram_sprites:	equ $F800				; sprite table
 vram_hscroll:	equ $FC00				; horizontal scroll table
+tile_size:	equ 8*8/2
+plane_size_64x32:	equ 64*32*2
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -249,6 +231,8 @@ GameModeFlag_TitleCard:		equ 7			; flag bit
 GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 
 ; ---------------------------------------------------------------------------
+	include "s1.sounddriver.ram.asm"
+
 ; Main RAM
 	phase	ramaddr($FFFF0000)
 v_startofram:
@@ -284,6 +268,7 @@ v_ttlsonichide	= v_objspace+object_size*4		; object variable space for hiding pa
 ; Level objects
 v_player	= v_objspace+object_size*0		; object variable space for Sonic ($40 bytes)
 v_player2	= v_objspace+object_size*1		; object variable space for Tails ($40 bytes)
+v_player2tails	= v_objspace+object_size*7		; object variable space for Tails' Tails ($40 bytes)
 v_hud		= v_objspace+object_size*14		; object variable space for the HUD ($40 bytes)
 
 v_titlecard	= v_objspace+object_size*2		; object variable space for the title card ($100 bytes)
@@ -469,9 +454,13 @@ Camera_Max_Y_pos_target:	ds.w	1
 
 Camera_Boundaries:
 Camera_Min_X_pos:		ds.w	1
-Camera_Max_X_pos:		ds.w	1
-Camera_Min_Y_pos:		ds.w	1
-Camera_Max_Y_pos:		ds.w	1
+v_limitleft2:
+Camera_Max_X_pos:
+v_limitright2:			ds.w	1
+Camera_Min_Y_pos:
+v_limittop2:			ds.w	1
+Camera_Max_Y_pos:
+v_limitbtm2:			ds.w	1
 Camera_Boundaries_End:
 
 Camera_Delay:
@@ -494,7 +483,7 @@ Deform_lock:			ds.b	1		; set to 1 to stop all deformation
 				ds.b	1		; $FFFFEEDD ; seems unused
 Camera_Max_Y_Pos_Changing:	ds.b	1
 Dynamic_Resize_Routine:		ds.b	1
-				ds.b	2		; $FFFFEEE0-$FFFFEEE1
+RecordPos_Unused:		ds.w	1		; $FFFFEEE0-$FFFFEEE1
 Camera_BG_X_offset:		ds.w	1		; Used to control background scrolling in X in WFZ ending and HTZ screen shake
 Camera_BG_Y_offset:		ds.w	1		; Used to control background scrolling in Y in WFZ ending and HTZ screen shake
 HTZ_Terrain_Delay:		ds.w	1		; During HTZ screen shake, this is a delay between rising and sinking terrain during which there is no shaking
@@ -517,90 +506,8 @@ Block_cache:			ds.w	512/16*2	; Width of plane in blocks, with each block getting
 Ring_consumption_table:		ds.b	$80		; contains RAM addresses of rings currently being consumed
 Ring_consumption_table_End:
 
-v_snddriver_ram:	ds.b	$5C0			; start of RAM for the sound driver data ($5C0 bytes)
-			ds.b	$40
-; =================================================================================
-; From here on, until otherwise stated, all offsets are relative to v_snddriver_ram
-; =================================================================================
-v_startofvariables:	= $000
-v_sndprio:		= $000				; sound priority (priority of new music/SFX must be higher or equal to this value or it won't play; bit 7 of priority being set prevents this value from changing)
-v_main_tempo_timeout:	= $001				; Counts down to zero; when zero, resets to next value and delays song by 1 frame
-v_main_tempo:		= $002				; Used for music only
-f_pausemusic:		= $003				; flag set to stop music when paused
-v_fadeout_counter:	= $004
-
-v_fadeout_delay:	= $006
-v_communication_byte:	= $007				; used in Ristar to sync with a boss' attacks; unused here
-f_updating_dac:		= $008				; $80 if updating DAC, $00 otherwise
-v_sound_id:		= $009				; sound or music copied from below
-v_soundqueue_start:	= $00A
-v_soundqueue0:		= v_soundqueue_start+0		; sound or music to play
-v_soundqueue1:		= v_soundqueue_start+1		; special sound to play
-v_soundqueue2:		= v_soundqueue_start+2		; unused sound to play
-v_soundqueue_end:	= v_soundqueue_start+3
-
-f_voice_selector:	= $00E				; $00 = use music voice pointer; $40 = use special voice pointer; $80 = use track voice pointer
-
-v_voice_ptr:		= $018				; voice data pointer (4 bytes)
-
-v_special_voice_ptr:	= $020				; voice data pointer for special SFX ($D0-$DF) (4 bytes)
-
-f_fadein_flag:		= $024				; Flag for fade in
-v_fadein_delay:		= $025
-v_fadein_counter:	= $026				; Timer for fade in/out
-f_1up_playing:		= $027				; flag indicating 1-up song is playing
-v_tempo_mod:		= $028				; music - tempo modifier
-v_speeduptempo:		= $029				; music - tempo modifier with speed shoes
-f_speedup:		= $02A				; flag indicating whether speed shoes tempo is on ($80) or off ($00)
-v_ring_speaker:		= $02B				; which speaker the "ring" sound is played in (00 = right; 01 = left)
-f_push_playing:		= $02C				; if set, prevents further push sounds from playing
-
-v_music_track_ram:	= $040				; Start of music RAM
-
-v_music_fmdac_tracks:	= v_music_track_ram+TrackSz*0
-v_music_dac_track:	= v_music_fmdac_tracks+TrackSz*0
-v_music_fm_tracks:	= v_music_fmdac_tracks+TrackSz*1
-v_music_fm1_track:	= v_music_fm_tracks+TrackSz*0
-v_music_fm2_track:	= v_music_fm_tracks+TrackSz*1
-v_music_fm3_track:	= v_music_fm_tracks+TrackSz*2
-v_music_fm4_track:	= v_music_fm_tracks+TrackSz*3
-v_music_fm5_track:	= v_music_fm_tracks+TrackSz*4
-v_music_fm6_track:	= v_music_fm_tracks+TrackSz*5
-v_music_fm_tracks_end:	= v_music_fm_tracks+TrackSz*6
-v_music_fmdac_tracks_end:	= v_music_fm_tracks_end
-v_music_psg_tracks:	= v_music_fmdac_tracks_end
-v_music_psg1_track:	= v_music_psg_tracks+TrackSz*0
-v_music_psg2_track:	= v_music_psg_tracks+TrackSz*1
-v_music_psg3_track:	= v_music_psg_tracks+TrackSz*2
-v_music_psg_tracks_end:	= v_music_psg_tracks+TrackSz*3
-v_music_track_ram_end:	= v_music_psg_tracks_end
-
-v_sfx_track_ram:	= v_music_track_ram_end		; Start of SFX RAM, straight after the end of music RAM
-
-v_sfx_fm_tracks:	= v_sfx_track_ram+TrackSz*0
-v_sfx_fm3_track:	= v_sfx_fm_tracks+TrackSz*0
-v_sfx_fm4_track:	= v_sfx_fm_tracks+TrackSz*1
-v_sfx_fm5_track:	= v_sfx_fm_tracks+TrackSz*2
-v_sfx_fm_tracks_end:	= v_sfx_fm_tracks+TrackSz*3
-v_sfx_psg_tracks:	= v_sfx_fm_tracks_end
-v_sfx_psg1_track:	= v_sfx_psg_tracks+TrackSz*0
-v_sfx_psg2_track:	= v_sfx_psg_tracks+TrackSz*1
-v_sfx_psg3_track:	= v_sfx_psg_tracks+TrackSz*2
-v_sfx_psg_tracks_end:	= v_sfx_psg_tracks+TrackSz*3
-v_sfx_track_ram_end:	= v_sfx_psg_tracks_end
-
-v_spcsfx_track_ram:	= v_sfx_track_ram_end		; Start of special SFX RAM, straight after the end of SFX RAM
-
-v_spcsfx_fm4_track:	= v_spcsfx_track_ram+TrackSz*0
-v_spcsfx_psg3_track:	= v_spcsfx_track_ram+TrackSz*1
-v_spcsfx_track_ram_end:	= v_spcsfx_track_ram+TrackSz*2
-
-v_1up_ram_copy:		= v_spcsfx_track_ram_end
-
-; =================================================================================
-; From here on, no longer relative to sound driver RAM
-; =================================================================================
-
+v_snddriver_ram:	SMPS_RAM			; sound driver state
+			ds.b	$40			; unused
 v_gamemode:		ds.b	1			; game mode (00=Sega; 04=Title; 08=Demo; 0C=Level; 10=SS; 14=Cont; 18=End; 1C=Credit; +8C=PreLevel)
 			ds.b	1			; unused
 v_jpadhold2:		ds.b	1			; joypad input - held, duplicate
@@ -664,7 +571,7 @@ v_plc_framepatternsleft:ds.w	1
 v_plc_buffer_end:
 
 v_levelvariables:					; variables that are reset between levels
-word_F700:		ds.w	1
+word_F700:		ds.w	1			; set to 0 in Tails_Control, otherwise unused
 Tails_control_counter:	ds.w	1
 Tails_respawn_counter:	ds.w	1
 word_F706:		ds.w	1
@@ -737,7 +644,8 @@ v_palss_time:		ds.w	1			; palette cycling in Special Stage - time until next cha
 v_palss_index:		ds.w	1			; palette cycling in Special Stage - index into palette cycle 2 (unused?)
 v_ssbganim:		ds.w	1			; Special Stage background animation
 				ds.b	5		; seems unused
-Boss_defeated_flag:		ds.b	1
+Boss_defeated_flag:
+v_bossstatus:		ds.b	1
 				ds.b	2		; seems unused
 
 f_lockscreen:		ds.b	1
@@ -780,10 +688,13 @@ v_levelvariables_end:
 
 Sprite_Table:		ds.b	$280			; Sprite attribute table buffer
 Sprite_Table_End:
-v_pal_water_dup = Sprite_Table_End-$80			; duplicate underwater palette, used for transitions ($80 bytes)
-v_pal_water:		ds.b	$80			; main underwater palette
-v_pal_dry:		ds.b	$80			; main palette
-v_pal_dry_dup:		ds.b	$80			; duplicate palette, used for transitions
+v_palette_water_fading = Sprite_Table_End-$80		; duplicate underwater palette, used for transitions ($80 bytes)
+v_palette_water:	ds.b	$80			; main underwater palette
+v_palette_water_end:
+v_palette:		ds.b	$80			; main palette
+v_palette_end:
+v_palette_fading:	ds.b	$80			; duplicate palette, used for transitions
+v_palette_fading_end:
 v_objstate:		ds.b	$C0			; object state list
 v_objstate_end:
 			ds.b	$140			; stack
@@ -1049,53 +960,129 @@ bgm_Slowdown =	id(ptr_flgE3)
 bgm_Stop =	id(ptr_flgE4)
 flg__Last =	id(ptr_flgend)-1
 
+; Boss locations
+; The main values are based on where the camera boundaries mainly lie
+; The end values are where the camera scrolls towards after defeat
+boss_ghz_x:	equ $2960		; Green Hill Zone
+boss_ghz_y:	equ $300
+boss_ghz_end:	equ boss_ghz_x+$160
+
+boss_lz_x:	equ $1DE0		; Labyrinth Zone
+boss_lz_y:	equ $C0
+boss_lz_end:	equ boss_lz_x+$250
+
+boss_mz_x:	equ $1800		; Marble Zone
+boss_mz_y:	equ $210
+boss_mz_end:	equ boss_mz_x+$160
+
+boss_slz_x:	equ $2000		; Star Light Zone
+boss_slz_y:	equ $210
+boss_slz_end:	equ boss_slz_x+$160
+
+boss_syz_x:	equ $2C00		; Spring Yard Zone
+boss_syz_y:	equ $4CC
+boss_syz_end:	equ boss_syz_x+$140
+
+boss_sbz2_x:	equ $2050		; Scrap Brain Zone Act 2 Cutscene
+boss_sbz2_y:	equ $510
+
+boss_fz_x:	equ $2450		; Final Zone
+boss_fz_y:	equ $510
+boss_fz_end:	equ boss_fz_x+$2B0
 
 ; Tile VRAM Locations
 
-; Font
-ArtTile_Credits_Font:		equ $5A0
+; Shared
+ArtTile_GHZ_MZ_Swing:		equ $380
+ArtTile_MZ_SYZ_Caterkiller:	equ $4FF
+ArtTile_GHZ_SLZ_Smashable_Wall:	equ $50F
 
-; ---------------------------------------------------------------------------
-; Level art stuff.
-ArtTile_ArtKos_LevelArt:	equ $000
+; Green Hill Zone
+ArtTile_GHZ_Flower_4:		equ ArtTile_Level+$340
+ArtTile_GHZ_Edge_Wall:		equ $34C
+ArtTile_GHZ_Flower_Stalk:	equ ArtTile_Level+$358
+ArtTile_GHZ_Big_Flower_1:	equ ArtTile_Level+$35C
+ArtTile_GHZ_Small_Flower:	equ ArtTile_Level+$36C
+ArtTile_GHZ_Waterfall:		equ ArtTile_Level+$378
+ArtTile_GHZ_Flower_3:		equ ArtTile_Level+$380
+ArtTile_GHZ_Bridge:		equ $38E
+ArtTile_GHZ_Big_Flower_2:	equ ArtTile_Level+$390
+ArtTile_GHZ_Spike_Pole:		equ $398
+ArtTile_GHZ_Giant_Ball:		equ $3AA
+ArtTile_GHZ_Purple_Rock:	equ $3D0
 
-; EHZ, HTZ
-ArtTile_ArtKos_Checkers:	equ ArtTile_ArtKos_LevelArt+$158
-ArtTile_Art_Flowers1:		equ $394
-ArtTile_Art_Flowers2:		equ $396
-ArtTile_Art_Flowers3:		equ $398
-ArtTile_Art_Flowers4:		equ $39A
+; Marble Zone
+ArtTile_MZ_Block:		equ $2B8
+ArtTile_MZ_Animated_Magma:	equ ArtTile_Level+$2D2
+ArtTile_MZ_Animated_Lava:	equ ArtTile_Level+$2E2
+ArtTile_MZ_Torch:		equ ArtTile_Level+$2F2
+ArtTile_MZ_Spike_Stomper:	equ $300
+ArtTile_MZ_Fireball:		equ $345
+ArtTile_MZ_Glass_Pillar:	equ $38E
+ArtTile_MZ_Lava:		equ $3A8
 
-; CPZ
-ArtTile_Art_UnkZone_1:		equ $480
-ArtTile_Art_UnkZone_2:		equ $484
-ArtTile_Art_UnkZone_3:		equ $48C
-ArtTile_Art_UnkZone_4:		equ $48E
-ArtTile_Art_UnkZone_5:		equ $490
-ArtTile_Art_UnkZone_6:		equ $491
-ArtTile_Art_UnkZone_7:		equ $495
-ArtTile_Art_UnkZone_8:		equ $498
+; Spring Yard Zone
+ArtTile_SYZ_Bumper:		equ $380
+ArtTile_SYZ_Big_Spikeball:	equ $396
+ArtTile_SYZ_Spikeball_Chain:	equ $3BA
 
-; HPZ
-ArtTile_Art_HPZPulseOrb_1:	equ $2E8
-ArtTile_Art_HPZPulseOrb_2:	equ $2F0
-ArtTile_Art_HPZPulseOrb_3:	equ $2F8
-ArtTile_ArtNem_HPZ_Bridge:	equ $300
-ArtTile_ArtNem_HPZ_Waterfall:	equ $315
-ArtTile_ArtNem_HPZPlatform:	equ $34A
-ArtTile_ArtNem_HPZOrb:		equ $35A
-ArtTile_ArtNem_HPZ_Emerald:	equ $392
+; Labyrinth Zone
+ArtTile_LZ_Block_1:		equ $1E0
+ArtTile_LZ_Block_2:		equ $1F0
+ArtTile_LZ_Splash:		equ $259
+ArtTile_LZ_Gargoyle:		equ $2E9
+ArtTile_LZ_Water_Surface:	equ $300
+ArtTile_LZ_Spikeball_Chain:	equ $310
+ArtTile_LZ_Flapping_Door:	equ $328
+ArtTile_LZ_Bubbles:		equ $348
+ArtTile_LZ_Moving_Block:	equ $3BC
+ArtTile_LZ_Door:		equ $3C4
+ArtTile_LZ_Harpoon:		equ $3CC
+ArtTile_LZ_Pole:		equ $3DE
+ArtTile_LZ_Push_Block:		equ $3DE
+ArtTile_LZ_Blocks:		equ $3E6
+ArtTile_LZ_Conveyor_Belt:	equ $3F6
+ArtTile_LZ_Sonic_Drowning:	equ $440
+ArtTile_LZ_Rising_Platform:	equ ArtTile_LZ_Blocks+$69
+ArtTile_LZ_Orbinaut:		equ $467
+ArtTile_LZ_Cork:		equ ArtTile_LZ_Blocks+$11A
 
-; ---------------------------------------------------------------------------
-; Level-specific objects and badniks.
+; Star Light Zone
+ArtTile_SLZ_Seesaw:		equ $374
+ArtTile_SLZ_Fan:		equ $3A0
+ArtTile_SLZ_Pylon:		equ $3CC
+ArtTile_SLZ_Swing:		equ $3DC
+ArtTile_SLZ_Orbinaut:		equ $429
+ArtTile_SLZ_Fireball:		equ $480
+ArtTile_SLZ_Fireball_Launcher:	equ $4D8
+ArtTile_SLZ_Collapsing_Floor:	equ $4E0
+ArtTile_SLZ_Spikeball:		equ $4F0
 
-; EHZ
-ArtTile_Art_EHZPulseBall:	equ $39C
-ArtTile_ArtNem_Waterfall:	equ $39E
-ArtTile_ArtNem_EHZ_Bridge:	equ $3B6
-ArtTile_ArtNem_Buzzer_Fireball:	equ $3BE	; Actually unused
-ArtTile_ArtNem_Masher:		equ $414
-ArtTile_Art_EHZMountains:	equ $500
+; Scrap Brain Zone
+ArtTile_SBZ_Caterkiller:	equ $2B0
+ArtTile_SBZ_Moving_Block_Short:	equ $2C0
+ArtTile_SBZ_Door:		equ $2E8
+ArtTile_SBZ_Girder:		equ $2F0
+ArtTile_SBZ_Disc:		equ $344
+ArtTile_SBZ_Junction:		equ $348
+ArtTile_SBZ_Swing:		equ $391
+ArtTile_SBZ_Saw:		equ $3B5
+ArtTile_SBZ_Flamethrower:	equ $3D9
+ArtTile_SBZ_Collapsing_Floor:	equ $3F5
+ArtTile_SBZ_Orbinaut:		equ $429
+ArtTile_SBZ_Smoke_Puff_1:	equ ArtTile_Level+$448
+ArtTile_SBZ_Smoke_Puff_2:	equ ArtTile_Level+$454
+ArtTile_SBZ_Moving_Block_Long:	equ $460
+ArtTile_SBZ_Horizontal_Door:	equ $46F
+ArtTile_SBZ_Electric_Orb:	equ $47E
+ArtTile_SBZ_Trap_Door:		equ $492
+ArtTile_SBZ_Vanishing_Block:	equ $4C3
+ArtTile_SBZ_Spinning_Platform:	equ $4DF
+
+; Final Zone
+ArtTile_FZ_Boss:		equ $300
+ArtTile_FZ_Eggman_Fleeing:	equ $3A0
+ArtTile_FZ_Eggman_No_Vehicle:	equ $470
 
 ; General Level Art
 ArtTile_Level:			equ $000
@@ -1128,5 +1115,141 @@ ArtTile_HUD:			equ $6CA
 ArtTile_Sonic:			equ $780
 ArtTile_Points:			equ $797
 ArtTile_Lamppost:		equ $7A0
+ArtTile_Tails:			equ $7A0
+ArtTile_TailsTails:		equ $7B0
 ArtTile_Ring:			equ $7B2
 ArtTile_Lives_Counter:		equ $7D4
+
+; Eggman
+ArtTile_Eggman:			equ $400
+ArtTile_Eggman_Weapons:		equ $46C
+ArtTile_Eggman_Button:		equ $4A4
+ArtTile_Eggman_Spikeball:	equ $518
+ArtTile_Eggman_Trap_Floor:	equ $518
+ArtTile_Eggman_Exhaust:		equ ArtTile_Eggman+$12A
+
+; End of Level
+ArtTile_Giant_Ring:		equ $400
+ArtTile_Giant_Ring_Flash:	equ $462
+ArtTile_Prison_Capsule:		equ $49D
+ArtTile_Hidden_Points:		equ $4B6
+ArtTile_Warp:			equ $541
+ArtTile_Mini_Sonic:		equ $551
+ArtTile_Bonuses:		equ $570
+ArtTile_Signpost:		equ $680
+
+; Sega Screen
+ArtTile_Sega_Tiles:		equ $000
+
+; Title Screen
+ArtTile_Title_Japanese_Text:	equ $000
+ArtTile_Title_Foreground:	equ $000
+ArtTile_Title_Sonic_And_Tails:	equ $200
+ArtTile_Title_Sonic:		equ $300
+ArtTile_Title_Trademark:	equ $510
+ArtTile_Level_Select_Font:	equ $680
+
+; Continue Screen
+ArtTile_Continue_Sonic:		equ $500
+ArtTile_Continue_Number:	equ $6FC
+
+; Ending
+ArtTile_Ending_Flowers:		equ $3A0
+ArtTile_Ending_Emeralds:	equ $3C5
+ArtTile_Ending_Sonic:		equ $3E1
+ArtTile_Ending_Eggman:		equ $524
+ArtTile_Ending_Rabbit:		equ $553
+ArtTile_Ending_Chicken:		equ $565
+ArtTile_Ending_Penguin:		equ $573
+ArtTile_Ending_Seal:		equ $585
+ArtTile_Ending_Pig:		equ $593
+ArtTile_Ending_Flicky:		equ $5A5
+ArtTile_Ending_Squirrel:	equ $5B3
+ArtTile_Ending_STH:		equ $5C5
+
+; Try Again Screen
+ArtTile_Try_Again_Emeralds:	equ $3C5
+ArtTile_Try_Again_Eggman:	equ $3E1
+
+; Special Stage
+ArtTile_SS_Background_Clouds:	equ $000
+ArtTile_SS_Background_Fish:	equ $051
+ArtTile_SS_Wall:		equ $142
+ArtTile_SS_Plane_1:		equ $200
+ArtTile_SS_Bumper:		equ $23B
+ArtTile_SS_Goal:		equ $251
+ArtTile_SS_Up_Down:		equ $263
+ArtTile_SS_R_Block:		equ $2F0
+ArtTile_SS_Plane_2:		equ $300
+ArtTile_SS_Extra_Life:		equ $370
+ArtTile_SS_Emerald_Sparkle:	equ $3F0
+ArtTile_SS_Plane_3:		equ $400
+ArtTile_SS_Red_White_Block:	equ $470
+ArtTile_SS_Ghost_Block:		equ $4F0
+ArtTile_SS_Plane_4:		equ $500
+ArtTile_SS_W_Block:		equ $570
+ArtTile_SS_Glass:		equ $5F0
+ArtTile_SS_Plane_5:		equ $600
+ArtTile_SS_Plane_6:		equ $700
+ArtTile_SS_Emerald:		equ $770
+ArtTile_SS_Zone_1:		equ $797
+ArtTile_SS_Zone_2:		equ $7A0
+ArtTile_SS_Zone_3:		equ $7A9
+ArtTile_SS_Zone_4:		equ $797
+ArtTile_SS_Zone_5:		equ $7A0
+ArtTile_SS_Zone_6:		equ $7A9
+
+; Special Stage Results
+ArtTile_SS_Results_Emeralds:	equ $541
+
+; Font
+ArtTile_Sonic_Team_Font:	equ $0A6
+ArtTile_Credits_Font:		equ $5A0
+
+; Error Handler
+ArtTile_Error_Handler_Font:	equ $7C0
+
+; ---------------------------------------------------------------------------
+; Level art stuff.
+ArtTile_ArtKos_LevelArt:	equ $000
+
+; EHZ, HTZ
+ArtTile_ArtKos_Checkers:	equ ArtTile_ArtKos_LevelArt+$158
+ArtTile_Art_Flowers1:		equ $394
+ArtTile_Art_Flowers2:		equ $396
+ArtTile_Art_Flowers3:		equ $398
+ArtTile_Art_Flowers4:		equ $39A
+
+; Unknown
+ArtTile_Art_UnkZone_1:		equ $480
+ArtTile_Art_UnkZone_2:		equ $484
+ArtTile_Art_UnkZone_3:		equ $48C
+ArtTile_Art_UnkZone_4:		equ $48E
+ArtTile_Art_UnkZone_5:		equ $490
+ArtTile_Art_UnkZone_6:		equ $491
+ArtTile_Art_UnkZone_7:		equ $495
+ArtTile_Art_UnkZone_8:		equ $498
+
+; CPZ
+ArtTile_ArtNem_CPZ_Buildings:	equ $3D0
+
+; HPZ
+ArtTile_Art_HPZPulseOrb_1:	equ $2E8
+ArtTile_Art_HPZPulseOrb_2:	equ $2F0
+ArtTile_Art_HPZPulseOrb_3:	equ $2F8
+ArtTile_ArtNem_HPZ_Bridge:	equ $300
+ArtTile_ArtNem_HPZ_Waterfall:	equ $315
+ArtTile_ArtNem_HPZPlatform:	equ $34A
+ArtTile_ArtNem_HPZOrb:		equ $35A
+ArtTile_ArtNem_HPZ_Emerald:	equ $392
+
+; ---------------------------------------------------------------------------
+; Level-specific objects and badniks.
+
+; EHZ
+ArtTile_Art_EHZPulseBall:	equ $39C
+ArtTile_ArtNem_Waterfall:	equ $39E
+ArtTile_ArtNem_EHZ_Bridge:	equ $3B6
+ArtTile_ArtNem_Buzzer_Fireball:	equ $3BE	; Actually unused
+ArtTile_ArtNem_Masher:		equ $414
+ArtTile_Art_EHZMountains:	equ $500

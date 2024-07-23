@@ -115,14 +115,15 @@ loc_4572:
 ; End of function MoveSonicInDemo
 
 ; ---------------------------------------------------------------------------
-Demo_Index:	dc.l Demo_S1GHZ				; leftover demo	from Sonic 1 GHZ
-		dc.l Demo_S1GHZ				; leftover demo	from Sonic 1 GHZ
+Demo_Index:	dc.l Demo_S1GHZ	; leftover demo	from Sonic 1 GHZ
+		dc.l Demo_S1GHZ	; leftover demo	from Sonic 1 GHZ
 		dc.l Demo_CPZ
 		dc.l Demo_EHZ
 		dc.l Demo_HPZ
 		dc.l Demo_HTZ
-		dc.l Demo_S1SS				; leftover demo	from Sonic 1 Special Stage
-		dc.l Demo_S1SS				; leftover demo	from Sonic 1 Special Stage
+		dc.l Demo_S1SS	; leftover demo	from Sonic 1 Special Stage
+		dc.l Demo_S1SS	; leftover demo	from Sonic 1 Special Stage
+		dc.l $FE8000	; These point to the unused demo recording's offset
 		dc.l $FE8000
 		dc.l $FE8000
 		dc.l $FE8000
@@ -131,8 +132,7 @@ Demo_Index:	dc.l Demo_S1GHZ				; leftover demo	from Sonic 1 GHZ
 		dc.l $FE8000
 		dc.l $FE8000
 		dc.l $FE8000
-		dc.l $FE8000
-Demo_S1EndIndex:dc.l $8B0837				; garbage, leftover from Sonic 1's ending sequence demos
+Demo_S1EndIndex:dc.l $8B0837	; garbage, leftover from Sonic 1's ending sequence demos
 		dc.l $42085C
 		dc.l $6A085F
 		dc.l $2F082C

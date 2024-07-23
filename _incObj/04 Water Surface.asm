@@ -19,24 +19,24 @@ Obj04_Init:
 		bsr.w	j_Adjust2PArtPointer_0
 		move.b	#4,obRender(a0)
 		move.b	#$80,obActWid(a0)
-		move.w	obX(a0),$30(a0)
+		move.w	obX(a0),objoff_30(a0)
 
 Obj04_Main:
 		move.w	(v_waterpos1).w,d1
 		move.w	d1,obY(a0)
-		tst.b	$32(a0)
+		tst.b	objoff_32(a0)
 		bne.s	loc_15530
-		btst	#7,(v_jpadpress1).w
+		btst	#bitStart,(v_jpadpress1).w
 		beq.s	loc_15540
 		addq.b	#3,obFrame(a0)
-		move.b	#1,$32(a0)
+		move.b	#1,objoff_32(a0)
 		bra.s	loc_15540
 ; ---------------------------------------------------------------------------
 
 loc_15530:
 		tst.w	(f_pause).w
 		bne.s	loc_15540
-		move.b	#0,$32(a0)
+		move.b	#0,objoff_32(a0)
 		subq.b	#3,obFrame(a0)
 
 loc_15540:

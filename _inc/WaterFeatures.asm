@@ -5,16 +5,16 @@ ChangeWaterSurfacePos:
 		tst.b	(Water_flag).w
 		beq.s	locret_403E
 		move.w	(Camera_RAM).w,d1
-		btst	#0,($FFFFFE05).w
+		btst	#0,(Timer_frames+1).w
 		beq.s	loc_402C
 		addi.w	#$20,d1
 
 loc_402C:
 		move.w	d1,d0
 		addi.w	#$60,d0
-		move.w	d0,(v_objspace+$780+obX).w
+		move.w	d0,(v_watersurface1+obX).w
 		addi.w	#$120,d1
-		move.w	d1,(v_objspace+$7C0+obX).w
+		move.w	d1,(v_watersurface2+obX).w
 
 locret_403E:
 		rts
@@ -29,14 +29,14 @@ WaterEffects:
 		beq.s	locret_4094
 		tst.b	(Deform_lock).w
 		bne.s	loc_4058
-		cmpi.b	#6,(v_objspace+obRoutine).w
+		cmpi.b	#6,(v_player+obRoutine).w
 		bcc.s	loc_4058
 		bsr.w	DynamicWaterHeight
 
 loc_4058:
 		clr.b	(f_wtr_state).w
 		moveq	#0,d0
-		move.b	($FFFFFE60).w,d0
+		move.b	(v_oscillate+2).w,d0
 		lsr.w	#1,d0
 		add.w	(v_waterpos2).w,d0
 		move.w	d0,(v_waterpos1).w
@@ -45,13 +45,13 @@ loc_4058:
 		bcc.s	loc_4086
 		tst.w	d0
 		bpl.s	loc_4086
-		move.b	#$DF,(v_hbla_line).w
+		move.b	#223,(v_hbla_line).w
 		move.b	#1,(f_wtr_state).w
 
 loc_4086:
-		cmpi.w	#$DF,d0
+		cmpi.w	#223,d0
 		bcs.s	loc_4090
-		move.w	#$DF,d0
+		move.w	#223,d0
 
 loc_4090:
 		move.b	d0,(v_hbla_line).w
@@ -61,7 +61,7 @@ locret_4094:
 ; End of function WaterEffects
 
 ; ---------------------------------------------------------------------------
-WaterHeight:	dc.w  $600, $328, $900,	$228		; 0
+WaterHeight:	dc.w  $600, $328, $900,	$228
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -95,14 +95,14 @@ DynWater_Index:	dc.w DynWater_HPZ1-DynWater_Index	; 0
 ; ---------------------------------------------------------------------------
 
 DynWater_HPZ1:						; This uses the 2nd controller to make the water level move up or down
-		btst	#button_up,(v_2Pjpadhold1).w
+		btst	#bitUp,(v_2Pjpadhold1).w
 		beq.s	loc_40E2
 		tst.w	(v_waterpos3).w
 		beq.s	loc_40E2
 		subq.w	#1,(v_waterpos3).w
 
 loc_40E2:
-		btst	#button_down,(v_2Pjpadhold1).w
+		btst	#bitDn,(v_2Pjpadhold1).w
 		beq.s	locret_40F6
 		cmpi.w	#$700,(v_waterpos3).w
 		beq.s	locret_40F6
@@ -196,7 +196,7 @@ DynWater_HPZ3:
 		cmpi.w	#$600,(v_player+obY).w
 		bcc.s	loc_41E8
 		move.w	#$4C8,d1
-		move.b	#$4B,($FFFF8206).w
+		move.b	#$4B,(v_lvllayout+$206).w
 		move.b	#1,(v_wtr_routine).w
 		move.w	#sfx_Rumbling,d0
 		bsr.w	PlaySound_Special
@@ -325,7 +325,7 @@ loc_42EE:
 		bcs.w	loc_438C
 		cmp.w	6(a2),d2
 		bcc.s	loc_438C
-		move.b	($FFFFFE0F).w,d0
+		move.b	(Vint_runcount+3).w,d0
 		andi.b	#$3F,d0
 		bne.s	loc_4326
 		move.w	#sfx_Waterfall,d0
@@ -431,7 +431,7 @@ loc_4430:
 		clr.b	$15(a1)
 		move.b	#$1B,obAnim(a1)
 		move.b	#1,(f_slidemode).w
-		move.b	($FFFFFE0F).w,d0
+		move.b	(Vint_runcount+3).w,d0
 		andi.b	#$1F,d0
 		bne.s	locret_4454
 		move.w	#sfx_Waterfall,d0

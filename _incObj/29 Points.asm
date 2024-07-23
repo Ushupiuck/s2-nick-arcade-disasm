@@ -20,7 +20,7 @@ loc_9FB2:
 		move.b	#4,obRender(a0)
 		move.b	#1,obPriority(a0)
 		move.b	#8,obActWid(a0)
-		move.w	#$FD00,obVelY(a0)
+		move.w	#-$300,obVelY(a0)
 
 loc_9FE0:
 		tst.w	obVelY(a0)

@@ -25,8 +25,8 @@ loc_9742:
 		move.b	#8,obActWid(a0)
 		moveq	#0,d0
 		move.b	obSubtype(a0),d0
-		mulu.w	#$3C,d0
-		move.w	d0,$30(a0)
+		mulu.w	#60,d0
+		move.w	d0,objoff_30(a0)
 		move.b	#4,obFrame(a0)
 
 loc_978A:
@@ -37,7 +37,7 @@ loc_978A:
 		tst.w	d1
 		bpl.s	loc_97C6
 		add.w	d1,obY(a0)
-		move.w	#$FD00,obVelY(a0)
+		move.w	#-$300,obVelY(a0)
 		tst.b	d3
 		beq.s	loc_97C6
 		bmi.s	loc_97BC
@@ -53,10 +53,10 @@ loc_97BC:
 		neg.w	obVelX(a0)
 
 loc_97C6:
-		subq.w	#1,$30(a0)
+		subq.w	#1,objoff_30(a0)
 		bpl.s	loc_97E2
-		_move.b	#$24,obID(a0)
-		_move.b	#$3F,obID(a0)
+		_move.b	#id_Obj24,obID(a0)
+		_move.b	#id_Obj3F,obID(a0)
 		move.b	#0,obRoutine(a0)
 		bra.w	Obj3F				; explosion object
 ; ---------------------------------------------------------------------------

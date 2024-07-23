@@ -1,18 +1,20 @@
-;----------------------------------------------------
-; Sonic	1 Object 1E - leftover Ballhog object
-;----------------------------------------------------
+; ---------------------------------------------------------------------------
+; Object 1E - Ball Hog enemy (SBZ)
+; ---------------------------------------------------------------------------
 
-S1Obj_1E:						; leftover from Sonic 1
+S1Obj_1E:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
-		move.w	S1Obj_1E_Index(pc,d0.w),d1
-		jmp	S1Obj_1E_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-S1Obj_1E_Index:	dc.w loc_966E-S1Obj_1E_Index
-		dc.w loc_96C2-S1Obj_1E_Index
-; ---------------------------------------------------------------------------
+		move.w	Hog_Index(pc,d0.w),d1
+		jmp	Hog_Index(pc,d1.w)
+; ===========================================================================
+Hog_Index:	dc.w Hog_Main-Hog_Index
+		dc.w Hog_Action-Hog_Index
 
-loc_966E:
+hog_launchflag = objoff_32		; 0 to launch a cannonball
+; ===========================================================================
+
+Hog_Main:	; Routine 0
 		move.b	#$13,obHeight(a0)
 		move.b	#8,obWidth(a0)
 		move.l	#Map_S1Obj1E,obMap(a0)
@@ -23,53 +25,53 @@ loc_966E:
 		move.b	#5,obColType(a0)
 		move.b	#$C,obActWid(a0)
 		bsr.w	ObjectMoveAndFall
-		jsr	(ObjHitFloor).l
+		jsr	(ObjHitFloor).l	; find floor
 		tst.w	d1
-		bpl.s	locret_96C0
+		bpl.s	.floornotfound
 		add.w	d1,obY(a0)
 		move.w	#0,obVelY(a0)
 		addq.b	#2,obRoutine(a0)
 
-locret_96C0:
-		rts
-; ---------------------------------------------------------------------------
+.floornotfound:
+		rts	
+; ===========================================================================
 
-loc_96C2:
+Hog_Action:	; Routine 2
 		lea	(Ani_S1Obj1E).l,a1
 		bsr.w	AnimateSprite
-		cmpi.b	#1,obFrame(a0)
-		bne.s	loc_96DC
-		tst.b	$32(a0)
-		beq.s	loc_96E4
-		bra.s	loc_96E0
-; ---------------------------------------------------------------------------
+		cmpi.b	#1,obFrame(a0)	; is final frame (01) displayed?
+		bne.s	.setlaunchflag	; if not, branch
+		tst.b	hog_launchflag(a0)	; is it	set to launch cannonball?
+		beq.s	.makeball	; if yes, branch
+		bra.s	.remember
+; ===========================================================================
 
-loc_96DC:
-		clr.b	$32(a0)
+.setlaunchflag:
+		clr.b	hog_launchflag(a0)	; set to launch	cannonball
 
-loc_96E0:
+.remember:
 		bra.w	MarkObjGone
-; ---------------------------------------------------------------------------
+; ===========================================================================
 
-loc_96E4:
-		move.b	#1,$32(a0)
+.makeball:
+		move.b	#1,hog_launchflag(a0)
 		bsr.w	FindFreeObj
-		bne.s	loc_972E
-		_move.b	#$20,obID(a1)
+		bne.s	.fail
+		_move.b	#id_Obj20,obID(a1) ; load cannonball object ($20)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.w	#$FF00,obVelX(a1)
+		move.w	#-$100,obVelX(a1) ; cannonball bounces to the left
 		move.w	#0,obVelY(a1)
 		moveq	#-4,d0
-		btst	#0,obStatus(a0)
-		beq.s	loc_971E
+		btst	#0,obStatus(a0)	; is Ball Hog facing right?
+		beq.s	.noflip		; if not, branch
 		neg.w	d0
-		neg.w	obVelX(a1)
+		neg.w	obVelX(a1)	; cannonball bounces to	the right
 
-loc_971E:
+.noflip:
 		add.w	d0,obX(a1)
 		addi.w	#$C,obY(a1)
-		move.b	obSubtype(a0),obSubtype(a1)
+		move.b	obSubtype(a0),obSubtype(a1) ; copy object type from Ball Hog
 
-loc_972E:
-		bra.s	loc_96E0
+.fail:
+		bra.s	.remember

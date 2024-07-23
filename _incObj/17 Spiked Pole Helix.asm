@@ -69,11 +69,7 @@ loc_8746:
 
 loc_874A:
 		bsr.w	sub_878C
-		move.w	obX(a0),d0
-		andi.w	#$FF80,d0
-		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
-		bhi.w	loc_8766
+		out_of_range.w	loc_8766
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 

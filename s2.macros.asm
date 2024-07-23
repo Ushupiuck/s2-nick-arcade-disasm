@@ -181,9 +181,9 @@ enable_ints:	macro
 ; input: location to jump to if out of range, x-axis pos (obX(a0) by default)
 ; ---------------------------------------------------------------------------
 
-out_of_range_s1:	macro exit,pos
-		if ("pos"<>"")
-		move.w	pos,d0		; get object position (if specified as not obX)
+out_of_range_s1:	macro exit,specpos
+		if ("specpos"<>"")
+		move.w	specpos,d0		; get object position (if specified as not obX)
 		else
 		move.w	obX(a0),d0	; get object position
 		endif
@@ -201,9 +201,9 @@ out_of_range_s1:	macro exit,pos
 ; input: location to jump to if out of range, x-axis pos (obX(a0) by default)
 ; ---------------------------------------------------------------------------
 
-out_of_range:	macro exit,pos
-		if ("pos"<>"")
-		move.w	pos,d0		; get object position (if specified as not obX)
+out_of_range:	macro exit,specpos
+		if ("specpos"<>"")
+		move.w	specpos,d0		; get object position (if specified as not obX)
 		else
 		move.w	obX(a0),d0	; get object position
 		endif
@@ -237,13 +237,6 @@ make_block_tile_pair_2p function addr,flx,fly,pal,pri,((make_block_tile_2p(addr,
 
 ; function to calculate the location of a tile in plane mappings
 planeLoc function width,col,line,(((width * line) + col) * 2)
-		
-; ---------------------------------------------------------------------------
-; turn a sample rate into a djnz loop counter
-; ---------------------------------------------------------------------------
-
-pcmLoopCounter function sampleRate,baseCycles, 1+(53693175/15/(sampleRate)-(baseCycles)+(13/2))/13
-dpcmLoopCounter function sampleRate, pcmLoopCounter(sampleRate,301/2) ; 301 is the number of cycles zPlayPCMLoop takes.
 
 ; some variables and functions to help define those constants (redefined before a new set of IDs)
 offset :=	0					; this is the start of the pointer table

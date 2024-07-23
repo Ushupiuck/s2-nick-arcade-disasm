@@ -11,28 +11,28 @@ palptr	macro	ptr,ram,size
 	endm
 
 PalPointers:	
-ptr_Pal_SegaBG:		palptr	Pal_SegaBG,v_pal_dry,$1F
-ptr_Pal_Title:		palptr	Pal_Title,v_pal_dry,$1F
-ptr_Pal_LevelSel:	palptr	Pal_LevelSelect,v_pal_dry,$1F
-ptr_Pal_SonicTails:	palptr	Pal_SonicTails,v_pal_dry,7
+ptr_Pal_SegaBG:		palptr	Pal_SegaBG,v_palette,$1F
+ptr_Pal_Title:		palptr	Pal_Title,v_palette,$1F
+ptr_Pal_LevelSel:	palptr	Pal_LevelSelect,v_palette,$1F
+ptr_Pal_SonicTails:	palptr	Pal_SonicTails,v_palette,7
 Pal_Levels:
-ptr_Pal_GHZ:		palptr	Pal_GHZ,v_pal_dry+$20,$17
-ptr_Pal_LZ:		palptr	Pal_CPZ,v_pal_dry+$20,$17
-ptr_Pal_CPZ:		palptr	Pal_CPZ,v_pal_dry+$20,$17
-ptr_Pal_EHZ:		palptr	Pal_EHZ,v_pal_dry+$20,$17
-ptr_Pal_HPZ:		palptr	Pal_HPZ,v_pal_dry+$20,$17
-ptr_Pal_HTZ1:		palptr	Pal_HTZ,v_pal_dry+$20,$17
-ptr_Pal_Special:	palptr	Pal_S1SpecialStage,v_pal_dry,$1F
-ptr_Pal_HPZWater:	palptr	Pal_HPZWater,v_pal_dry,$1F
+ptr_Pal_GHZ:		palptr	Pal_GHZ,v_palette+$20,$17
+ptr_Pal_LZ:		palptr	Pal_CPZ,v_palette+$20,$17
+ptr_Pal_CPZ:		palptr	Pal_CPZ,v_palette+$20,$17
+ptr_Pal_EHZ:		palptr	Pal_EHZ,v_palette+$20,$17
+ptr_Pal_HPZ:		palptr	Pal_HPZ,v_palette+$20,$17
+ptr_Pal_HTZ1:		palptr	Pal_HTZ,v_palette+$20,$17
+ptr_Pal_Special:	palptr	Pal_S1SpecialStage,v_palette,$1F
+ptr_Pal_HPZWater:	palptr	Pal_HPZWater,v_palette,$1F
 			; the following are leftover Sonic 1 entries
-ptr_Pal_SBZ3:		palptr	Pal_LZ4,v_pal_dry+$20,$17
-ptr_Pal_SBZ3Water:	palptr	Pal_LZ4Water,v_pal_dry,$1F
-ptr_Pal_HTZ2:		palptr	Pal_HTZ,v_pal_dry+$20,$17
-ptr_Pal_LZSonWater:	palptr	Pal_LZSonicWater,v_pal_dry,7
-ptr_Pal_SBZ3SonWat:	palptr	Pal_LZ4SonicWater,v_pal_dry,7
-ptr_Pal_SSResult:	palptr	Pal_S1SpeResults,v_pal_dry,$1F
-ptr_Pal_Continue:	palptr	Pal_S1Continue,v_pal_dry,$F
-ptr_Pal_Ending:		palptr	Pal_S1Ending,v_pal_dry,$1F
+ptr_Pal_SBZ3:		palptr	Pal_LZ4,v_palette+$20,$17
+ptr_Pal_SBZ3Water:	palptr	Pal_LZ4Water,v_palette,$1F
+ptr_Pal_HTZ2:		palptr	Pal_HTZ,v_palette+$20,$17
+ptr_Pal_LZSonWater:	palptr	Pal_LZSonicWater,v_palette,7
+ptr_Pal_SBZ3SonWat:	palptr	Pal_LZ4SonicWater,v_palette,7
+ptr_Pal_SSResult:	palptr	Pal_S1SpeResults,v_palette,$1F
+ptr_Pal_Continue:	palptr	Pal_S1Continue,v_palette,$F
+ptr_Pal_Ending:		palptr	Pal_S1Ending,v_palette,$1F
 		
 palid_SegaBG:		equ (ptr_Pal_SegaBG-PalPointers)/8	; 0
 palid_Title:		equ (ptr_Pal_Title-PalPointers)/8	; 1

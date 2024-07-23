@@ -57,7 +57,7 @@ nMaxPSG2			EQU nB6
 			enum		fTone_01=$01,fTone_02,fTone_03,fTone_04,fTone_05,fTone_06
 			nextenum	fTone_07,fTone_08,fTone_09,fTone_0A,fTone_0B,fTone_0C
 			nextenum	fTone_0D
-		elsecase				;SonicDriverVer>=3
+		elsecase;SonicDriverVer>=3
 			enum		sTone_01=$01,sTone_02,sTone_03,sTone_04,sTone_05,sTone_06
 			nextenum	sTone_07,sTone_08,sTone_09,sTone_0A,sTone_0B,sTone_0C
 			nextenum	sTone_0D,sTone_0E,sTone_0F,sTone_10,sTone_11,sTone_12
@@ -65,7 +65,7 @@ nMaxPSG2			EQU nB6
 			nextenum	sTone_19,sTone_1A,sTone_1B,sTone_1C,sTone_1D,sTone_1E
 			nextenum	sTone_1F,sTone_20,sTone_21,sTone_22,sTone_23,sTone_24
 			nextenum	sTone_25,sTone_26,sTone_27
-							; For conversions:
+			; For conversions:
 			if SonicDriverVer>=5
 				nextenum	fTone_01,fTone_02,fTone_03,fTone_04,fTone_05,fTone_06
 				nextenum	fTone_07,fTone_08,fTone_09,fTone_0A,fTone_0B,fTone_0C
@@ -116,7 +116,7 @@ nMaxPSG2			EQU nB6
 			nextenum	dReverseFadingWind,dScratchS3,dLooseSnareNoise,dPowerKick2
 			nextenum	dCrashingNoiseWoo,dQuickHit,dKickHey,dPowerKickHit
 			nextenum	dLowPowerKickHit,dLowerPowerKickHit,dLowestPowerKickHit
-		elsecase				;SonicDriverVer>=5
+		elsecase;SonicDriverVer>=5
 			if (use_s3_samples<>0)||(use_sk_samples<>0)||(use_s3d_samples<>0)
 				enum		dSnareS3=$81,dHighTom,dMidTomS3,dLowTomS3,dFloorTomS3,dKickS3,dMuffledSnare
 				nextenum	dCrashCymbal,dRideCymbal,dLowMetalHit,dMetalHit,dHighMetalHit
@@ -137,7 +137,7 @@ nMaxPSG2			EQU nB6
 				nextenum	dCrashingNoiseWoo,dQuickHit,dKickHey,dPowerKickHit
 				nextenum	dLowPowerKickHit,dLowerPowerKickHit,dLowestPowerKickHit
 			endif
-							; For conversions:
+			; For conversions:
 			if (use_s2_samples<>0)
 				if (use_s3_samples<>0)||(use_sk_samples<>0)||(use_s3d_samples<>0)
 					nextenum	dKick
@@ -160,11 +160,11 @@ nMaxPSG2			EQU nB6
 cPSG1				EQU $80
 cPSG2				EQU $A0
 cPSG3				EQU $C0
-cNoise				EQU $E0			; Not for use in S3/S&K/S3D
+cNoise				EQU $E0	; Not for use in S3/S&K/S3D
 cFM3				EQU $02
 cFM4				EQU $04
 cFM5				EQU $05
-cFM6				EQU $06			; Only in S3/S&K/S3D, overrides DAC
+cFM6				EQU $06	; Only in S3/S&K/S3D, overrides DAC
 ; ---------------------------------------------------------------------------
 ; Conversion macros and functions
 
@@ -224,10 +224,8 @@ CheckedChannelPointer macro loc
 	if SonicDriverVer<>1
 		dc.w	z80_ptr(loc)
 	else
-		if MOMPASS>1
-			if loc<songStart
-				fatal "Tracks for Sonic 1 songs must come after the start of the song"
-			endif
+		if (MOMPASS=1)&&(DEFINED(loc))
+			fatal "Tracks for Sonic 1 songs must come after the start of the song"
 		endif
 		dc.w	loc-songStart
 	endif
@@ -246,7 +244,7 @@ SourceDriver set ver
 
 songStart set *
 
-	if MOMPASS>1
+	if MOMPASS=1
 		if SMPS2ASMVer < SourceSMPS2ASM
 			message "Song at 0x\{songStart} was made for a newer version of SMPS2ASM (this is version \{SMPS2ASMVer}, but song wants at least version \{SourceSMPS2ASM})."
 		endif
@@ -270,10 +268,8 @@ smpsHeaderVoice macro loc
 	if SonicDriverVer<>1
 		dc.w	z80_ptr(loc)
 	else
-		if MOMPASS>1
-			if loc<songStart
-				fatal "Voice banks for Sonic 1 songs must come after the song"
-			endif
+		if (MOMPASS=1)&&(DEFINED(loc))
+			fatal "Voice banks for Sonic 1 songs must come after the start of the song"
 		endif
 		dc.w	loc-songStart
 	endif
@@ -339,7 +335,7 @@ smpsHeaderPSG macro loc,pitch,vol,mod,voice
 		; other drivers may try to process as valid data, so manually force it to 0 here.
 		dc.b	0
 	else
-		if (MOMPASS==2) && (SonicDriverVer<3) && (SourceDriver>=3) && (mod<>0)
+		if (MOMPASS==1) && (SonicDriverVer<3) && (SourceDriver>=3) && (mod<>0)
 			message "This track header specifies a frequency envelope, but this driver does not support them."			
 		endif
 		dc.b	mod
@@ -502,6 +498,15 @@ smpsSetVol macro val
 ; Works on all drivers
 smpsPSGAlterVol macro vol
 	dc.b	$EC,vol
+	endm
+
+smpsPSGAlterVolS2 macro vol
+	; Sonic 2's driver allows the FM command to be used on PSG channels, but others do not.
+	if SonicDriverVer==2
+		smpsAlterVol vol
+	else
+		smpsPSGAlterVol vol
+	endif
 	endm
 
 ; Clears pushing sound flag in S1
@@ -679,7 +684,7 @@ smpsFM3SpecialMode macro ind1,ind2,ind3,ind4
 
 smpsPlaySound macro index
 	if SonicDriverVer>=5
-		message "smpsPlaySound only plays SFX in Flamedriver ; use smpsPlayMusic to play music or fade effects."
+		message "smpsPlaySound only plays SFX in Flamedriver; use smpsPlayMusic to play music or fade effects."
 	endif
 	dc.b	$FF,$01,index
 	endm
@@ -909,7 +914,7 @@ smpsVcTotalLevel macro op1,op2,op3,op4
 		set vcTL3,vcTL3&$7F
 		set vcTL4,vcTL4&$7F
 	elseif (SonicDriverVer<3)&&(SourceDriver>=3)&&((((vcTL1|vcTLMask1)&$80)<>$80)||(((vcTL2|vcTLMask2)&$80)<>((vcAlgorithm>=5)<<7))||(((vcTL3|vcTLMask3)&$80)<>((vcAlgorithm>=4)<<7))||(((vcTL4|vcTLMask4)&$80)<>((vcAlgorithm==7)<<7)))
-		if MOMPASS>1
+		if MOMPASS=1
 			message "Voice at 0x\{*} has TL bits that do not match its algorithm setting. This voice will not work in S1/S2 drivers."
 		endif
 	endif
