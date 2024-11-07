@@ -30416,8 +30416,7 @@ Nem_EndStH:	binclude	"art/nemesis/S1/Ending - StH Logo.nem"
 ; ToeJam & Earl REV00 data, likely due to it once occupying the cartridge, best
 ; just to remove it given it takes up ONE TENTH of the cartridge space
 ; --------------------------------------------------------------------------------------
-Leftover_E1670:
-		binclude	"misc/leftovers/E1670.bin"
+Leftover_E1670:	binclude	"misc/leftovers/E1670.bin"
 		even
 
 		cnop	-1,2<<lastbit(*-1)
