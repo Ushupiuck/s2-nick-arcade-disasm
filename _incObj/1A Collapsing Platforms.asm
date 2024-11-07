@@ -12,13 +12,13 @@ Obj1A_Index:	dc.w loc_8C58-Obj1A_Index
 loc_8C58:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj1A,obMap(a0)
-		move.w	#$4000,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		ori.b	#4,obRender(a0)
 		move.b	#4,obPriority(a0)
 		move.b	#7,objoff_38(a0)
 		move.b	obSubtype(a0),obFrame(a0)
-		cmpi.b	#4,(Current_Zone).w
+		cmpi.b	#id_HPZ,(Current_Zone).w
 		bne.s	loc_8CB0
 		move.l	#Map_Obj1A_HPZ,obMap(a0)
 		move.w	#$434A,obGfx(a0)

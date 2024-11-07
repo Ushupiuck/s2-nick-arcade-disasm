@@ -10,11 +10,11 @@ Obj18_Index:	dc.w loc_882C-Obj18_Index
 		dc.w loc_88A2-Obj18_Index
 		dc.w loc_8908-Obj18_Index
 		dc.w loc_88E0-Obj18_Index
-Obj18_Conf:	dc.w $2000
-		dc.w $2001
-		dc.w $2002
-		dc.w $4003
-		dc.w $3004
+Obj18_Conf:	dc.b $20, 0
+		dc.b $20, 1
+		dc.b $20, 2
+		dc.b $40, 3
+		dc.b $30, 4
 ; ---------------------------------------------------------------------------
 
 loc_882C:
@@ -26,24 +26,24 @@ loc_882C:
 		lea	Obj18_Conf(pc,d0.w),a2
 		move.b	(a2)+,obActWid(a0)
 		move.b	(a2)+,obFrame(a0)
-		move.w	#$4000,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 		move.l	#Map_Obj18,obMap(a0)
-		cmpi.b	#3,(Current_Zone).w
+		cmpi.b	#id_EHZ,(Current_Zone).w
 		beq.s	loc_8866
-		cmpi.b	#5,(Current_Zone).w
+		cmpi.b	#id_HTZ,(Current_Zone).w
 		bne.s	loc_8874
 
 loc_8866:
 		move.l	#Map_obj18_EHZ,obMap(a0)
-		move.w	#$4000,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Level,2,0),obGfx(a0)
 
 loc_8874:
 		bsr.w	Adjust2PArtPointer
 		move.b	#4,obRender(a0)
 		move.b	#4,obPriority(a0)
 		move.w	obY(a0),$2C(a0)
-		move.w	obY(a0),$34(a0)
-		move.w	obX(a0),$32(a0)
+		move.w	obY(a0),objoff_34(a0)
+		move.w	obX(a0),objoff_32(a0)
 		move.w	#$80,obAngle(a0)
 		andi.b	#$F,obSubtype(a0)
 
@@ -51,16 +51,16 @@ loc_88A2:
 		move.b	obStatus(a0),d0
 		andi.b	#$18,d0
 		bne.s	loc_88B8
-		tst.b	$38(a0)
+		tst.b	objoff_38(a0)
 		beq.s	loc_88C4
-		subq.b	#4,$38(a0)
+		subq.b	#4,objoff_38(a0)
 		bra.s	loc_88C4
 ; ---------------------------------------------------------------------------
 
 loc_88B8:
-		cmpi.b	#$40,$38(a0)
+		cmpi.b	#$40,objoff_38(a0)
 		beq.s	loc_88C4
-		addq.b	#4,$38(a0)
+		addq.b	#4,objoff_38(a0)
 
 loc_88C4:
 		move.w	obX(a0),-(sp)
@@ -85,7 +85,7 @@ loc_88E8:
 ; ---------------------------------------------------------------------------
 
 loc_88F2:
-		out_of_range.s	loc_8908,$32(a0)
+		out_of_range.s	loc_8908,objoff_32(a0)
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ loc_8908:
 
 
 sub_890C:
-		move.b	$38(a0),d0
+		move.b	objoff_38(a0),d0
 		bsr.w	CalcSine
 		move.w	#$400,d1
 		muls.w	d1,d0

@@ -24,12 +24,12 @@ Obj11_Index:	dc.w loc_7BC6-Obj11_Index
 loc_7BC6:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_obj11_GHZ,obMap(a0)
-		move.w	#$44C6,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_GHZ_Bridge,2,0),obGfx(a0)
 		move.b	#3,obPriority(a0)
 		cmpi.b	#3,(Current_Zone).w
 		bne.s	loc_7BFA
 		move.l	#Map_obj11,obMap(a0)
-		move.w	#$43C6,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_EHZ_Bridge,2,0),obGfx(a0)
 		move.b	#3,obPriority(a0)
 
 loc_7BFA:
@@ -37,7 +37,7 @@ loc_7BFA:
 		bne.s	loc_7C14
 		addq.b	#4,obRoutine(a0)
 		move.l	#Map_obj11_HPZ,obMap(a0)
-		move.w	#$6300,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_HPZ_Bridge,3,0),obGfx(a0)
 
 loc_7C14:
 		bsr.w	Adjust2PArtPointer
@@ -134,7 +134,7 @@ loc_7CF6:
 loc_7CFA:
 		cmpi.b	#$40,objoff_3E(a0)
 		beq.s	loc_7D06
-		addq.b	#4,$3E(a0)
+		addq.b	#4,objoff_3E(a0)
 
 loc_7D06:
 		bsr.w	sub_7F36
@@ -316,7 +316,7 @@ sub_7E60:
 
 loc_7E72:
 		moveq	#0,d2
-		move.b	byte_7E9F(pc,d0.w),d2
+		move.b	byte_7E9E+1(pc,d0.w),d2
 		swap	d2
 		move.b	byte_7E9E(pc,d0.w),d2
 		moveq	#0,d0
@@ -328,13 +328,13 @@ loc_7E72:
 
 loc_7E90:
 		moveq	#0,d6
-		move.b	byte_7E9F(pc,d0.w),d6
+		move.b	byte_7E9E+1(pc,d0.w),d6
 		swap	d6
 		move.b	byte_7E9E(pc,d0.w),d6
 		bra.s	loc_7EAE
 ; ---------------------------------------------------------------------------
 byte_7E9E:	dc.b 1
-byte_7E9F:	dc.b   2,  1,  2,  1,  2,  1,  2,  0,  1,  0,  0,  0,  0,  0,  1 ; 0
+		dc.b   2,  1,  2,  1,  2,  1,  2,  0,  1,  0,  0,  0,  0,  0,  1 ; 0
 ; ---------------------------------------------------------------------------
 
 loc_7EAE:

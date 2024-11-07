@@ -8,47 +8,47 @@ Obj28:
 		move.w	off_9AB6(pc,d0.w),d1
 		jmp	off_9AB6(pc,d1.w)
 ; ---------------------------------------------------------------------------
-off_9AB6:	dc.w loc_9B92-off_9AB6,loc_9CB8-off_9AB6,loc_9D12-off_9AB6 ; 0
-		dc.w loc_9D4E-off_9AB6,loc_9D12-off_9AB6,loc_9D12-off_9AB6 ; 3
-		dc.w loc_9D12-off_9AB6,loc_9D4E-off_9AB6,loc_9D12-off_9AB6 ; 6
-		dc.w loc_9DCE-off_9AB6,loc_9DEE-off_9AB6,loc_9DEE-off_9AB6 ; 9
-		dc.w loc_9E0E-off_9AB6,loc_9E48-off_9AB6,loc_9EA2-off_9AB6 ; 12
-		dc.w loc_9EC0-off_9AB6,loc_9EA2-off_9AB6,loc_9EC0-off_9AB6 ; 15
-		dc.w loc_9EA2-off_9AB6,loc_9EFE-off_9AB6,loc_9E64-off_9AB6 ; 18
-byte_9AE0:	dc.b   0,  5,  2,  3,  6,  3,  4,  5,  4,  1,  0,  1 ; 0
-word_9AEC:	dc.w $FE00
-		dc.w $FC00
+off_9AB6:	dc.w loc_9B92-off_9AB6,loc_9CB8-off_9AB6,loc_9D12-off_9AB6
+		dc.w loc_9D4E-off_9AB6,loc_9D12-off_9AB6,loc_9D12-off_9AB6
+		dc.w loc_9D12-off_9AB6,loc_9D4E-off_9AB6,loc_9D12-off_9AB6
+		dc.w loc_9DCE-off_9AB6,loc_9DEE-off_9AB6,loc_9DEE-off_9AB6
+		dc.w loc_9E0E-off_9AB6,loc_9E48-off_9AB6,loc_9EA2-off_9AB6
+		dc.w loc_9EC0-off_9AB6,loc_9EA2-off_9AB6,loc_9EC0-off_9AB6
+		dc.w loc_9EA2-off_9AB6,loc_9EFE-off_9AB6,loc_9E64-off_9AB6
+byte_9AE0:	dc.b   0,  5,  2,  3,  6,  3,  4,  5,  4,  1,  0,  1
+word_9AEC:	dc.w -$200
+		dc.w -$400
 		dc.l Map_Obj28a
-		dc.w $FE00
-		dc.w $FD00
+		dc.w -$200
+		dc.w -$300
 		dc.l Map_Obj28
 		dc.w $FE80
-		dc.w $FD00
+		dc.w -$300
 		dc.l Map_Obj28a
 		dc.w $FEC0
 		dc.w $FE80
 		dc.l Map_Obj28
 		dc.w $FE40
-		dc.w $FD00
+		dc.w -$300
 		dc.l Map_Obj28b
-		dc.w $FD00
-		dc.w $FC00
+		dc.w -$300
+		dc.w -$400
 		dc.l Map_Obj28
 		dc.w $FD80
 		dc.w $FC80
 		dc.l Map_Obj28b
-word_9B24:	dc.w $FBC0,$FC00,$FBC0,$FC00		; 0
-		dc.w $FBC0,$FC00,$FD00,$FC00		; 4
-		dc.w $FD00,$FC00,$FE80,$FD00		; 8
-		dc.w $FE80,$FD00,$FEC0,$FE80		; 12
-		dc.w $FE40,$FD00,$FE00,$FD00		; 16
-		dc.w $FD80,$FC80			; 20
-off_9B50:	dc.l Map_Obj28,Map_Obj28		; 0
-		dc.l Map_Obj28,Map_Obj28a		; 2
-		dc.l Map_Obj28a,Map_Obj28a		; 4
-		dc.l Map_Obj28a,Map_Obj28		; 6
-		dc.l Map_Obj28b,Map_Obj28		; 8
-		dc.l Map_Obj28b				; 10
+word_9B24:	dc.w $FBC0,$FC00,$FBC0,$FC00
+		dc.w $FBC0,$FC00,$FD00,$FC00
+		dc.w $FD00,$FC00,$FE80,$FD00
+		dc.w $FE80,$FD00,$FEC0,$FE80
+		dc.w $FE40,$FD00,$FE00,$FD00
+		dc.w $FD80,$FC80
+off_9B50:	dc.l Map_Obj28,Map_Obj28
+		dc.l Map_Obj28,Map_Obj28a
+		dc.l Map_Obj28a,Map_Obj28a
+		dc.l Map_Obj28a,Map_Obj28
+		dc.l Map_Obj28b,Map_Obj28
+		dc.l Map_Obj28b
 word_9B7C:	dc.w  $5A5, $5A5, $5A5,	$553, $553, $573, $573,	$585, $593, $565, $5B3
 ; ---------------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ loc_9CB8:
 		add.b	d0,d0
 		addq.b	#4,d0
 		move.b	d0,obRoutine(a0)
-		tst.b	($FFFFF7A7).w
+		tst.b	(v_bossstatus).w
 		beq.s	loc_9D0E
 		btst	#4,(Vint_runcount+3).w
 		beq.s	loc_9D0E

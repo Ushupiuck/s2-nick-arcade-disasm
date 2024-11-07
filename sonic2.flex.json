@@ -1,0 +1,65 @@
+{
+    "Flex": 2,
+    "name": "Sonic 2 Nick Arcade",
+    "node": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c",
+    "objects": [
+        {
+            "name": "Common",
+            "children": [
+                {
+                    "name": "Sonic",
+                    "palettes": [
+                        {
+                            "path": "palette\\Sonic and Tails.bin",
+                            "length": 1
+                        }
+                    ],
+                    "format": "Sonic 2.js",
+                    "art": {
+                        "path": "art/uncompressed/Sonic's art.bin",
+                        "compression": "Uncompressed",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "mappings/sprite/Sonic.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": true,
+                        "path": "mappings/spriteDPLC/Sonic.asm",
+                        "label": ""
+                    },
+                    "uuid": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c"
+                },
+                {
+                    "name": "Tails",
+                    "palettes": [
+                        {
+                            "path": "palette/Sonic and Tails.bin",
+                            "length": 1
+                        }
+                    ],
+                    "format": "Sonic 2.js",
+                    "art": {
+                        "path": "art/uncompressed/Tails' art.bin",
+                        "compression": "Uncompressed",
+                        "offset": 0
+                    },
+                    "mappings": {
+                        "path": "mappings/sprite/Tails.asm",
+                        "label": ""
+                    },
+                    "dplcs": {
+                        "enabled": true,
+                        "path": "mappings/spriteDPLC/Tails.asm",
+                        "label": ""
+                    },
+                    "uuid": "926273b3-d28d-41ce-8a88-2e3e7b6657ec"
+                }
+            ],
+            "isDirectory": true,
+            "expanded": true,
+            "uuid": "14da472a-b9f3-4355-a6ce-e3a83fd70d6d"
+        }
+    ]
+}

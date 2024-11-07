@@ -41,6 +41,7 @@ obLRBSolidBit:	equ $3F					; bit to check for left/right/bottom solidity (either
 flashtime:	equ $30					; time between flashes after getting hit
 invtime:	equ $32					; time left for invincibility
 shoetime:	equ $34					; time left for speed shoes
+stick_to_convex:equ objoff_38
 standonobject:	equ $3D					; object Sonic stands on
 
 ; Miscellaneous object scratch-RAM
@@ -106,15 +107,30 @@ sub9_x_pos		= subspr_data+next_subspr*7+0
 sub9_y_pos		= subspr_data+next_subspr*7+2
 sub9_mapframe		= subspr_data+next_subspr*7+5
 
+; Levels
+id_GHZ:		equ 0
+id_LZ:		equ 1
+id_CPZ:		equ 2
+id_MZ:		equ 2
+id_EHZ:		equ 3
+id_SLZ:		equ 3
+id_HPZ:		equ 4
+id_SYZ:		equ 4
+id_HTZ:		equ 5
+id_SBZ:		equ 5
+id_EndZ:	equ 6
+id_SS:		equ 7
+
 ; Colours
-cBlack:		equ $000		; colour black
-cWhite:		equ $EEE		; colour white
-cBlue:		equ $E00		; colour blue
-cGreen:		equ $0E0		; colour green
-cRed:		equ $00E		; colour red
-cYellow:	equ cGreen+cRed		; colour yellow
-cAqua:		equ cGreen+cBlue	; colour aqua
-cMagenta:	equ cBlue+cRed		; colour magenta
+cBlack:		equ $000				; colour black
+cWhite:		equ $EEE				; colour white
+cBlue:		equ $E00				; colour blue
+cGreen:		equ $0E0				; colour green
+cRed:		equ $00E				; colour red
+cYellow:	equ cGreen+cRed				; colour yellow
+cAqua:		equ cGreen+cBlue			; colour aqua
+cMagenta:	equ cBlue+cRed				; colour magenta
+cCyan:		equ $880				; colour cyan
 
 ; ---------------------------------------------------------------------------
 ; Controller Buttons
@@ -129,14 +145,15 @@ bitC:			EQU	5
 bitA:			EQU	6
 bitStart:		EQU	7
 ; Buttons masks (1 << x == pow(2, x))
-btnUp:			EQU	1<<bitUp	; $01
-btnDn:			EQU	1<<bitDn	; $02
-btnL:			EQU	1<<bitL	; $04
-btnR:			EQU	1<<bitR	; $08
-btnB:			EQU	1<<bitB	; $10
-btnC:			EQU	1<<bitC	; $20
-btnA:			EQU	1<<bitA	; $40
-btnStart:		EQU	1<<bitStart	; $80
+btnUp:			EQU	1<<bitUp		; $01
+btnDn:			EQU	1<<bitDn		; $02
+btnL:			EQU	1<<bitL			; $04
+btnR:			EQU	1<<bitR			; $08
+btnB:			EQU	1<<bitB			; $10
+btnC:			EQU	1<<bitC			; $20
+btnA:			EQU	1<<bitA			; $40
+btnABC:			EQU	btnA|btnB|btnC		; $70
+btnStart:		EQU	1<<bitStart		; $80
 
 ; ---------------------------------------------------------------------------
 ; Art tile stuff
@@ -154,6 +171,42 @@ palette_mask        =      $6000
 tile_mask           =      $7FF
 nontile_mask        =      $F800
 drawing_mask        =      $7FFF
+
+; Animation IDs
+	phase 0
+AniIDSonAni_Walk:		ds.b 1
+AniIDSonAni_Run:		ds.b 1
+AniIDSonAni_Roll:		ds.b 1
+AniIDSonAni_Roll2:		ds.b 1
+AniIDSonAni_Push:		ds.b 1
+AniIDSonAni_Wait:		ds.b 1
+AniIDSonAni_Balance:		ds.b 1
+AniIDSonAni_LookUp:		ds.b 1
+AniIDSonAni_Duck:		ds.b 1
+AniIDSonAni_Spindash:		ds.b 1
+AniIDSonAni_WallRecoil1:	ds.b 1
+AniIDSonAni_WallRecoil2:	ds.b 1
+AniIDSonAni_0C:			ds.b 1
+AniIDSonAni_Stop:		ds.b 1
+AniIDSonAni_Float:		ds.b 1
+AniIDSonAni_Float2:		ds.b 1
+AniIDSonAni_Spring:		ds.b 1
+AniIDSonAni_Hang:		ds.b 1
+AniIDSonAni_Unused12:		ds.b 1
+AniIDSonAni_Unused13:		ds.b 1
+AniIDSonAni_Unused14:		ds.b 1
+AniIDSonAni_Bubble:		ds.b 1
+AniIDSonAni_DeathBW:		ds.b 1
+AniIDSonAni_Drown:		ds.b 1
+AniIDSonAni_Death:		ds.b 1
+AniIDSonAni_Unused19:		ds.b 1
+AniIDSonAni_Hurt:		ds.b 1
+AniIDSonAni_Slide:		ds.b 1
+AniIDSonAni_Blank:		ds.b 1
+AniIDSonAni_Float3:		ds.b 1
+AniIDSonAni_1E:			ds.b 1
+	dephase
+	!org 0
 
 Size_of_SegaPCM:	equ $6978
 Size_of_DAC_driver_guess:	equ $1760
@@ -193,6 +246,8 @@ vram_sprites:	equ $F800				; sprite table
 vram_hscroll:	equ $FC00				; horizontal scroll table
 tile_size:	equ 8*8/2
 plane_size_64x32:	equ 64*32*2
+
+palette_size:	equ $80
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -235,15 +290,15 @@ GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 
 ; Main RAM
 	phase	ramaddr($FFFF0000)
-v_startofram:
-v_128x128:	ds.b	$8000				; 128x128 tile mappings ($8000 bytes)
+v_start:
+v_128x128:		ds.b	$8000			; 128x128 tile mappings ($8000 bytes)
 v_128x128_end:
 
-v_lvllayout:	ds.b	$1000				; level layout buffer ($1000 bytes)
+v_lvllayout:		ds.b	$1000			; level layout buffer ($1000 bytes)
 v_lvllayout_end:
-v_lvllayoutbg:	= v_lvllayout+$80
+v_lvllayoutbg:		= v_lvllayout+$80
 
-v_16x16:	ds.b	$1800				; 16x16 tile mappings ($1800 bytes)
+v_16x16:		ds.b	$1800			; 16x16 tile mappings ($1800 bytes)
 v_16x16_end:
 
 v_bgscroll_buffer:	ds.b	$200			; background scroll buffer
@@ -329,12 +384,12 @@ v_endeggman	= v_objspace+object_size*2		; object variable space for Eggman after
 v_tryagain	= v_objspace+object_size*3		; object variable space for the "TRY AGAIN" text ($40 bytes)
 v_eggmanchaos	= v_objspace+object_size*32		; object variable space for the emeralds juggled by Eggman ($180 bytes)
 
-v_colladdr1:	ds.b	$600
+v_colladdr1:		ds.b	$600
 v_colladdr1_end:
-v_colladdr2:	ds.b	$600
+v_colladdr2:		ds.b	$600
 v_colladdr2_end:
 
-VDP_Command_Buffer:		ds.w	7*$12
+VDP_Command_Buffer:	ds.w	7*$12
 VDP_Command_Buffer_Slot:	ds.l	1
 
 v_spritetablebuffer:	ds.b	$300			; sprite table (last $80 bytes are overwritten by v_pal_water_dup)
@@ -356,25 +411,33 @@ Ring_Positions_End:
 Camera_RAM:
 
 Camera_Positions:
-Camera_X_pos:			ds.l	1
-Camera_Y_pos:			ds.l	1
-Camera_BG_X_pos:		ds.l	1		; only used sometimes as the layer deformation makes it sort of redundant
-Camera_BG_Y_pos:		ds.l	1
-Camera_BG2_X_pos:		ds.l	1		; used in CPZ
-Camera_BG2_Y_pos:		ds.l	1		; used in CPZ
-Camera_BG3_X_pos:		ds.l	1		; unused (only initialised at beginning of level)?
-Camera_BG3_Y_pos:		ds.l	1		; unused (only initialised at beginning of level)?
+Camera_X_pos:
+v_screenposx:		ds.l	1
+Camera_Y_pos:
+v_screenposy:		ds.l	1
+Camera_BG_X_pos:
+v_bgscreenposx:		ds.l	1			; only used sometimes as the layer deformation makes it sort of redundant
+Camera_BG_Y_pos:
+v_bgscreenposy:		ds.l	1
+Camera_BG2_X_pos:	
+v_bg2screenposx:	ds.l	1			; used in CPZ
+Camera_BG2_Y_pos:	
+v_bg2screenposy:	ds.l	1			; used in CPZ
+Camera_BG3_X_pos:	
+v_bg3screenposx:	ds.l	1			; unused (only initialised at beginning of level)?
+Camera_BG3_Y_pos:	
+v_bg3screenposy:	ds.l	1			; unused (only initialised at beginning of level)?
 Camera_Positions_End:
 
 Camera_Positions_P2:
-Camera_X_pos_P2:		ds.l	1
-Camera_Y_pos_P2:		ds.l	1
-Camera_BG_X_pos_P2:		ds.l	1		; only used sometimes as the layer deformation makes it sort of redundant
-Camera_BG_Y_pos_P2:		ds.l	1
-Camera_BG2_X_pos_P2:		ds.l	1		; unused (only initialised at beginning of level)?
-Camera_BG2_Y_pos_P2:		ds.l	1
-Camera_BG3_X_pos_P2:		ds.l	1		; unused (only initialised at beginning of level)?
-Camera_BG3_Y_pos_P2:		ds.l	1
+Camera_X_pos_P2:	ds.l	1
+Camera_Y_pos_P2:	ds.l	1
+Camera_BG_X_pos_P2:	ds.l	1			; only used sometimes as the layer deformation makes it sort of redundant
+Camera_BG_Y_pos_P2:	ds.l	1
+Camera_BG2_X_pos_P2:	ds.l	1			; unused (only initialised at beginning of level)?
+Camera_BG2_Y_pos_P2:	ds.l	1
+Camera_BG3_X_pos_P2:	ds.l	1			; unused (only initialised at beginning of level)?
+Camera_BG3_Y_pos_P2:	ds.l	1
 Camera_Positions_P2_End:
 
 Block_Crossed_Flags:
@@ -383,69 +446,69 @@ Verti_block_crossed_flag:	ds.b	1		; toggles between 0 and $10 when you cross a b
 Horiz_block_crossed_flag_BG:	ds.b	1		; toggles between 0 and $10 when background camera crosses a block boundary horizontally
 Verti_block_crossed_flag_BG:	ds.b	1		; toggles between 0 and $10 when background camera crosses a block boundary vertically
 Horiz_block_crossed_flag_BG2:	ds.b	1		; used in CPZ
-				ds.b	1		; $FFFFEE45 ; seems unused
+			ds.b	1			; $FFFFEE45 ; seems unused
 Horiz_block_crossed_flag_BG3:	ds.b	1
-				ds.b	1		; $FFFFEE47 ; seems unused
+			ds.b	1			; $FFFFEE47 ; seems unused
 Block_Crossed_Flags_End:
 
 Block_Crossed_Flags_P2:
 Horiz_block_crossed_flag_P2:	ds.b	1		; toggles between 0 and $10 when you cross a block boundary horizontally
 Verti_block_crossed_flag_P2:	ds.b	1		; toggles between 0 and $10 when you cross a block boundary vertically
-				ds.b	6		; $FFFFEE4A-$FFFFEE4F ; seems unused
+			ds.b	6			; $FFFFEE4A-$FFFFEE4F ; seems unused
 Block_Crossed_Flags_P2_End:
 
 Scroll_Flags_All:
-Scroll_flags:			ds.w	1		; bitfield ; bit 0 = redraw top row, bit 1 = redraw bottom row, bit 2 = redraw left-most column, bit 3 = redraw right-most column
-Scroll_flags_BG:		ds.w	1		; bitfield ; bits 0-3 as above, bit 4 = redraw top row (except leftmost block), bit 5 = redraw bottom row (except leftmost block), bits 6-7 = as bits 0-1
-Scroll_flags_BG2:		ds.w	1		; bitfield ; essentially unused; bit 0 = redraw left-most column, bit 1 = redraw right-most column
-Scroll_flags_BG3:		ds.w	1		; bitfield ; for CPZ; bits 0-3 as Scroll_flags_BG but using Y-dependent BG camera; bits 4-5 = bits 2-3; bits 6-7 = bits 2-3
+Scroll_flags:		ds.w	1			; bitfield ; bit 0 = redraw top row, bit 1 = redraw bottom row, bit 2 = redraw left-most column, bit 3 = redraw right-most column
+Scroll_flags_BG:	ds.w	1			; bitfield ; bits 0-3 as above, bit 4 = redraw top row (except leftmost block), bit 5 = redraw bottom row (except leftmost block), bits 6-7 = as bits 0-1
+Scroll_flags_BG2:	ds.w	1			; bitfield ; essentially unused; bit 0 = redraw left-most column, bit 1 = redraw right-most column
+Scroll_flags_BG3:	ds.w	1			; bitfield ; for CPZ; bits 0-3 as Scroll_flags_BG but using Y-dependent BG camera; bits 4-5 = bits 2-3; bits 6-7 = bits 2-3
 Scroll_Flags_All_End:
 
 Scroll_Flags_All_P2:
-Scroll_flags_P2:		ds.w	1		; bitfield ; bit 0 = redraw top row, bit 1 = redraw bottom row, bit 2 = redraw left-most column, bit 3 = redraw right-most column
-Scroll_flags_BG_P2:		ds.w	1		; bitfield ; bits 0-3 as above, bit 4 = redraw top row (except leftmost block), bit 5 = redraw bottom row (except leftmost block), bits 6-7 = as bits 0-1
-Scroll_flags_BG2_P2:		ds.w	1		; bitfield ; essentially unused; bit 0 = redraw left-most column, bit 1 = redraw right-most column
-Scroll_flags_BG3_P2:		ds.w	1		; bitfield ; for CPZ; bits 0-3 as Scroll_flags_BG but using Y-dependent BG camera; bits 4-5 = bits 2-3; bits 6-7 = bits 2-3
+Scroll_flags_P2:	ds.w	1			; bitfield ; bit 0 = redraw top row, bit 1 = redraw bottom row, bit 2 = redraw left-most column, bit 3 = redraw right-most column
+Scroll_flags_BG_P2:	ds.w	1			; bitfield ; bits 0-3 as above, bit 4 = redraw top row (except leftmost block), bit 5 = redraw bottom row (except leftmost block), bits 6-7 = as bits 0-1
+Scroll_flags_BG2_P2:	ds.w	1			; bitfield ; essentially unused; bit 0 = redraw left-most column, bit 1 = redraw right-most column
+Scroll_flags_BG3_P2:	ds.w	1			; bitfield ; for CPZ; bits 0-3 as Scroll_flags_BG but using Y-dependent BG camera; bits 4-5 = bits 2-3; bits 6-7 = bits 2-3
 Scroll_Flags_All_P2_End:
 
 Camera_Positions_Copy:
-Camera_RAM_copy:		ds.l	2		; copied over every V-int
-Camera_BG_copy:			ds.l	2		; copied over every V-int
-Camera_BG2_copy:		ds.l	2		; copied over every V-int
-Camera_BG3_copy:		ds.l	2		; copied over every V-int
+Camera_RAM_copy:	ds.l	2			; copied over every V-int
+Camera_BG_copy:		ds.l	2			; copied over every V-int
+Camera_BG2_copy:	ds.l	2			; copied over every V-int
+Camera_BG3_copy:	ds.l	2			; copied over every V-int
 Camera_Positions_Copy_End:
 
 Camera_Positions_Copy_P2:
-Camera_P2_copy:			ds.l	8		; copied over every V-int
+Camera_P2_copy:		ds.l	8			; copied over every V-int
 Camera_Positions_Copy_P2_End:
 
 Scroll_Flags_Copy_All:
-Scroll_flags_copy:		ds.w	1		; copied over every V-int
-Scroll_flags_BG_copy:		ds.w	1		; copied over every V-int
-Scroll_flags_BG2_copy:		ds.w	1		; copied over every V-int
-Scroll_flags_BG3_copy:		ds.w	1		; copied over every V-int
+Scroll_flags_copy:	ds.w	1			; copied over every V-int
+Scroll_flags_BG_copy:	ds.w	1			; copied over every V-int
+Scroll_flags_BG2_copy:	ds.w	1			; copied over every V-int
+Scroll_flags_BG3_copy:	ds.w	1			; copied over every V-int
 Scroll_Flags_Copy_All_End:
 
 Scroll_Flags_Copy_All_P2:
-Scroll_flags_copy_P2:		ds.w	1		; copied over every V-int
+Scroll_flags_copy_P2:	ds.w	1			; copied over every V-int
 Scroll_flags_BG_copy_P2:	ds.w	1		; copied over every V-int
 Scroll_flags_BG2_copy_P2:	ds.w	1		; copied over every V-int
 Scroll_flags_BG3_copy_P2:	ds.w	1		; copied over every V-int
 Scroll_Flags_Copy_All_P2_End:
 
 Camera_Difference:
-Camera_X_pos_diff:		ds.w	1		; (new X pos - old X pos) * 256
-Camera_Y_pos_diff:		ds.w	1		; (new Y pos - old Y pos) * 256
+Camera_X_pos_diff:	ds.w	1			; (new X pos - old X pos) * 256
+Camera_Y_pos_diff:	ds.w	1			; (new Y pos - old Y pos) * 256
 Camera_Difference_End:
 
-Camera_BG_X_pos_diff:		ds.w	1		; Effective camera change used in WFZ ending and HTZ screen shake
-Camera_BG_Y_pos_diff:		ds.w	1		; Effective camera change used in WFZ ending and HTZ screen shake
+Camera_BG_X_pos_diff:	ds.w	1			; Effective camera change used in WFZ ending and HTZ screen shake
+Camera_BG_Y_pos_diff:	ds.w	1			; Effective camera change used in WFZ ending and HTZ screen shake
 
 Camera_Difference_P2:
-Camera_X_pos_diff_P2:		ds.w	1		; (new X pos - old X pos) * 256
-Camera_Y_pos_diff_P2:		ds.w	1		; (new Y pos - old Y pos) * 256
+Camera_X_pos_diff_P2:	ds.w	1			; (new X pos - old X pos) * 256
+Camera_Y_pos_diff_P2:	ds.w	1			; (new Y pos - old Y pos) * 256
 Camera_Difference_P2_End:
-				ds.l	1		; $FFFFEEBC-$FFFFEEBF ; seems unused
+			ds.l	1			; $FFFFEEBC-$FFFFEEBF ; seems unused
 
 Camera_Min_X_pos_target:	ds.w	1		; unused, except on write in LevelSizeLoad...
 Camera_Max_X_pos_target:	ds.w	1		; unused
@@ -453,58 +516,57 @@ Camera_Min_Y_pos_target:	ds.w	1		; same as above. The write being a long also ov
 Camera_Max_Y_pos_target:	ds.w	1
 
 Camera_Boundaries:
-Camera_Min_X_pos:		ds.w	1
+Camera_Min_X_pos:	ds.w	1
 v_limitleft2:
 Camera_Max_X_pos:
-v_limitright2:			ds.w	1
+v_limitright2:		ds.w	1
 Camera_Min_Y_pos:
-v_limittop2:			ds.w	1
+v_limittop2:		ds.w	1
 Camera_Max_Y_pos:
-v_limitbtm2:			ds.w	1
+v_limitbtm2:		ds.w	1
 Camera_Boundaries_End:
 
 Camera_Delay:
-Horiz_scroll_delay_val:		ds.w	1		; if its value is a, where a != 0, X scrolling will be based on the player's X position a-1 frames ago
-Sonic_Pos_Record_Index:		ds.w	1		; into Sonic_Pos_Record_Buf and Sonic_Stat_Record_Buf
+Horiz_scroll_delay_val:	ds.w	1			; if its value is a, where a != 0, X scrolling will be based on the player's X position a-1 frames ago
+Sonic_Pos_Record_Index:	ds.w	1			; into Sonic_Pos_Record_Buf and Sonic_Stat_Record_Buf
 Camera_Delay_End:
 
 Camera_Delay_P2:
 Horiz_scroll_delay_val_P2:	ds.w	1
-Tails_Pos_Record_Index:		ds.w	1		; into Tails_Pos_Record_Buf
+Tails_Pos_Record_Index:	ds.w	1			; into Tails_Pos_Record_Buf
 Camera_Delay_P2_End:
 
-Camera_Y_pos_bias:		ds.w	1		; added to y position for lookup/lookdown, $60 is center
+Camera_Y_pos_bias:	ds.w	1			; added to y position for lookup/lookdown, $60 is center
 Camera_Y_pos_bias_End:
 
-Camera_Y_pos_bias_P2:		ds.w	1		; for Tails
+Camera_Y_pos_bias_P2:	ds.w	1			; for Tails
 Camera_Y_pos_bias_P2_End:
 
-Deform_lock:			ds.b	1		; set to 1 to stop all deformation
-				ds.b	1		; $FFFFEEDD ; seems unused
+Deform_lock:		ds.b	1			; set to 1 to stop all deformation
+			ds.b	1			; $FFFFEEDD ; seems unused
 Camera_Max_Y_Pos_Changing:	ds.b	1
-Dynamic_Resize_Routine:		ds.b	1
-RecordPos_Unused:		ds.w	1		; $FFFFEEE0-$FFFFEEE1
-Camera_BG_X_offset:		ds.w	1		; Used to control background scrolling in X in WFZ ending and HTZ screen shake
-Camera_BG_Y_offset:		ds.w	1		; Used to control background scrolling in Y in WFZ ending and HTZ screen shake
-HTZ_Terrain_Delay:		ds.w	1		; During HTZ screen shake, this is a delay between rising and sinking terrain during which there is no shaking
-HTZ_Terrain_Direction:		ds.b	1		; During HTZ screen shake, 0 if terrain/lava is rising, 1 if lowering
-				ds.b	3		; $FFFFEEE9-$FFFFEEEB ; seems unused
-Vscroll_Factor_P2_HInt:		ds.l	1
-Camera_X_pos_copy:		ds.l	1
-Camera_Y_pos_copy:		ds.l	1
+Dynamic_Resize_Routine:	ds.b	1
+RecordPos_Unused:	ds.w	1			; $FFFFEEE0-$FFFFEEE1
+Camera_BG_X_offset:	ds.w	1			; Used to control background scrolling in X in WFZ ending and HTZ screen shake
+Camera_BG_Y_offset:	ds.w	1			; Used to control background scrolling in Y in WFZ ending and HTZ screen shake
+HTZ_Terrain_Delay:	ds.w	1			; During HTZ screen shake, this is a delay between rising and sinking terrain during which there is no shaking
+HTZ_Terrain_Direction:	ds.b	1			; During HTZ screen shake, 0 if terrain/lava is rising, 1 if lowering
+			ds.b	3			; $FFFFEEE9-$FFFFEEEB ; seems unused
+Vscroll_Factor_P2_HInt:	ds.l	1
+Camera_X_pos_copy:	ds.l	1
+Camera_Y_pos_copy:	ds.l	1
 
 Camera_Boundaries_P2:
-Tails_Min_X_pos:		ds.w	1
-Tails_Max_X_pos:		ds.w	1
-Tails_Min_Y_pos:		ds.w	1		; seems not actually implemented (only written to)
-Tails_Max_Y_pos:		ds.w	1
+Tails_Min_X_pos:	ds.w	1
+Tails_Max_X_pos:	ds.w	1
+Tails_Min_Y_pos:	ds.w	1			; seems not actually implemented (only written to)
+Tails_Max_Y_pos:	ds.w	1
 Camera_Boundaries_P2_End:
 
 Camera_RAM_End:
 
-Block_cache:			ds.w	512/16*2	; Width of plane in blocks, with each block getting two words.
-Ring_consumption_table:		ds.b	$80		; contains RAM addresses of rings currently being consumed
-Ring_consumption_table_End:
+Block_cache:		ds.w	512/16*2		; Width of plane in blocks, with each block getting two words.
+			ds.b	$80			; unused
 
 v_snddriver_ram:	SMPS_RAM			; sound driver state
 			ds.b	$40			; unused
@@ -528,7 +590,7 @@ v_bg3scrposy_vdp:	ds.w	1
 v_bg3scrposx_vdp:	ds.w	1
 			ds.b	2			; unused
 v_hbla_hreg:		ds.w	1			; VDP H.interrupt register buffer (8Axx)
-v_hbla_line = v_hbla_hreg+1				; screen line where water starts and palette is changed by HBlank
+v_hbla_line 		= v_hbla_hreg+1			; screen line where water starts and palette is changed by HBlank
 v_pfade_start:		ds.b	1			; palette fading - start position in bytes
 v_pfade_size:		ds.b	1			; palette fading - number of colours
 
@@ -576,7 +638,7 @@ Tails_control_counter:	ds.w	1
 Tails_respawn_counter:	ds.w	1
 word_F706:		ds.w	1
 Tails_CPU_routine:	ds.w	1
-	ds.b	6
+			ds.b	6			; unused
 
 Rings_manager_routine:	ds.b	1
 Level_started_flag:	ds.b	1
@@ -584,31 +646,31 @@ Ring_start_addr:	ds.w	1
 Ring_end_addr:		ds.w	1
 Ring_start_addr_P2:	ds.w	1
 Ring_end_addr_P2:	ds.w	1
-	ds.b	6
+			ds.b	6			; unused
 
 byte_F720:		ds.b	1
 byte_F721:		ds.b	1
-	ds.b	$E
+			ds.b	$E			; unused
 
 Water_flag:		ds.b	1
-	ds.b	$F
+			ds.b	$F			; unused
 
 Demo_button_index_2P:	ds.w	1			; index into button press demo data, for player 2
 Demo_press_counter_2P:	ds.w	1			; frames remaining until next button press, for player 2
-	ds.b	$1C
+			ds.b	$1C			; unused
 
 Sonic_top_speed:	ds.w	1
 Sonic_acceleration:	ds.w	1
 Sonic_deceleration:	ds.w	1
 Sonic_LastLoadedDPLC:	ds.b	1
-	ds.b	1					; $FFFFF767 ; seems unused
+			ds.b	1			; $FFFFF767 ; seems unused
 Primary_Angle:		ds.b	1
-	ds.b	1					; $FFFFF769 ; seems unused
+			ds.b	1			; $FFFFF769 ; seems unused
 Secondary_Angle:	ds.b	1
-	ds.b	1					; $FFFFF76B ; seems unused
+			ds.b	1			; $FFFFF76B ; seems unused
 
 Obj_placement_routine:	ds.b	1
-	ds.b	1					; $FFFFF76D ; seems unused
+			ds.b	1			; $FFFFF76D ; seems unused
 Camera_X_pos_last:	ds.w	1			; Camera_X_pos_coarse from the previous frame
 Camera_X_pos_last_End:
 
@@ -618,8 +680,8 @@ Obj_load_addr_left:	ds.l	1			; contains the address of the last object loaded wh
 Object_Manager_Addresses_End:
 
 Object_Manager_Addresses_P2:
-Obj_load_addr_right_P2:		ds.l	1
-Obj_load_addr_left_P2:		ds.l	1
+Obj_load_addr_right_P2:	ds.l	1
+Obj_load_addr_left_P2:	ds.l	1
 Object_Manager_Addresses_P2_End:
 
 Object_manager_2P_RAM:					; The next 16 bytes belong to this.
@@ -627,26 +689,26 @@ Object_RAM_block_indices:	ds.b	6		; seems to be an array of horizontal chunk pos
 Player_1_loaded_object_blocks:	ds.b	3
 Player_2_loaded_object_blocks:	ds.b	3
 
-Camera_X_pos_last_P2:		ds.w	1
+Camera_X_pos_last_P2:	ds.w	1
 Camera_X_pos_last_P2_End:
 
-Obj_respawn_index_P2:		ds.b	2		; respawn table indices of the next objects when moving left or right for the second player
+Obj_respawn_index_P2:	ds.b	2			; respawn table indices of the next objects when moving left or right for the second player
 Obj_respawn_index_P2_End:
 Object_manager_2P_RAM_End:
 
-Demo_button_index:		ds.w	1		; index into button press demo data, for player 1
-Demo_press_counter:		ds.b	1		; frames remaining until next button press, for player 1
-				ds.b	1		; $FFFFF793 ; seems unused
-PalChangeSpeed:			ds.w	1
-Collision_addr:			ds.l	1
+Demo_button_index:	ds.w	1			; index into button press demo data, for player 1
+Demo_press_counter:	ds.b	1			; frames remaining until next button press, for player 1
+			ds.b	1			; $FFFFF793 ; seems unused
+PalChangeSpeed:		ds.w	1
+Collision_addr:		ds.l	1
 v_palss_num:		ds.w	1			; palette cycling in Special Stage - reference number
 v_palss_time:		ds.w	1			; palette cycling in Special Stage - time until next change
 v_palss_index:		ds.w	1			; palette cycling in Special Stage - index into palette cycle 2 (unused?)
 v_ssbganim:		ds.w	1			; Special Stage background animation
-				ds.b	5		; seems unused
+			ds.b	5			; seems unused
 Boss_defeated_flag:
 v_bossstatus:		ds.b	1
-				ds.b	2		; seems unused
+			ds.b	2			; seems unused
 
 f_lockscreen:		ds.b	1
 			ds.b	$13			; unused
@@ -658,17 +720,17 @@ f_wtunnelmode:		ds.b	1			; LZ water tunnel mode
 f_playerctrl:		ds.b	1			; Player control override flags (object ineraction, control enable)
 f_wtunnelallow:		ds.b	1			; LZ water tunnels (00 = enabled; 01 = disabled)
 f_slidemode:		ds.b	1			; LZ water slide mode
-			ds.b	1
+			ds.b	1			; unused
 
 f_lockctrl:		ds.b	1
 f_bigring:		ds.b	1			; flag set when Sonic collects the giant ring
-			ds.b	2
+			ds.b	2			; unused
 
 v_itembonus:		ds.w	1			; item bonus from broken enemies, blocks etc.
 v_timebonus:		ds.w	1			; time bonus at the end of an act
 v_ringbonus:		ds.w	1			; ring bonus at the end of an act
 f_endactbonus:		ds.b	1			; time/ring bonus update flag at the end of an act
-			ds.b	1
+			ds.b	1			; unused
 v_lz_deform:		ds.w	1			; LZ deformation offset, in units of $80
 
 Camera_X_pos_coarse:	ds.w	1			; (Camera_X_pos - 128) / 256
@@ -687,20 +749,20 @@ Anim_Counters:		ds.b	$10
 v_levelvariables_end:
 
 Sprite_Table:		ds.b	$280			; Sprite attribute table buffer
-Sprite_Table_End:
-v_palette_water_fading = Sprite_Table_End-$80		; duplicate underwater palette, used for transitions ($80 bytes)
-v_palette_water:	ds.b	$80			; main underwater palette
+Sprite_Table_end:
+v_palette_water_fading = Sprite_Table_end-palette_size	; duplicate underwater palette, used for transitions ($80 bytes)
+v_palette_water:	ds.b	palette_size		; main underwater palette
 v_palette_water_end:
-v_palette:		ds.b	$80			; main palette
+v_palette:		ds.b	palette_size		; main palette
 v_palette_end:
-v_palette_fading:	ds.b	$80			; duplicate palette, used for transitions
+v_palette_fading:	ds.b	palette_size		; duplicate palette, used for transitions
 v_palette_fading_end:
 v_objstate:		ds.b	$C0			; object state list
 v_objstate_end:
 			ds.b	$140			; stack
 v_systemstack:
-v_crossresetram:				; RAM beyond this point is only cleared on a cold-boot
-			ds.b	2
+v_crossresetram:					; RAM beyond this point is only cleared on a cold-boot
+			ds.b	2			; unused
 Level_Inactive_flag:	ds.w	1			; (2 bytes)
 Timer_frames:		ds.w	1			; (2 bytes)
 Debug_object:		ds.w	1			; (2 bytes)
@@ -711,8 +773,10 @@ Debug_Speed:		ds.b	1			; (1 byte)
 Vint_runcount:		ds.l	1			; (4 bytes)
 
 Current_ZoneAndAct:	= Current_Zone
-Current_Zone:		ds.b	1			; (1 byte)
-Current_Act:		ds.b	1			; (1 byte)
+Current_Zone:
+v_zone:			ds.b	1			; (1 byte)
+Current_Act:
+v_act:			ds.b	1			; (1 byte)
 v_lives:		ds.b	1			; (1 byte)
 			ds.b	1			; unused
 v_air:			ds.w	1			; air remaining while underwater
@@ -811,7 +875,7 @@ v_megadrive:		ds.b	1			; Megadrive machine type
 			ds.b	1			; unused
 Debug_mode_flag:	ds.w	1
 v_init:			ds.l	1			; 'init' text string
-v_endofram:
+v_end:
     if * > 0	; Don't declare more space than the RAM can contain!
 	fatal "The RAM variable declarations are too large by $\{*} bytes."
     endif
@@ -832,9 +896,9 @@ v_ssscroll_buffer	= v_ngfx_buffer+$100
 
 ; Error handler
 	phase v_objstate
-v_regbuffer:	ds.b	$40				; stores registers d0-a7 during an error event
-v_spbuffer:	ds.l	1				; stores most recent sp address
-v_errortype:	ds.b	1				; error type
+v_regbuffer:		ds.b	$40			; stores registers d0-a7 during an error event
+v_spbuffer:		ds.l	1			; stores most recent sp address
+v_errortype:		ds.b	1			; error type
 	dephase
 	!org 0
 ; ---------------------------------------------------------------------------
@@ -1005,11 +1069,11 @@ ArtTile_GHZ_Big_Flower_1:	equ ArtTile_Level+$35C
 ArtTile_GHZ_Small_Flower:	equ ArtTile_Level+$36C
 ArtTile_GHZ_Waterfall:		equ ArtTile_Level+$378
 ArtTile_GHZ_Flower_3:		equ ArtTile_Level+$380
-ArtTile_GHZ_Bridge:		equ $38E
+ArtTile_GHZ_Bridge:		equ $4C6
 ArtTile_GHZ_Big_Flower_2:	equ ArtTile_Level+$390
 ArtTile_GHZ_Spike_Pole:		equ $398
 ArtTile_GHZ_Giant_Ball:		equ $3AA
-ArtTile_GHZ_Purple_Rock:	equ $3D0
+ArtTile_GHZ_Purple_Rock:	equ $6C0
 
 ; Marble Zone
 ArtTile_MZ_Block:		equ $2B8
@@ -1090,21 +1154,23 @@ ArtTile_Ball_Hog:		equ $302
 ArtTile_Bomb:			equ $400
 ArtTile_Crabmeat:		equ $400
 ArtTile_Missile_Disolve:	equ $41C ; Unused
+ArtTile_Spikes:			equ $434
+ArtTile_Spikes_GHZ:		equ ArtTile_Spikes+$6C
 ArtTile_Buzz_Bomber:		equ $444
-ArtTile_Chopper:		equ $47B
+ArtTile_Chopper:		equ $470
 ArtTile_Yadrin:			equ $47B
+ArtTile_Lamppost:		equ $47C
 ArtTile_Jaws:			equ $486
 ArtTile_Newtron:		equ $49B
 ArtTile_Burrobot:		equ $4A6
 ArtTile_Basaran:		equ $4B8
 ArtTile_Roller:			equ $4B8
-ArtTile_Moto_Bug:		equ $4F0
+ArtTile_Moto_Bug:		equ $4E0
 ArtTile_Button:			equ $50F
-ArtTile_Spikes:			equ $51B
-ArtTile_Spring_Horizontal:	equ $523
-ArtTile_Spring_Vertical:	equ $533
-ArtTile_Shield:			equ $541
-ArtTile_Invincibility:		equ $55C
+ArtTile_S1_Spring_Horizontal:	equ $4A8
+ArtTile_S1_Spring_Vertical:	equ $4B8
+ArtTile_Shield:			equ $4BE
+ArtTile_Invincibility:		equ $4DE
 ArtTile_Game_Over:		equ $55E
 ArtTile_Title_Card:		equ $580
 ArtTile_Animal_1:		equ $580
@@ -1113,12 +1179,15 @@ ArtTile_Explosion:		equ $5A0
 ArtTile_Monitor:		equ $680
 ArtTile_HUD:			equ $6CA
 ArtTile_Sonic:			equ $780
-ArtTile_Points:			equ $797
-ArtTile_Lamppost:		equ $7A0
+ArtTile_Points:			equ $4AC
 ArtTile_Tails:			equ $7A0
 ArtTile_TailsTails:		equ $7B0
-ArtTile_Ring:			equ $7B2
+ArtTile_Ring:			equ $6BC
 ArtTile_Lives_Counter:		equ $7D4
+ArtTile_Water_Surface:		equ $400
+ArtTile_Spring_Horizontal:	equ $470
+ArtTile_Spring_Vertical:	equ $45C
+ArtTile_Spring_Diagonal:	equ $43C
 
 ; Eggman
 ArtTile_Eggman:			equ $400
@@ -1209,16 +1278,13 @@ ArtTile_Credits_Font:		equ $5A0
 ; Error Handler
 ArtTile_Error_Handler_Font:	equ $7C0
 
-; ---------------------------------------------------------------------------
-; Level art stuff.
-ArtTile_ArtKos_LevelArt:	equ $000
-
 ; EHZ, HTZ
-ArtTile_ArtKos_Checkers:	equ ArtTile_ArtKos_LevelArt+$158
+ArtTile_Checkers:		equ ArtTile_Level+$158
 ArtTile_Art_Flowers1:		equ $394
 ArtTile_Art_Flowers2:		equ $396
 ArtTile_Art_Flowers3:		equ $398
 ArtTile_Art_Flowers4:		equ $39A
+ArtTile_HTZ:			equ ArtTile_Level+$1FC
 
 ; Unknown
 ArtTile_Art_UnkZone_1:		equ $480
@@ -1231,25 +1297,58 @@ ArtTile_Art_UnkZone_7:		equ $495
 ArtTile_Art_UnkZone_8:		equ $498
 
 ; CPZ
-ArtTile_ArtNem_CPZ_Buildings:	equ $3D0
+ArtTile_CPZ_Buildings:		equ $3D0
 
 ; HPZ
 ArtTile_Art_HPZPulseOrb_1:	equ $2E8
 ArtTile_Art_HPZPulseOrb_2:	equ $2F0
 ArtTile_Art_HPZPulseOrb_3:	equ $2F8
-ArtTile_ArtNem_HPZ_Bridge:	equ $300
-ArtTile_ArtNem_HPZ_Waterfall:	equ $315
-ArtTile_ArtNem_HPZPlatform:	equ $34A
-ArtTile_ArtNem_HPZOrb:		equ $35A
-ArtTile_ArtNem_HPZ_Emerald:	equ $392
+ArtTile_HPZ_Bridge:		equ $300
+ArtTile_HPZ_Waterfall:		equ $315
+ArtTile_HPZ_Platform:		equ $34A
+ArtTile_HPZ_Orb:		equ $35A
+ArtTile_HPZ_Emerald:		equ $392
 
 ; ---------------------------------------------------------------------------
 ; Level-specific objects and badniks.
 
 ; EHZ
 ArtTile_Art_EHZPulseBall:	equ $39C
-ArtTile_ArtNem_Waterfall:	equ $39E
-ArtTile_ArtNem_EHZ_Bridge:	equ $3B6
-ArtTile_ArtNem_Buzzer_Fireball:	equ $3BE	; Actually unused
-ArtTile_ArtNem_Masher:		equ $414
+ArtTile_Fireball:		equ $39E
+ArtTile_Waterfall:		equ $3AE
+ArtTile_EHZ_Bridge:		equ $3C6
+ArtTile_Buzzer:			equ $3E6
+ArtTile_Buzzer_Fireball:	equ $3BE	; Actually unused
+ArtTile_Snail:			equ $402
+ArtTile_Masher:			equ $41C
 ArtTile_Art_EHZMountains:	equ $500
+
+; CPZ
+ArtTile_CPZ_Platform:		equ $400
+
+; HPZ
+ArtTile_Redz:			equ $500
+ArtTile_BBat:			equ $530
+
+; HTZ
+ArtTile_Rexon:			equ $37E
+ArtTile_HTZ_Fireball:		equ $3AE
+ArtTile_HTZ_AutomaticDoor:	equ $3BE
+ArtTile_HTZ_Seesaw:		equ $3CE
+ArtTile_Sol:			equ $3DE
+ArtTile_HtzZipline:		equ $3E6
+ArtTile_HtzValveBarrier:	equ $426
+ArtTile_ArtUnc_HTZMountains:	equ $500
+ArtTile_ArtUnc_HTZClouds:	equ ArtTile_ArtUnc_HTZMountains+$18
+ArtTile_Spiker:			equ $520
+
+; Unused
+ArtTile_Gator:			equ $300
+ArtTile_Early_Buzzer:		equ $32C
+ArtTile_Early_BBat:		equ $350
+ArtTile_Stegway:		equ $3C4
+ArtTile_BFish:			equ $530
+ArtTile_Aquis:			equ $570
+ArtTile_Aquis_Child:		equ $4E0
+ArtTile_Octus:			equ $38A
+ArtTile_Octus_Child:		equ $4C6

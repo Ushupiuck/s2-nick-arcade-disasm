@@ -22,7 +22,7 @@ Obj0D_Index:	dc.w Obj0D_Init-Obj0D_Index
 Obj0D_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_obj0D,obMap(a0)
-		move.w	#$680,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Signpost,0,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#4,obRender(a0)
 		move.b	#$18,obActWid(a0)
@@ -75,7 +75,7 @@ Obj0D_Sparkle:
 		add.w	obY(a0),d0
 		move.w	d0,obY(a1)
 		move.l	#Map_Obj25,obMap(a1)
-		move.w	#$27B2,obGfx(a1)
+		move.w	#make_art_tile(ArtTile_Ring+$F6,1,0),obGfx(a1)
 		bsr.w	Adjust2PArtPointer2
 		move.b	#4,obRender(a1)
 		move.b	#2,obPriority(a1)

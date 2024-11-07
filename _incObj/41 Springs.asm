@@ -27,11 +27,11 @@ Obj41_Index:	dc.w Obj41_Init-Obj41_Index		; 0
 Obj41_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_obj41_GHZ,obMap(a0)
-		move.w	#$4A8,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_S1_Spring_Horizontal,0,0),obGfx(a0)
 		tst.b	(Current_Zone).w
 		beq.s	loc_E22A
 		move.l	#Map_obj41,obMap(a0)
-		move.w	#$45C,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Spring_Vertical,0,0),obGfx(a0)
 
 loc_E22A:
 		ori.b	#4,obRender(a0)
@@ -55,10 +55,10 @@ Obj41_Init_Horizontal:
 		move.b	#4,obRoutine(a0)
 		move.b	#2,obAnim(a0)
 		move.b	#3,obFrame(a0)
-		move.w	#$4B8,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_S1_Spring_Vertical,0,0),obGfx(a0)
 		tst.b	(Current_Zone).w
 		beq.s	loc_E27C
-		move.w	#$470,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Spring_Horizontal,0,0),obGfx(a0)
 
 loc_E27C:
 		move.b	#8,obActWid(a0)
@@ -76,7 +76,7 @@ Obj41_Init_DiagonallyUp:
 		move.b	#8,obRoutine(a0)
 		move.b	#4,obAnim(a0)
 		move.b	#7,obFrame(a0)
-		move.w	#$43C,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Spring_Diagonal,0,0),obGfx(a0)
 		bra.s	Obj41_Init_Common
 ; ===========================================================================
 ; loc_E2B2:
@@ -84,7 +84,7 @@ Obj41_Init_DiagonallyDown:
 		move.b	#$A,obRoutine(a0)
 		move.b	#4,obAnim(a0)
 		move.b	#$A,obFrame(a0)
-		move.w	#$43C,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Spring_Diagonal,0,0),obGfx(a0)
 		bset	#1,obStatus(a0)
 ; loc_E2D0:
 Obj41_Init_Common:
@@ -93,7 +93,7 @@ Obj41_Init_Common:
 		move.w	Obj41_Strengths(pc,d0.w),$30(a0)
 		btst	#1,d0
 		beq.s	loc_E2F8
-		bset	#5,2(a0)
+		bset	#5,obGfx(a0)
 		tst.b	(Current_Zone).w
 		beq.s	loc_E2F8
 		move.l	#Map_obj41a,obMap(a0)

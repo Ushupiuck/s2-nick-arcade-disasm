@@ -21,9 +21,9 @@ locVRAM:	macro loc,controlport
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
 
-writeVRAM:	macro source,length,destination
+writeVRAM:	macro source,destination
 		lea	(vdp_control_port).l,a5
-		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
+		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$4000+((destination)&$3FFF),(a5)
@@ -36,9 +36,9 @@ writeVRAM:	macro source,length,destination
 ; input: source, length, destination
 ; ---------------------------------------------------------------------------
 
-writeCRAM:	macro source,length,destination
+writeCRAM:	macro source,destination
 		lea	(vdp_control_port).l,a5
-		move.l	#$94000000+(((length>>1)&$FF00)<<8)+$9300+((length>>1)&$FF),(a5)
+		move.l	#$94000000+((((source_end-source)>>1)&$FF00)<<8)+$9300+(((source_end-source)>>1)&$FF),(a5)
 		move.l	#$96000000+(((source>>1)&$FF00)<<8)+$9500+((source>>1)&$FF),(a5)
 		move.w	#$9700+((((source>>1)&$FF0000)>>16)&$7F),(a5)
 		move.w	#$C000+(destination&$3FFF),(a5)
@@ -187,10 +187,10 @@ out_of_range_s1:	macro exit,specpos
 		else
 		move.w	obX(a0),d0	; get object position
 		endif
-		andi.w	#$FF80,d0	; round down to nearest $80
+		andi.w	#-$80,d0	; round down to nearest $80
 		move.w	(Camera_X_pos).w,d1 ; get screen position
 		subi.w	#128,d1
-		andi.w	#$FF80,d1
+		andi.w	#-$80,d1
 		sub.w	d1,d0		; approx distance between object and screen
 		cmpi.w	#128+320+192,d0
 		bhi.ATTRIBUTE	exit
@@ -207,12 +207,12 @@ out_of_range:	macro exit,specpos
 		else
 		move.w	obX(a0),d0	; get object position
 		endif
-		andi.w	#$FF80,d0	; round down to nearest $80
+		andi.w	#-$80,d0	; round down to nearest $80
 		sub.w	(Camera_X_pos_coarse).w,d0		; approx distance between object and screen
 		cmpi.w	#128+320+192,d0
 		bhi.ATTRIBUTE	exit
 		endm
-		
+
 ; ---------------------------------------------------------------------------
 ; Copy a tilemap from 68K (ROM/RAM) to the VRAM without using DMA
 ; input: source, destination, width [cells], height [cells]
@@ -225,7 +225,7 @@ copyTilemap:	macro source,destination,width,height
 		moveq	#height,d2
 		bsr.w	PlaneMapToVRAM_H40
 		endm
-		
+
 ; macros to convert from tile index to art tiles, block mapping or VRAM address.
 make_art_tile function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|(addr&tile_mask)
 make_art_tile_2p function addr,pal,pri,((pri&1)<<15)|((pal&3)<<13)|((addr&tile_mask)>>1)

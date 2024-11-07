@@ -19,7 +19,7 @@ Obj03_Index:	dc.w Obj03_Init-Obj03_Index
 Obj03_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj03,obMap(a0)
-		move.w	#$26BC,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
@@ -99,10 +99,10 @@ loc_13F26:
 		move.b	#$F,obLRBSolidBit(a1)
 
 loc_13F4E:
-		bclr	#7,2(a1)
+		bclr	#7,obGfx(a1)
 		btst	#5,d0
 		beq.s	loc_13F92
-		bset	#7,2(a1)
+		bset	#7,obGfx(a1)
 		bra.s	loc_13F92
 ; ---------------------------------------------------------------------------
 
@@ -115,10 +115,10 @@ loc_13F62:
 		move.b	#$F,obLRBSolidBit(a1)
 
 loc_13F80:
-		bclr	#7,2(a1)
+		bclr	#7,obGfx(a1)
 		btst	#6,d0
 		beq.s	loc_13F92
-		bset	#7,2(a1)
+		bset	#7,obGfx(a1)
 
 loc_13F92:
 		tst.w	(Debug_mode_flag).w
@@ -195,10 +195,10 @@ loc_14028:
 		move.b	#$F,obLRBSolidBit(a1)
 
 loc_14050:
-		bclr	#7,2(a1)
+		bclr	#7,obGfx(a1)
 		btst	#5,d0
 		beq.s	loc_14094
-		bset	#7,2(a1)
+		bset	#7,obGfx(a1)
 		bra.s	loc_14094
 ; ---------------------------------------------------------------------------
 
@@ -211,10 +211,10 @@ loc_14064:
 		move.b	#$F,obLRBSolidBit(a1)
 
 loc_14082:
-		bclr	#7,2(a1)
+		bclr	#7,obGfx(a1)
 		btst	#6,d0
 		beq.s	loc_14094
-		bset	#7,2(a1)
+		bset	#7,obGfx(a1)
 
 loc_14094:
 		tst.w	(Debug_mode_flag).w

@@ -8,23 +8,23 @@ Obj1C_Index:	dc.w loc_93F4-Obj1C_Index
 		dc.w loc_9442-Obj1C_Index
 		dc.w loc_9464-Obj1C_Index
 Obj1C_Conf:	dc.l Map_obj11_HPZ
-		dc.w $6300
-		dc.b   3,  4,  1,  0			; 0
+		dc.w make_art_tile(ArtTile_HPZ_Bridge,3,0)
+		dc.b   3,  4,  1,  0
 		dc.l Map_Obj1C_01
-		dc.w $E35A
-		dc.b   0,$10,  1,  0			; 0
+		dc.w make_art_tile($35A,3,1)
+		dc.b   0,$10,  1,  0
 		dc.l Map_obj11
-		dc.w $43C6
-		dc.b   1,  4,  1,  0			; 0
+		dc.w make_art_tile($3C6,2,0)
+		dc.b   1,  4,  1,  0
 		dc.l Map_obj11_GHZ
-		dc.w $44C6
-		dc.b   1,$10,  1,  0			; 0
+		dc.w make_art_tile($4C6,2,0)
+		dc.b   1,$10,  1,  0
 		dc.l Map_Obj16
-		dc.w $43E6
-		dc.b   1,  8,  4,  0			; 0
+		dc.w make_art_tile(ArtTile_HtzZipline,2,0)
+		dc.b   1,  8,  4,  0
 		dc.l Map_Obj16
-		dc.w $43E6
-		dc.b   2,  8,  4,  0			; 0
+		dc.w make_art_tile(ArtTile_HtzZipline,2,0)
+		dc.b   2,  8,  4,  0
 ; ---------------------------------------------------------------------------
 
 loc_93F4:

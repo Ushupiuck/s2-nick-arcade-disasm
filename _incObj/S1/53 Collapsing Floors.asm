@@ -15,13 +15,13 @@ loc_8D6A:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_S1Obj53,obMap(a0)
 		move.w	#$42B8,obGfx(a0)
-		cmpi.b	#3,(Current_Zone).w
+		cmpi.b	#id_SLZ,(Current_Zone).w
 		bne.s	loc_8D8E
 		move.w	#$44E0,obGfx(a0)
 		addq.b	#2,obFrame(a0)
 
 loc_8D8E:
-		cmpi.b	#5,(Current_Zone).w
+		cmpi.b	#id_SBZ,(Current_Zone).w
 		bne.s	loc_8D9C
 		move.w	#$43F5,obGfx(a0)
 

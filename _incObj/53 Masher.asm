@@ -16,21 +16,21 @@ Obj53_Index:	dc.w Obj53_Init-Obj53_Index
 Obj53_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_obj53,obMap(a0)
-		move.w	#$41C,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Masher,0,0),obGfx(a0)
 		bsr.w	j_Adjust2PArtPointer
 		move.b	#4,obRender(a0)
 		move.b	#4,obPriority(a0)
 		move.b	#9,obColType(a0)
 		move.b	#$10,obActWid(a0)
 		move.w	#-$400,obVelY(a0)
-		move.w	obY(a0),$30(a0)
+		move.w	obY(a0),objoff_30(a0)
 
 Obj53_Main:
 		lea	(Ani_obj53).l,a1
 		bsr.w	j_AnimateSprite
 		bsr.w	j_ObjectMove
 		addi.w	#$18,obVelY(a0)
-		move.w	$30(a0),d0
+		move.w	objoff_30(a0),d0
 		cmp.w	obY(a0),d0
 		bcc.s	loc_17548
 		move.w	d0,obY(a0)

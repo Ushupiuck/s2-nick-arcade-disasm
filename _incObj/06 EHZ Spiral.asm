@@ -49,9 +49,9 @@ sub_149BC:
 		sub.w	obX(a0),d0
 		tst.w	obVelX(a1)
 		bmi.s	loc_149F2
-		cmpi.w	#$FF40,d0
+		cmpi.w	#-$C0,d0
 		bgt.s	locret_14A54
-		cmpi.w	#$FF30,d0
+		cmpi.w	#-$D0,d0
 		blt.s	locret_14A54
 		bra.s	loc_149FE
 ; ---------------------------------------------------------------------------
@@ -77,9 +77,9 @@ loc_14A16:
 		sub.w	obX(a0),d0
 		tst.w	obVelX(a1)
 		bmi.s	loc_14A32
-		cmpi.w	#$FF50,d0
+		cmpi.w	#-$B0,d0
 		bgt.s	locret_14A54
-		cmpi.w	#$FF40,d0
+		cmpi.w	#-$C0,d0
 		blt.s	locret_14A54
 		bra.s	loc_14A3E
 ; ---------------------------------------------------------------------------
@@ -123,7 +123,7 @@ loc_14A80:
 		bclr	#3,obStatus(a1)
 		bclr	d6,obStatus(a0)
 		move.b	#0,objoff_2C(a1)
-		move.b	#4,$2D(a1)
+		move.b	#4,objoff_2D(a1)
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -141,6 +141,6 @@ loc_14A98:
 		move.w	d2,obY(a1)
 		lsr.w	#3,d0
 		andi.w	#$3F,d0
-		move.b	Obj06_PlayerAngleArray(pc,d0.w),$27(a1)
+		move.b	Obj06_PlayerAngleArray(pc,d0.w),objoff_27(a1)
 		rts
 ; End of function sub_149BC

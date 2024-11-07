@@ -15,7 +15,7 @@ Obj04_Index:	dc.w Obj04_Init-Obj04_Index
 Obj04_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj04,obMap(a0)
-		move.w	#$8400,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Water_Surface,0,1),obGfx(a0)
 		bsr.w	j_Adjust2PArtPointer_0
 		move.b	#4,obRender(a0)
 		move.b	#$80,obActWid(a0)
