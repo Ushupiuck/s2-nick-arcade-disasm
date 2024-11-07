@@ -123,7 +123,12 @@ Debug_HPZ:	dc.w (Debug_HPZ_End-Debug_HPZ-2)/8
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
 	dbug 	Map_Obj1C_01,	id_Obj1C,	$21,	3,	make_art_tile($485,3,1)
 	dbug 	Map_Obj13,	id_Obj13,	4,	4,	make_art_tile($415,3,1)
+	if FixBugs
+	dbug 	Map_Obj1A_HPZ,	id_Obj1A,	0,	0,	make_art_tile($34A,2,0)
+	else
+	; this is bugged, it's not using the right VRAM location
 	dbug 	Map_Obj1A_HPZ,	id_Obj1A,	0,	0,	make_art_tile($475,2,0)
+	endif
 	dbug 	Map_Obj03,	id_Obj03,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_obj4F,	id_Obj4F,	0,	0,	make_art_tile(ArtTile_Redz,0,0)
 	dbug 	Map_Obj52,	id_Obj52,	0,	0,	make_art_tile(ArtTile_BFish,1,0)
