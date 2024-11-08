@@ -30100,6 +30100,10 @@ Leftover_50A9C:	binclude	"misc/leftovers/50A9C.bin"
 ; ---------------------------------------------------------------------------
 ; Primary object assets (players and common objects)
 ; ---------------------------------------------------------------------------
+; This must be aligned to a bank in order to avoid issues with the DMA.
+; But because all of the art is placed after the sound driver which already aligns with the bank
+; this fixes itself. Uncomment the line below if you want to ensure DMA safety.
+;	align $8000
 Art_Sonic:	binclude	"art/uncompressed/Sonic's art.bin"
 		even
 Map_Sonic:	include	"mappings/sprite/Sonic.asm"
