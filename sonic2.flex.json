@@ -10,7 +10,7 @@
                     "name": "Sonic",
                     "palettes": [
                         {
-                            "path": "palette\\Sonic and Tails.bin",
+                            "path": "palette/Sonic and Tails.bin",
                             "length": 1
                         }
                     ],
@@ -54,7 +54,7 @@
                         "path": "mappings/spriteDPLC/Tails.asm",
                         "label": ""
                     },
-                    "uuid": "926273b3-d28d-41ce-8a88-2e3e7b6657ec"
+                    "uuid": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c"
                 }
             ],
             "isDirectory": true,

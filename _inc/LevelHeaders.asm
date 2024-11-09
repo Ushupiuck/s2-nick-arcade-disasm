@@ -28,7 +28,7 @@
 ; ---------------------------------------------------------------------------
 
 ; macro for declaring a "main level load block" (MLLB)
-levartptrs macro plc1,plc2,palette,art,map16x16,map128x128,music
+levartptrs macro plc1,plc2,art,map16x16,map128x128,music,palette
 	dc.l (plc1<<24)|art
 	dc.l (plc2<<24)|map16x16
 	dc.l map128x128
@@ -37,10 +37,10 @@ levartptrs macro plc1,plc2,palette,art,map16x16,map128x128,music
 
 ; MainLoadBlocks:
 LevelArtPointers:
-		levartptrs plcid_GHZ, plcid_GHZ2, palid_GHZ, Nem_GHZ, Map16_GHZ, Map128_GHZ, bgm_GHZ ; GHZ  ; GREEN HILL ZONE
-		levartptrs plcid_LZ, plcid_LZ2, palid_LZ, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_LZ ; LZ   ; LABYRINTH ZONE
-		levartptrs plcid_CPZ, plcid_CPZ2, palid_CPZ, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_MZ ; CPZ  ; CHEMICAL PLANT ZONE
-		levartptrs plcid_EHZ, plcid_EHZ2, palid_EHZ, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SLZ ; EHZ  ; EMERALD HILL ZONE
-		levartptrs plcid_HPZ, plcid_HPZ2, palid_HPZ, Nem_HPZ, Map16_HPZ, Map128_HPZ, bgm_SYZ ; HPZ  ; HIDDEN PALACE ZONE
-		levartptrs plcid_HTZ, plcid_HTZ2, palid_HTZ1, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SBZ ; HTZ  ; HILL TOP ZONE
-		levartptrs 0, 0, palid_Ending, Nem_GHZ, Map16_GHZ, Map128_GHZ, bgm_SBZ ; LEV6 ; LEVEL 6 (UNUSED, SONIC 1 ENDING)
+		levartptrs plcid_GHZ, plcid_GHZ2, Nem_GHZ, Map16_GHZ, Map128_GHZ, bgm_GHZ, palid_GHZ ; GHZ  ; GREEN HILL ZONE
+		levartptrs plcid_LZ, plcid_LZ2, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_LZ, palid_LZ ; LZ   ; LABYRINTH ZONE
+		levartptrs plcid_CPZ, plcid_CPZ2, Nem_CPZ, Map16_CPZ, Map128_CPZ, bgm_MZ, palid_CPZ ; CPZ  ; CHEMICAL PLANT ZONE
+		levartptrs plcid_EHZ, plcid_EHZ2, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SLZ, palid_EHZ ; EHZ  ; EMERALD HILL ZONE
+		levartptrs plcid_HPZ, plcid_HPZ2, Nem_HPZ, Map16_HPZ, Map128_HPZ, bgm_SYZ, palid_HPZ ; HPZ  ; HIDDEN PALACE ZONE
+		levartptrs plcid_HTZ, plcid_HTZ2, Nem_EHZ, Map16_EHZ, Map128_EHZ, bgm_SBZ, palid_HTZ1 ; HTZ  ; HILL TOP ZONE
+		levartptrs 0, 0, Nem_GHZ, Map16_GHZ, Map128_GHZ, bgm_SBZ, palid_Ending ; LEV6 ; LEVEL 6 (UNUSED, SONIC 1 ENDING)

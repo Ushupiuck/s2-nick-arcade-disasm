@@ -153,7 +153,7 @@ loc_83E6:
 		bra.w	loc_8472
 ; ---------------------------------------------------------------------------
 
-loc_83EA:
+Obj48_Move:
 		tst.b	$3D(a0)
 		bne.s	loc_840E
 		move.w	$3E(a0),d0
@@ -178,7 +178,7 @@ loc_840E:
 loc_842A:
 		move.b	obAngle(a0),d0
 
-loc_842E:
+Swing_Move2:
 		bsr.w	CalcSine
 		move.w	$38(a0),d2
 		move.w	$3A(a0),d3

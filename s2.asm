@@ -26560,176 +26560,7 @@ BossMove:
 ; End of function BossMove
 
 		include "_incObj/S1/3D Boss - Green Hill (part 2).asm"
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 48 - the ball that swings on the GHZ boss
-;----------------------------------------------------
-
-Obj48:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj48_Index(pc,d0.w),d1
-		jmp	Obj48_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj48_Index:	dc.w Obj48_Init-Obj48_Index
-		dc.w Obj48_Main-Obj48_Index
-		dc.w loc_19226-Obj48_Index
-		dc.w loc_19274-Obj48_Index
-		dc.w loc_19290-Obj48_Index
-; ---------------------------------------------------------------------------
-
-Obj48_Init:
-		addq.b	#2,obRoutine(a0)
-		move.w	#$4080,obAngle(a0)
-		move.w	#-$200,objoff_3E(a0)
-		move.l	#Map_BossItems,obMap(a0)
-		move.w	#make_art_tile($46C,0,0),obGfx(a0)
-		bsr.w	j_Adjust2PArtPointer_5
-		lea	obSubtype(a0),a2
-		move.b	#0,(a2)+
-		moveq	#5,d1
-		movea.l	a0,a1
-		bra.s	loc_1916A
-; ---------------------------------------------------------------------------
-
-loc_1912E:
-		jsr	(FindNextFreeObj).l
-		bne.s	loc_19194
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-		_move.b	#id_Obj48,obID(a1)
-		move.b	#6,obRoutine(a1)
-		move.l	#Map_Obj15,obMap(a1)
-		move.w	#make_art_tile($380,0,0),obGfx(a1)
-		bsr.w	j_Adjust2PArtPointer2_1
-		move.b	#1,obFrame(a1)
-		addq.b	#1,obSubtype(a0)
-
-loc_1916A:
-		move.w	a1,d5
-		subi.w	#v_objspace,d5
-		lsr.w	#object_size_bits,d5
-		andi.w	#$7F,d5
-		move.b	d5,(a2)+
-		move.b	#4,obRender(a1)
-		move.b	#8,obActWid(a1)
-		move.b	#6,obPriority(a1)
-		move.l	objoff_34(a0),objoff_34(a1)
-		dbf	d1,loc_1912E
-
-loc_19194:
-		move.b	#8,obRoutine(a1)
-		move.l	#Map_Obj48,obMap(a1)
-		move.w	#make_art_tile($3AA,2,0),obGfx(a1)
-		bsr.w	j_Adjust2PArtPointer2_1
-		move.b	#1,obFrame(a1)
-		move.b	#5,obPriority(a1)
-		move.b	#$81,obColType(a1)
-		rts
-; ---------------------------------------------------------------------------
-Obj48_PosData:	dc.b   0,$10,$20,$30,$40,$60
-; ---------------------------------------------------------------------------
-
-Obj48_Main:
-		lea	Obj48_PosData(pc),a3
-		lea	obSubtype(a0),a2
-		moveq	#0,d6
-		move.b	(a2)+,d6
-
-loc_191D2:
-		moveq	#0,d4
-		move.b	(a2)+,d4
-		lsl.w	#object_size_bits,d4
-		addi.l	#v_objspace,d4
-		movea.l	d4,a1
-		move.b	(a3)+,d0
-		cmp.b	objoff_3C(a1),d0
-		beq.s	loc_191EC
-		addq.b	#1,objoff_3C(a1)
-
-loc_191EC:
-		dbf	d6,loc_191D2
-		cmp.b	objoff_3C(a1),d0
-		bne.s	loc_19206
-		movea.l	objoff_34(a0),a1
-		cmpi.b	#6,ob2ndRout(a1)
-		bne.s	loc_19206
-		addq.b	#2,obRoutine(a0)
-
-loc_19206:
-		cmpi.w	#$20,objoff_32(a0)
-		beq.s	loc_19212
-		addq.w	#1,objoff_32(a0)
-
-loc_19212:
-		bsr.w	sub_19236
-		move.b	obAngle(a0),d0
-		jsr	(loc_842E).l
-		jmp	(DisplaySprite).l
-; ---------------------------------------------------------------------------
-
-loc_19226:
-		bsr.w	sub_19236
-		jsr	(loc_83EA).l
-		jmp	(DisplaySprite).l
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_19236:
-		movea.l	objoff_34(a0),a1
-		addi.b	#$20,obAniFrame(a0)
-		bcc.s	loc_19248
-		bchg	#0,obFrame(a0)
-
-loc_19248:
-		move.w	obX(a1),objoff_3A(a0)
-		move.w	obY(a1),d0
-		add.w	objoff_32(a0),d0
-		move.w	d0,objoff_38(a0)
-		move.b	obStatus(a1),obStatus(a0)
-		tst.b	obStatus(a1)
-		bpl.s	locret_19272
-		_move.b	#id_Obj3F,obID(a0)
-		move.b	#0,obRoutine(a0)
-
-locret_19272:
-		rts
-; End of function sub_19236
-
-; ---------------------------------------------------------------------------
-
-loc_19274:
-		movea.l	objoff_34(a0),a1
-		tst.b	obStatus(a1)
-		bpl.s	loc_1928A
-		_move.b	#id_Obj3F,obID(a0)
-		move.b	#0,obRoutine(a0)
-
-loc_1928A:
-		jmp	(DisplaySprite).l
-; ---------------------------------------------------------------------------
-
-loc_19290:
-		moveq	#0,d0
-		tst.b	obFrame(a0)
-		bne.s	loc_1929A
-		addq.b	#1,d0
-
-loc_1929A:
-		move.b	d0,obFrame(a0)
-		movea.l	objoff_34(a0),a1
-		tst.b	obStatus(a1)
-		bpl.s	loc_192C2
-		move.b	#0,obColType(a0)
-		bsr.w	BossDefeated
-		subq.b	#1,objoff_3C(a0)
-		bpl.s	loc_192C2
-		move.b	#id_Obj3F,obID(a0)
-		move.b	#0,obRoutine(a0)
-
-loc_192C2:
-		jmp	(DisplaySprite).l
+		include "_incObj/S1/48 Eggman's Swinging Ball.asm"
 ; ---------------------------------------------------------------------------
 Ani_Eggman:	dc.w byte_192E0-Ani_Eggman
 		dc.w byte_192E3-Ani_Eggman
@@ -28530,7 +28361,7 @@ loc_1AC28:
 		lea	(v_start+$7D00).l,a1
 
 sub_1AC58:
-		move.w	#7,d1
+		move.w	#8-1,d1
 
 loc_1AC5C:
 		move.w	(a1),d0
@@ -29676,24 +29507,21 @@ LeftoverArt_Unknown:
 		binclude	"art/uncompressed/leftovers/1C318.bin"
 		even
 AngleMap_GHZ:	binclude	"collision/S1/Angle Map.bin"
-		even
 AngleMap_GHZ_End:
+		even
 AngleMap:	binclude	"collision/Curve and resistance mapping.bin"
 		even
 AngleMap_End:
 ColArray1_GHZ:	binclude	"collision/S1/Collision Array (Normal).bin"
-		even
 ColArray1_GHZ_End:
-ColArray2_GHZ:
-		binclude	"collision/S1/Collision Array (Rotated).bin"
 		even
+ColArray2_GHZ:	binclude	"collision/S1/Collision Array (Rotated).bin"
 ColArray2_GHZ_End:
+		even
 ColArray1:	binclude	"collision/Collision array 1.bin"
-		even
-ColArray1_End:
+ColArray1_End:	even
 ColArray2:	binclude	"collision/Collision array 2.bin"
-		even
-ColArray2_End:
+ColArray2_End:	even
 ColP_GHZ:	binclude	"collision/S1/GHZ1.bin"
 		even
 ColS_GHZ:	binclude	"collision/S1/GHZ2.bin"
@@ -29851,8 +29679,7 @@ Leftover_Art_Alphabet:
 ; --------------------------------------------------------------------------------------
 ; Leftover level mappings and palettes from a previous build
 ; --------------------------------------------------------------------------------------
-Leftover_31000:
-		binclude	"misc/leftovers/31000.bin"
+Leftover_31000:	binclude	"misc/leftovers/31000.bin"
 		even
 ; --------------------------------------------------------------------------------------
 ; Object layouts
