@@ -8453,232 +8453,8 @@ byte_A327:	dc.b   1,  5,  6,$FF,  0
 ; ---------------------------------------------------------------------------
 Map_obj1F:	binclude	"mappings/sprite/obj1F.bin"
 
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object 22 - Buzz Bomber from GHZ
-; ---------------------------------------------------------------------------
-; OST:
-obj22_time:	equ objoff_32					; time to wait for performing an action
-obj22_status:	equ objoff_34					; 0 = still, 1 = flying, 2 = shooting
-obj22_parent:	equ objoff_3C
-; ---------------------------------------------------------------------------
-
-Obj22:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj22_Index(pc,d0.w),d1
-		jmp	Obj22_Index(pc,d1.w)
-; ===========================================================================
-Obj22_Index:	dc.w Obj22_Init-Obj22_Index
-		dc.w Obj22_Main-Obj22_Index
-		dc.w Obj22_Delete-Obj22_Index
-; ===========================================================================
-; loc_A41C:
-Obj22_Init:
-		addq.b	#2,obRoutine(a0)
-		move.l	#Map_obj22,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Buzz_Bomber,0,0),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-		move.b	#4,obRender(a0)
-		move.b	#3,obPriority(a0)
-		move.b	#8,obColType(a0)
-		move.b	#$18,obActWid(a0)
-; loc_A44A:
-Obj22_Main:
-		moveq	#0,d0
-		move.b	ob2ndRout(a0),d0
-		move.w	Obj22_Main_Index(pc,d0.w),d1
-		jsr	Obj22_Main_Index(pc,d1.w)
-		lea	(Ani_obj22).l,a1
-		bsr.w	AnimateSprite
-		bra.w	MarkObjGone
-; ===========================================================================
-Obj22_Main_Index:	dc.w Obj22_Move-Obj22_Main_Index
-			dc.w Obj22_NearSonic-Obj22_Main_Index
-; ===========================================================================
-; loc_A46A:
-Obj22_Move:
-		subq.w	#1,obj22_time(a0)
-		bpl.s	locret_A49A
-		btst	#1,obj22_status(a0)
-		bne.s	Obj22_LoadMissile
-		addq.b	#2,ob2ndRout(a0)
-		move.w	#128-1,obj22_time(a0)
-		move.w	#$400,obVelX(a0)
-		move.b	#1,obAnim(a0)
-		btst	#0,obStatus(a0)
-		bne.s	locret_A49A
-		neg.w	obVelX(a0)
-
-locret_A49A:
-		rts
-; ===========================================================================
-; loc_A49C:
-Obj22_LoadMissile:
-		bsr.w	FindFreeObj
-		bne.s	locret_A4FE
-		_move.b	#id_Obj23,obID(a1)			; load Obj23 (Buzz Bomber/Newtron missile)
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-		addi.w	#$1C,obY(a1)
-		move.w	#$200,obVelY(a1)
-		move.w	#$200,obVelX(a1)
-		move.w	#$18,d0
-		btst	#0,obStatus(a0)
-		bne.s	loc_A4D8
-		neg.w	d0
-		neg.w	obVelX(a1)
-
-loc_A4D8:
-		add.w	d0,obX(a1)
-		move.b	obStatus(a0),obStatus(a1)
-		move.w	#15-1,obj22_time(a1)
-		move.l	a0,obj22_parent(a1)
-		move.b	#1,obj22_status(a0)
-		move.w	#60-1,obj22_time(a0)
-		move.b	#2,obAnim(a0)
-
-locret_A4FE:
-		rts
-; ===========================================================================
-; loc_A500:
-Obj22_NearSonic:
-		subq.w	#1,obj22_time(a0)
-		bmi.s	loc_A536
-		bsr.w	ObjectMove
-		tst.b	obj22_status(a0)
-		bne.s	locret_A558
-		move.w	(v_player+obX).w,d0
-		sub.w	obX(a0),d0
-		bpl.s	loc_A51C
-		neg.w	d0
-
-loc_A51C:
-		cmpi.w	#$60,d0				; is Buzz Bomber within $60 pixels of Sonic?
-		bcc.s	locret_A558			; if not, branch
-		tst.b	obRender(a0)
-		bpl.s	locret_A558
-		move.b	#2,obj22_status(a0)
-		move.w	#29,obj22_time(a0)
-		bra.s	loc_A548
-; ===========================================================================
-
-loc_A536:
-		move.b	#0,obj22_status(a0)
-		bchg	#0,obStatus(a0)
-		move.w	#59,obj22_time(a0)
-
-loc_A548:
-		subq.b	#2,ob2ndRout(a0)
-		move.w	#0,obVelX(a0)
-		move.b	#0,obAnim(a0)
-
-locret_A558:
-		rts
-; ===========================================================================
-; loc_A55A:
-Obj22_Delete:
-		bra.w	DeleteObject
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object 23 - Buzz Bomber/Newtron missile
-; ---------------------------------------------------------------------------
-; OST:
-obj23_parent:	equ objoff_3C
-; ---------------------------------------------------------------------------
-
-Obj23:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj23_Index(pc,d0.w),d1
-		jmp	Obj23_Index(pc,d1.w)
-; ===========================================================================
-Obj23_Index:	dc.w Obj23_Init-Obj23_Index
-		dc.w Obj23_Animate-Obj23_Index
-		dc.w Obj23_Move-Obj23_Index
-		dc.w Obj23_Delete-Obj23_Index
-		dc.w Obj23_Newtron-Obj23_Index
-; ===========================================================================
-; loc_A576:
-Obj23_Init:
-		subq.w	#1,objoff_32(a0)
-		bpl.s	Obj23_ChkDel
-		addq.b	#2,obRoutine(a0)
-		move.l	#Map_obj23,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Buzz_Bomber,1,0),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-		move.b	#4,obRender(a0)
-		move.b	#3,obPriority(a0)
-		move.b	#8,obActWid(a0)
-		andi.b	#3,obStatus(a0)
-		tst.b	obSubtype(a0)			; was the object created by a Newtron?
-		beq.s	Obj23_Animate			; if not, branch
-
-		move.b	#8,obRoutine(a0)
-		move.b	#$87,obColType(a0)
-		move.b	#1,obAnim(a0)
-		bra.s	Obj23_Animate2
-; ===========================================================================
-; loc_A5C4:
-Obj23_Animate:
-		movea.l	obj23_parent(a0),a1
-		_cmpi.b	#id_Obj27,obID(a1)			; is Buzz Bomber destroyed?
-		beq.s	Obj23_Delete			; if yes, branch
-		lea	(Ani_obj23).l,a1
-		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
-
-; ---------------------------------------------------------------------------
-; Subroutine to	check if the Buzz Bomber which fired the missile has been
-; destroyed, and if it has, deletes the missile
-; ---------------------------------------------------------------------------
-
-; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
-
-; loc_A5DE:
-Obj23_ChkDel:
-		movea.l	obj23_parent(a0),a1
-		_cmpi.b	#id_Obj27,obID(a1)			; is Buzz Bomber destroyed?
-		beq.s	Obj23_Delete			; if yes, branch
-		rts
-; End of function Obj23_ChkDel
-
-; ===========================================================================
-; loc_A5EC:
-Obj23_Move:
-		btst	#7,obStatus(a0)			; has the missile collided with the level? (flag never set)
-		bne.s	Obj23_Explode			; if yes, branch
-		move.b	#$87,obColType(a0)
-		move.b	#1,obAnim(a0)
-		bsr.w	ObjectMove
-		lea	(Ani_obj23).l,a1
-		bsr.w	AnimateSprite
-		move.w	(Camera_Max_Y_pos).w,d0
-		addi.w	#224,d0
-		cmp.w	obY(a0),d0
-		bcs.s	Obj23_Delete
-		bra.w	DisplaySprite
-; ===========================================================================
-; loc_A620:
-Obj23_Explode:
-		_move.b	#id_Obj24,obID(a0)			; load Obj24 (unused Buzz Bomber missile explosion)
-		move.b	#0,obRoutine(a0)
-		bra.w	Obj24
-; ===========================================================================
-; loc_A630:
-Obj23_Delete:
-		bra.w	DeleteObject
-; ===========================================================================
-; loc_A634:
-Obj23_Newtron:
-		tst.b	obRender(a0)
-		bpl.s	Obj23_Delete
-		bsr.w	ObjectMove
-; loc_A63E:
-Obj23_Animate2:
-		lea	(Ani_obj23).l,a1
-		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
+		include	"_incObj/S1/22 Buzz Bomber.asm"
+		include	"_incObj/S1/23 Buzz Bomber Missile.asm"
 ; ===========================================================================
 ; animation script
 Ani_obj22:	dc.w byte_A652-Ani_obj22
@@ -26574,17 +26350,17 @@ Ani_Eggman:	dc.w byte_192E0-Ani_Eggman
 		dc.w byte_19302-Ani_Eggman
 		dc.w byte_19306-Ani_Eggman
 		dc.w byte_19309-Ani_Eggman
-byte_192E0:	dc.b  $F,  0,$FF			; 0
-byte_192E3:	dc.b   5,  1,  2,$FF			; 0
-byte_192E7:	dc.b   3,  1,  2,$FF			; 0
-byte_192EB:	dc.b   1,  1,  2,$FF			; 0
-byte_192EF:	dc.b   4,  3,  4,$FF			; 0
-byte_192F3:	dc.b $1F,  5,  1,$FF			; 0
-byte_192F7:	dc.b   3,  6,  1,$FF			; 0
-byte_192FB:	dc.b  $F, $A,$FF			; 0
-byte_192FE:	dc.b   3,  8,  9,$FF			; 0
-byte_19302:	dc.b   1,  8,  9,$FF			; 0
-byte_19306:	dc.b  $F,  7,$FF			; 0
+byte_192E0:	dc.b  $F,  0,$FF
+byte_192E3:	dc.b   5,  1,  2,$FF
+byte_192E7:	dc.b   3,  1,  2,$FF
+byte_192EB:	dc.b   1,  1,  2,$FF
+byte_192EF:	dc.b   4,  3,  4,$FF
+byte_192F3:	dc.b $1F,  5,  1,$FF
+byte_192F7:	dc.b   3,  6,  1,$FF
+byte_192FB:	dc.b  $F, $A,$FF
+byte_192FE:	dc.b   3,  8,  9,$FF
+byte_19302:	dc.b   1,  8,  9,$FF
+byte_19306:	dc.b  $F,  7,$FF
 byte_19309:	dc.b   2,  9,  8, $B, $C, $B, $C,  9,  8,$FE,  2
 Map_Eggman:	dc.w word_1932E-Map_Eggman
 		dc.w word_19360-Map_Eggman
@@ -26600,50 +26376,50 @@ Map_Eggman:	dc.w word_1932E-Map_Eggman
 		dc.w word_19424-Map_Eggman
 		dc.w word_19436-Map_Eggman
 word_1932E:	dc.w 6
-		dc.w $EC01,   $A,    5,$FFE4		; 0
-		dc.w $EC05,   $C,    6,	  $C		; 4
-		dc.w $FC0E,$2010,$2008,$FFE4		; 8
-		dc.w $FC0E,$201C,$200E,	   4		; 12
-		dc.w $140C,$2028,$2014,$FFEC		; 16
-		dc.w $1400,$202C,$2016,	  $C		; 20
+		dc.w $EC01,   $A,    5,$FFE4
+		dc.w $EC05,   $C,    6,	  $C
+		dc.w $FC0E,$2010,$2008,$FFE4
+		dc.w $FC0E,$201C,$200E,	   4
+		dc.w $140C,$2028,$2014,$FFEC
+		dc.w $1400,$202C,$2016,	  $C
 word_19360:	dc.w 2
-		dc.w $E404,    0,    0,$FFF4		; 0
-		dc.w $EC0D,    2,    1,$FFEC		; 4
+		dc.w $E404,    0,    0,$FFF4
+		dc.w $EC0D,    2,    1,$FFEC
 word_19372:	dc.w 2
-		dc.w $E404,    0,    0,$FFF4		; 0
-		dc.w $EC0D,  $35,  $1A,$FFEC		; 4
+		dc.w $E404,    0,    0,$FFF4
+		dc.w $EC0D,  $35,  $1A,$FFEC
 word_19384:	dc.w 3
-		dc.w $E408,  $3D,  $1E,$FFF4		; 0
-		dc.w $EC09,  $40,  $20,$FFEC		; 4
-		dc.w $EC05,  $46,  $23,	   4		; 8
+		dc.w $E408,  $3D,  $1E,$FFF4
+		dc.w $EC09,  $40,  $20,$FFEC
+		dc.w $EC05,  $46,  $23,	   4
 word_1939E:	dc.w 3
-		dc.w $E408,  $4A,  $25,$FFF4		; 0
-		dc.w $EC09,  $4D,  $26,$FFEC		; 4
-		dc.w $EC05,  $53,  $29,	   4		; 8
+		dc.w $E408,  $4A,  $25,$FFF4
+		dc.w $EC09,  $4D,  $26,$FFEC
+		dc.w $EC05,  $53,  $29,	   4
 word_193B8:	dc.w 3
-		dc.w $E408,  $57,  $2B,$FFF4		; 0
-		dc.w $EC09,  $5A,  $2D,$FFEC		; 4
-		dc.w $EC05,  $60,  $30,	   4		; 8
+		dc.w $E408,  $57,  $2B,$FFF4
+		dc.w $EC09,  $5A,  $2D,$FFEC
+		dc.w $EC05,  $60,  $30,	   4
 word_193D2:	dc.w 3
-		dc.w $E404,  $64,  $32,	   4		; 0
-		dc.w $E404,    0,    0,$FFF4		; 4
-		dc.w $EC0D,  $35,  $1A,$FFEC		; 8
+		dc.w $E404,  $64,  $32,	   4
+		dc.w $E404,    0,    0,$FFF4
+		dc.w $EC0D,  $35,  $1A,$FFEC
 word_193EC:	dc.w 4
-		dc.w $E409,  $66,  $33,$FFF4		; 0
-		dc.w $E408,  $57,  $2B,$FFF4		; 4
-		dc.w $EC09,  $5A,  $2D,$FFEC		; 8
-		dc.w $EC05,  $60,  $30,	   4		; 12
+		dc.w $E409,  $66,  $33,$FFF4
+		dc.w $E408,  $57,  $2B,$FFF4
+		dc.w $EC09,  $5A,  $2D,$FFEC
+		dc.w $EC05,  $60,  $30,	   4
 word_1940E:	dc.w 1
-		dc.w  $405,  $2D,  $16,	 $22		; 0
+		dc.w  $405,  $2D,  $16,	 $22
 word_19418:	dc.w 1
-		dc.w  $405,  $31,  $18,	 $22		; 0
+		dc.w  $405,  $31,  $18,	 $22
 word_19422:	dc.w 0
 word_19424:	dc.w 2
-		dc.w	 8, $12A, $195,	 $22		; 0
-		dc.w  $808,$112A,$1995,	 $22		; 4
+		dc.w	 8, $12A, $195,	 $22
+		dc.w  $808,$112A,$1995,	 $22
 word_19436:	dc.w 2
-		dc.w $F80B, $12D, $199,	 $22		; 0
-		dc.w	 1, $139, $1AB,	 $3A		; 4
+		dc.w $F80B, $12D, $199,	 $22
+		dc.w	 1, $139, $1AB,	 $3A
 Map_BossItems:	dc.w word_19458-Map_BossItems
 		dc.w word_19462-Map_BossItems
 		dc.w word_19474-Map_BossItems
@@ -26653,27 +26429,27 @@ Map_BossItems:	dc.w word_19458-Map_BossItems
 		dc.w word_194B4-Map_BossItems
 		dc.w word_194C6-Map_BossItems
 word_19458:	dc.w 1
-		dc.w $F805,    0,    0,$FFF8		; 0
+		dc.w $F805,    0,    0,$FFF8
 word_19462:	dc.w 2
-		dc.w $FC04,    4,    2,$FFF8		; 0
-		dc.w $F805,    0,    0,$FFF8		; 4
+		dc.w $FC04,    4,    2,$FFF8
+		dc.w $F805,    0,    0,$FFF8
 word_19474:	dc.w 1
-		dc.w $FC00,    6,    3,$FFFC		; 0
+		dc.w $FC00,    6,    3,$FFFC
 word_1947E:	dc.w 1
-		dc.w $1409,    7,    3,$FFF4		; 0
+		dc.w $1409,    7,    3,$FFF4
 word_19488:	dc.w 1
-		dc.w $1405,   $D,    6,$FFF8		; 0
+		dc.w $1405,   $D,    6,$FFF8
 word_19492:	dc.w 4
-		dc.w $F004,  $11,    8,$FFF8		; 0
-		dc.w $F801,  $13,    9,$FFF8		; 4
-		dc.w $F801, $813, $809,	   0		; 8
-		dc.w  $804,  $15,   $A,$FFF8		; 12
+		dc.w $F004,  $11,    8,$FFF8
+		dc.w $F801,  $13,    9,$FFF8
+		dc.w $F801, $813, $809,	   0
+		dc.w  $804,  $15,   $A,$FFF8
 word_194B4:	dc.w 2
-		dc.w	 5,  $17,   $B,	   0		; 0
-		dc.w	 0,  $1B,   $D,	 $10		; 4
+		dc.w	 5,  $17,   $B,	   0
+		dc.w	 0,  $1B,   $D,	 $10
 word_194C6:	dc.w 2
-		dc.w $1804,  $1C,   $E,	   0		; 0
-		dc.w	$B,  $1E,   $F,	 $10		; 4
+		dc.w $1804,  $1C,   $E,	   0
+		dc.w	$B,  $1E,   $F,	 $10
 ; ---------------------------------------------------------------------------
 
 j_Adjust2PArtPointer2_1:
@@ -26707,15 +26483,15 @@ Obj3E_Index:	dc.w Obj3E_Init-Obj3E_Index
 		dc.w Obj3E_Explosion-Obj3E_Index
 		dc.w Obj3E_Animals-Obj3E_Index
 		dc.w Obj3E_EndAct-Obj3E_Index
-Obj3E_Var:	dc.b   2,$20,  4,  0			; 0
-		dc.b   4, $C,  5,  1			; 4
-		dc.b   6,$10,  4,  3			; 8
-		dc.b   8,$10,  3,  5			; 12
+Obj3E_Var:	dc.b   2,$20,  4,  0
+		dc.b   4, $C,  5,  1
+		dc.b   6,$10,  4,  3
+		dc.b   8,$10,  3,  5
 ; ---------------------------------------------------------------------------
 
 Obj3E_Init:
 		move.l	#Map_Obj3E,obMap(a0)
-		move.w	#$49D,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_Prison_Capsule,0,0),obGfx(a0)
 		bsr.w	j_Adjust2PArtPointer_6
 		move.b	#4,obRender(a0)
 		move.w	obY(a0),objoff_30(a0)
@@ -26886,7 +26662,7 @@ locret_1972A:
 ; ---------------------------------------------------------------------------
 Ani_Obj3E:	dc.w byte_19730-Ani_Obj3E
 		dc.w byte_19730-Ani_Obj3E
-byte_19730:	dc.b   2,  1,  3,$FF			; 0
+byte_19730:	dc.b   2,  1,  3,$FF
 Map_Obj3E:	dc.w word_19742-Map_Obj3E
 		dc.w word_1977C-Map_Obj3E
 		dc.w word_19786-Map_Obj3E
@@ -26895,29 +26671,29 @@ Map_Obj3E:	dc.w word_19742-Map_Obj3E
 		dc.w word_197D4-Map_Obj3E
 		dc.w word_197DE-Map_Obj3E
 word_19742:	dc.w 7
-		dc.w $E00C,$2000,$2000,$FFF0		; 0
-		dc.w $E80D,$2004,$2002,$FFE0		; 4
-		dc.w $E80D,$200C,$2006,	   0		; 8
-		dc.w $F80E,$2014,$200A,$FFE0		; 12
-		dc.w $F80E,$2020,$2010,	   0		; 16
-		dc.w $100D,$202C,$2016,$FFE0		; 20
-		dc.w $100D,$2034,$201A,	   0		; 24
+		dc.w $E00C,$2000,$2000,$FFF0
+		dc.w $E80D,$2004,$2002,$FFE0
+		dc.w $E80D,$200C,$2006,	   0
+		dc.w $F80E,$2014,$200A,$FFE0
+		dc.w $F80E,$2020,$2010,	   0
+		dc.w $100D,$202C,$2016,$FFE0
+		dc.w $100D,$2034,$201A,	   0
 word_1977C:	dc.w 1
-		dc.w $F809,  $3C,  $1E,$FFF4		; 0
+		dc.w $F809,  $3C,  $1E,$FFF4
 word_19786:	dc.w 6
-		dc.w	 8,$2042,$2021,$FFE0		; 0
-		dc.w  $80C,$2045,$2022,$FFE0		; 4
-		dc.w	 4,$2049,$2024,	 $10		; 8
-		dc.w  $80C,$204B,$2025,	   0		; 12
-		dc.w $100D,$202C,$2016,$FFE0		; 16
-		dc.w $100D,$2034,$201A,	   0		; 20
+		dc.w	 8,$2042,$2021,$FFE0
+		dc.w  $80C,$2045,$2022,$FFE0
+		dc.w	 4,$2049,$2024,	 $10
+		dc.w  $80C,$204B,$2025,	   0
+		dc.w $100D,$202C,$2016,$FFE0
+		dc.w $100D,$2034,$201A,	   0
 word_197B8:	dc.w 1
-		dc.w $F809,  $4F,  $27,$FFF4		; 0
+		dc.w $F809,  $4F,  $27,$FFF4
 word_197C2:	dc.w 2
-		dc.w $E80E,$2055,$202A,$FFF0		; 0
-		dc.w	$E,$2061,$2030,$FFF0		; 4
+		dc.w $E80E,$2055,$202A,$FFF0
+		dc.w	$E,$2061,$2030,$FFF0
 word_197D4:	dc.w 1
-		dc.w $F007,$206D,$2036,$FFF8		; 0
+		dc.w $F007,$206D,$2036,$FFF8
 word_197DE:	dc.w 0
 ; ---------------------------------------------------------------------------
 
@@ -26962,42 +26738,42 @@ loc_19826:
 locret_19830:
 		rts
 ; ---------------------------------------------------------------------------
-Touch_Sizes:	dc.b $14,$14				; 0
-		dc.b  $C,$14				; 2
-		dc.b $14, $C				; 4
-		dc.b   4,$10				; 6
-		dc.b  $C,$12				; 8
-		dc.b $10,$10				; 10
-		dc.b   6,  6				; 12
-		dc.b $18, $C				; 14
-		dc.b  $C,$10				; 16
-		dc.b $10, $C				; 18
-		dc.b   8,  8				; 20
-		dc.b $14,$10				; 22
-		dc.b $14,  8				; 24
-		dc.b  $E, $E				; 26
-		dc.b $18,$18				; 28
-		dc.b $28,$10				; 30
-		dc.b $10,$18				; 32
-		dc.b   8,$10				; 34
-		dc.b $20,$70				; 36
-		dc.b $40,$20				; 38
-		dc.b $80,$20				; 40
-		dc.b $20,$20				; 42
-		dc.b   8,  8				; 44
-		dc.b   4,  4				; 46
-		dc.b $20,  8				; 48
-		dc.b  $C, $C				; 50
-		dc.b   8,  4				; 52
-		dc.b $18,  4				; 54
-		dc.b $28,  4				; 56
-		dc.b   4,  8				; 58
-		dc.b   4,$18				; 60
-		dc.b   4,$28				; 62
-		dc.b   4,$20				; 64
-		dc.b $18,$18				; 66
-		dc.b  $C,$18				; 68
-		dc.b $48,  8				; 70
+Touch_Sizes:	dc.b $14,$14
+		dc.b  $C,$14
+		dc.b $14, $C
+		dc.b   4,$10
+		dc.b  $C,$12
+		dc.b $10,$10
+		dc.b   6,  6
+		dc.b $18, $C
+		dc.b  $C,$10
+		dc.b $10, $C
+		dc.b   8,  8
+		dc.b $14,$10
+		dc.b $14,  8
+		dc.b  $E, $E
+		dc.b $18,$18
+		dc.b $28,$10
+		dc.b $10,$18
+		dc.b   8,$10
+		dc.b $20,$70
+		dc.b $40,$20
+		dc.b $80,$20
+		dc.b $20,$20
+		dc.b   8,  8
+		dc.b   4,  4
+		dc.b $20,  8
+		dc.b  $C, $C
+		dc.b   8,  4
+		dc.b $18,  4
+		dc.b $28,  4
+		dc.b   4,  8
+		dc.b   4,$18
+		dc.b   4,$28
+		dc.b   4,$20
+		dc.b $18,$18
+		dc.b  $C,$18
+		dc.b $48,  8
 ; ---------------------------------------------------------------------------
 
 Touch_Height:
