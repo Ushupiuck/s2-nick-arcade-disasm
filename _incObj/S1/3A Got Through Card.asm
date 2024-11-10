@@ -11,7 +11,13 @@ Obj3A:
 Obj3A_Index:	dc.w Obj3A_ChkPLC-Obj3A_Index
 		dc.w Obj3A_ChkPos-Obj3A_Index
 		dc.w Obj3A_Wait-Obj3A_Index
+; uncomment the lines below to restore the Sonic 1 functions.
+;		dc.w Obj3A_TimeBonus-Obj3A_Index
+;		dc.w Obj3A_Wait-Obj3A_Index
 		dc.w Obj3A_NextLevel-Obj3A_Index
+;		dc.w Obj3A_Wait-Obj3A_Index
+;		dc.w Obj3A_Move2-Obj3A_Index
+;		dc.w loc_BD3A-Obj3A_Index
 ; ===========================================================================
 ; loc_BB5C:
 Obj3A_ChkPLC:
@@ -62,6 +68,7 @@ loc_BBCC:
 		bmi.s	locret_BBDE
 		cmpi.w	#$200,d0
 		bcc.s	locret_BBDE
+; remove the rts below to restore the display code from Sonic 1.
 		rts
 ; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
@@ -73,7 +80,7 @@ locret_BBDE:
 
 loc_BBE0:
 		move.b	#$E,obRoutine(a0)
-		bra.w	loc_BCF8
+		bra.w	Obj3A_Move2
 ; ===========================================================================
 
 loc_BBEA:
@@ -90,6 +97,7 @@ Obj3A_Wait:
 		addq.b	#2,obRoutine(a0)
 
 locret_BC0E:
+; remove the rts below to restore the display code from Sonic 1.
 		rts
 ; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
@@ -163,27 +171,59 @@ loc_BCBC:
 		move.w	#1,(Level_Inactive_flag).w
 
 locret_BCC2:
+; remove the rts below to restore the display code from Sonic 1.
 		rts
 ; ---------------------------------------------------------------------------
 		bra.w	DisplaySprite
 ; ===========================================================================
-LevelOrder:	dc.w	 1,    2, $200,	   0
-		dc.w  $101, $102, $300,	$502
-		dc.w  $201, $202, $400,	   0
-		dc.w  $301, $302, $500,	   0
-		dc.w  $401, $402, $100,	   0
-		dc.w  $501, $103,    0,	   0
+LevelOrder:
+		; Green Hill Zone
+		dc.b id_GHZ, 1	; Act 1
+		dc.b id_GHZ, 2	; Act 2
+		dc.b id_MZ, 0	; Act 3
+		dc.b 0, 0
+
+		; Labyrinth Zone
+		dc.b id_LZ, 1	; Act 1
+		dc.b id_LZ, 2	; Act 2
+		dc.b id_SLZ, 0	; Act 3
+		dc.b id_SBZ, 2	; Scrap Brain Zone Act 3
+
+		; Marble Zone
+		dc.b id_MZ, 1	; Act 1
+		dc.b id_MZ, 2	; Act 2
+		dc.b id_SYZ, 0	; Act 3
+		dc.b 0, 0
+
+		; Star Light Zone
+		dc.b id_SLZ, 1	; Act 1
+		dc.b id_SLZ, 2	; Act 2
+		dc.b id_SBZ, 0	; Act 3
+		dc.b 0, 0
+
+		; Spring Yard Zone
+		dc.b id_SYZ, 1	; Act 1
+		dc.b id_SYZ, 2	; Act 2
+		dc.b id_LZ, 0	; Act 3
+		dc.b 0, 0
+
+		; Scrap Brain Zone
+		dc.b id_SBZ, 1	; Act 1
+		dc.b id_LZ, 3	; Act 2
+		dc.b 0, 0	; Final Zone
+		dc.b 0, 0
+		even
 ; ---------------------------------------------------------------------------
 
-loc_BCF8:
+Obj3A_Move2:
 		moveq	#$20,d1
 		move.w	objoff_32(a0),d0
 		cmp.w	obX(a0),d0
-		beq.s	loc_BD1E
-		bge.s	loc_BD08
+		beq.s	Obj3A_SBZ2
+		bge.s	Obj3A_ChgPos2
 		neg.w	d1
 
-loc_BD08:
+Obj3A_ChgPos2:
 		add.w	d1,obX(a0)
 		move.w	obX(a0),d0
 		bmi.s	locret_BD1C
@@ -196,7 +236,7 @@ locret_BD1C:
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_BD1E:
+Obj3A_SBZ2:
 		cmpi.b	#4,obFrame(a0)
 		bne.w	DeleteObject
 		addq.b	#2,obRoutine(a0)
@@ -204,6 +244,8 @@ loc_BD1E:
 		move.w	#bgm_FZ,d0
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
+
+; loc_BD3A:	; Routine $10
 		addq.w	#2,(Camera_Max_X_pos).w
 		cmpi.w	#$2100,(Camera_Max_X_pos).w
 		beq.w	DeleteObject
