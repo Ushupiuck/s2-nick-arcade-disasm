@@ -2,7 +2,7 @@ Map_Obj7E_internal:
 		dc.w Map_Obj7E_internal_0012-Map_Obj7E_internal
 		dc.w Map_Obj7E_internal_007C-Map_Obj7E_internal
 		dc.w Map_Obj7E_internal_00AE-Map_Obj7E_internal
-		dc.w $1C1E4-Map_Obj7E_internal	; leftover PLC pointer
+		dc.w $1C1E4-Map_Obj7E_internal	; leftover pointer
 		dc.w Map_Obj7E_internal_00E8-Map_Obj7E_internal
 		dc.w Map_Obj7E_internal_010A-Map_Obj7E_internal
 		dc.w Map_Obj7E_internal_012C-Map_Obj7E_internal

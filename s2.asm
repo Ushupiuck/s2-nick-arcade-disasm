@@ -9203,223 +9203,8 @@ word_B8B6:	dc.w 2
 		include	"_incObj/S1/34 Title Cards.asm"
 		include	"_incObj/S1/39 Game Over.asm"
 		include	"_incObj/S1/3A Got Through Card.asm"
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Sonic	1 Object 7E - leftover S1 Special Stage	results
-;----------------------------------------------------
-
-S1Obj7E:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	S1Obj7E_Index(pc,d0.w),d1
-		jmp	S1Obj7E_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-S1Obj7E_Index:	dc.w loc_BDA6-S1Obj7E_Index
-		dc.w loc_BE1E-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BE6A-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BEC4-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BECE-S1Obj7E_Index
-		dc.w loc_BE5C-S1Obj7E_Index
-		dc.w loc_BEC4-S1Obj7E_Index
-		dc.w loc_BEF2-S1Obj7E_Index
-; ---------------------------------------------------------------------------
-
-loc_BDA6:
-		tst.l	(v_plc_buffer).w
-		beq.s	loc_BDAE
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BDAE:
-		movea.l	a0,a1
-		lea	(S1Obj7E_Conf).l,a2
-		moveq	#3,d1
-		cmpi.w	#50,(v_rings).w
-		bcs.s	loc_BDC2
-		addq.w	#1,d1
-
-loc_BDC2:
-		_move.b	#id_Obj7E,obID(a1)
-		move.w	(a2)+,obX(a1)
-		move.w	(a2)+,objoff_30(a1)
-		move.w	(a2)+,obScreenY(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,obFrame(a1)
-		move.l	#Map_S1Obj7E,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#0,obRender(a1)
-		lea	object_size(a1),a1
-		dbf	d1,loc_BDC2
-		moveq	#7,d0
-		move.b	(v_emeralds).w,d1
-		beq.s	loc_BE1A
-		moveq	#0,d0
-		cmpi.b	#6,d1
-		bne.s	loc_BE1A
-		moveq	#8,d0
-		move.w	#$18,obX(a0)
-		move.w	#$118,objoff_30(a0)
-
-loc_BE1A:
-		move.b	d0,obFrame(a0)
-
-loc_BE1E:
-		moveq	#$10,d1
-		move.w	objoff_30(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_BE44
-		bge.s	loc_BE2E
-		neg.w	d1
-
-loc_BE2E:
-		add.w	d1,obX(a0)
-
-loc_BE32:
-		move.w	obX(a0),d0
-		bmi.s	locret_BE42
-		cmpi.w	#$200,d0
-		bcc.s	locret_BE42
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-locret_BE42:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BE44:
-		cmpi.b	#2,obFrame(a0)
-		bne.s	loc_BE32
-		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0)
-		move.b	#id_Obj7F,(v_ssresemeralds).w
-
-loc_BE5C:
-		subq.w	#1,obTimeFrame(a0)
-		bne.s	loc_BE66
-		addq.b	#2,obRoutine(a0)
-
-loc_BE66:
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BE6A:
-		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w
-		tst.w	(v_ringbonus).w
-		beq.s	loc_BE9C
-		subi.w	#10,(v_ringbonus).w
-		moveq	#10,d0
-		jsr	(AddPoints).l
-		move.b	(Vint_runcount+3).w,d0
-		andi.b	#3,d0
-		bne.s	locret_BEC2
-		move.w	#sfx_Switch,d0
-		jmp	(PlaySound_Special).l
-; ---------------------------------------------------------------------------
-
-loc_BE9C:
-		move.w	#sfx_Cash,d0
-		jsr	(PlaySound_Special).l
-		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0)
-		cmpi.w	#50,(v_rings).w
-		bcs.s	locret_BEC2
-		move.w	#60,obTimeFrame(a0)
-		addq.b	#4,obRoutine(a0)
-
-locret_BEC2:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BEC4:
-		move.w	#1,(Level_Inactive_flag).w
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BECE:
-		move.b	#4,(v_ssrescontinue+obFrame).w
-		move.b	#$14,(v_ssrescontinue+obRoutine).w
-		move.w	#sfx_Continue,d0
-		jsr	(PlaySound_Special).l
-		addq.b	#2,obRoutine(a0)
-		move.w	#360,obTimeFrame(a0)
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BEF2:
-		move.b	(Vint_runcount+3).w,d0
-		andi.b	#$F,d0
-		bne.s	loc_BF02
-		bchg	#0,obFrame(a0)
-
-loc_BF02:
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-S1Obj7E_Conf:	dc.w   $20, $120,  $C4,	$200
-		dc.w  $320, $120, $118,	$201
-		dc.w  $360, $120, $128,	$202
-		dc.w  $1EC, $11C,  $C4,	$203
-		dc.w  $3A0, $120, $138,	$206
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Sonic	1 Object 7F - leftover Sonic 1 SS emeralds
-;----------------------------------------------------
-
-S1Obj7F:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	S1Obj7F_Index(pc,d0.w),d1
-		jmp	S1Obj7F_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-S1Obj7F_Index:	dc.w loc_BF4C-S1Obj7F_Index
-		dc.w loc_BFA6-S1Obj7F_Index
-word_BF40:	dc.w $110
-		dc.w $128
-		dc.w $F8
-		dc.w $140
-		dc.w $E0
-		dc.w $158
-; ---------------------------------------------------------------------------
-
-loc_BF4C:
-		movea.l	a0,a1
-		lea	word_BF40(pc),a2
-		moveq	#0,d2
-		moveq	#0,d1
-		move.b	(v_emeralds).w,d1
-		subq.b	#1,d1
-		bcs.w	DeleteObject
-
-loc_BF60:
-		_move.b	#id_Obj7F,obID(a1)
-		move.w	(a2)+,obX(a1)
-		move.w	#$F0,obScreenY(a1)
-		lea	(v_emldlist).w,a3
-		move.b	(a3,d2.w),d3
-		move.b	d3,obFrame(a1)
-		move.b	d3,obAnim(a1)
-		addq.b	#1,d2
-		addq.b	#2,obRoutine(a1)
-		move.l	#Map_S1Obj7F,obMap(a1)
-		move.w	#make_art_tile(ArtTile_SS_Results_Emeralds,0,1),obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#0,obRender(a1)
-		lea	object_size(a1),a1
-		dbf	d1,loc_BF60
-
-loc_BFA6:
-		move.b	obFrame(a0),d0
-		move.b	#6,obFrame(a0)
-		cmpi.b	#6,d0
-		bne.s	loc_BFBC
-		move.b	obAnim(a0),obFrame(a0)
-
-loc_BFBC:
-		bra.w	DisplaySprite
+		include	"_incObj/S1/7E Special Stage Results.asm"
+		include	"_incObj/S1/7F SS Result Chaos Emeralds.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj34:	dc.w word_BFD8-Map_Obj34
 		dc.w word_C022-Map_Obj34
@@ -9618,7 +9403,7 @@ word_C660:	dc.w 0
 		nop
 
 		include	"_incObj/36 Spikes.asm"
-; ---------------------------------------------------------------------------
+
 Map_Obj36:	dc.w word_C836-Map_Obj36
 		dc.w word_C836-Map_Obj36
 		dc.w word_C836-Map_Obj36
@@ -9628,141 +9413,17 @@ Map_Obj36:	dc.w word_C836-Map_Obj36
 word_C836:	dc.w 2
 		dc.w $F007,    0,    0,$FFF0
 		dc.w $F007,    0,    0,	   0
-; ---------------------------------------------------------------------------
+
 		include	"_incObj/S1/3B Purple Rock.asm"
-; ---------------------------------------------------------------------------
+
 Map_Obj3B:	dc.w word_C8B0-Map_Obj3B
 word_C8B0:	dc.w 2
 		dc.w $F00B,    0,    0,$FFE8
 		dc.w $F00B,   $C,    6,	   0
 		align 4
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 3C - GHZ smashable wall
-;----------------------------------------------------
 
-Obj3C:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj3C_Index(pc,d0.w),d1
-		jsr	Obj3C_Index(pc,d1.w)
-		bra.w	MarkObjGone
-; ---------------------------------------------------------------------------
-Obj3C_Index:	dc.w loc_C8DC-Obj3C_Index
-		dc.w loc_C90A-Obj3C_Index
-		dc.w loc_C988-Obj3C_Index
-; ---------------------------------------------------------------------------
-
-loc_C8DC:
-		addq.b	#2,obRoutine(a0)
-		move.l	#Map_Obj3C,obMap(a0)
-		move.w	#make_art_tile($590,2,0),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-		move.b	#4,obRender(a0)
-		move.b	#$10,obActWid(a0)
-		move.b	#4,obPriority(a0)
-		move.b	obSubtype(a0),obFrame(a0)
-
-loc_C90A:
-		move.w	(v_player+obVelX).w,objoff_30(a0)
-		move.w	#$1B,d1
-		move.w	#$20,d2
-		move.w	#$20,d3
-		move.w	obX(a0),d4
-		bsr.w	SolidObject
-		btst	#5,obStatus(a0)
-		bne.s	loc_C92E
-
-locret_C92C:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_C92E:
-		lea	(v_player).w,a1
-		cmpi.b	#2,obAnim(a1)
-		bne.s	locret_C92C
-		move.w	objoff_30(a0),d0
-		bpl.s	loc_C942
-		neg.w	d0
-
-loc_C942:
-		cmpi.w	#$480,d0
-		bcs.s	locret_C92C
-		move.w	objoff_30(a0),obVelX(a1)
-		addq.w	#4,obX(a1)
-		lea	(Obj3C_FragSpdRight).l,a4
-		move.w	obX(a0),d0
-		cmp.w	obX(a1),d0
-		bcs.s	loc_C96E
-		subi.w	#8,obX(a1)
-		lea	(Obj3C_FragSpdLeft).l,a4
-
-loc_C96E:
-		move.w	obVelX(a1),obInertia(a1)
-		bclr	#5,obStatus(a0)
-		bclr	#5,obStatus(a1)
-		moveq	#7,d1
-		move.w	#$70,d2
-		bsr.s	sub_C99E
-
-loc_C988:
-		bsr.w	ObjectMove
-		addi.w	#$70,obVelY(a0)
-		tst.b	obRender(a0)
-		bpl.w	DeleteObject
-		bra.w	DisplaySprite
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_C99E:
-		moveq	#0,d0
-		move.b	obFrame(a0),d0
-		add.w	d0,d0
-		movea.l	obMap(a0),a3
-		adda.w	(a3,d0.w),a3
-		addq.w	#2,a3
-		bset	#5,obRender(a0)
-		_move.b	obID(a0),d4
-		move.b	obRender(a0),d5
-		movea.l	a0,a1
-		bra.s	loc_C9CA
-; ---------------------------------------------------------------------------
-
-loc_C9C2:
-		bsr.w	FindFreeObj
-		bne.s	loc_CA1C
-		addq.w	#8,a3
-
-loc_C9CA:
-		move.b	#4,obRoutine(a1)
-		_move.b	d4,obID(a1)
-		move.l	a3,obMap(a1)
-		move.b	d5,obRender(a1)
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-		move.w	obGfx(a0),obGfx(a1)
-		move.b	obPriority(a0),obPriority(a1)
-		move.b	obActWid(a0),obActWid(a1)
-		move.w	(a4)+,obVelX(a1)
-		move.w	(a4)+,obVelY(a1)
-		cmpa.l	a0,a1
-		bcc.s	loc_CA18
-		move.l	a0,-(sp)
-		movea.l	a1,a0
-		bsr.w	ObjectMove
-		add.w	d2,obVelY(a0)
-		movea.l	(sp)+,a0
-		bsr.w	DisplaySprite2
-
-loc_CA18:
-		dbf	d1,loc_C9C2
-
-loc_CA1C:
-		move.w	#sfx_WallSmash,d0
-		jmp	(PlaySound_Special).l
-; End of function sub_C99E
-
+		include	"_incObj/S1/3C Smashable Wall.asm"
+		include	"_incObj/S1/sub SmashObject.asm"
 ; ---------------------------------------------------------------------------
 Obj3C_FragSpdRight:dc.w	 $400,-$500
 		dc.w  $600,-$100
@@ -10364,14 +10025,14 @@ MarkObjGone_P2:
 		andi.w	#-$80,d0
 		move.w	d0,d1
 		sub.w	(Camera_X_pos_coarse).w,d0
-		cmpi.w	#$280,d0
+		cmpi.w	#128+320+192,d0
 		bhi.w	loc_CF14
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
 
 loc_CF14:
 		sub.w	(Camera_X_pos_coarse_P2).w,d1
-		cmpi.w	#$280,d1
+		cmpi.w	#128+320+192,d1
 		bhi.w	loc_CF24
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
@@ -11419,47 +11080,8 @@ byte_D7FA:	dc.b   8,  8,  8,  8
 		dc.b $10,$10,$10,$10
 		dc.b $18,$18,$18,$18
 		dc.b $20,$20,$20,$20
-		dc.b $30,$28,  0,  8
-; ---------------------------------------------------------------------------
-		sub.w	(Camera_RAM).w,d0
-		bmi.s	loc_D82E
-		cmpi.w	#320,d0
-		bge.s	loc_D82E
-		move.w	obY(a0),d1
-		sub.w	(Camera_Y_pos).w,d1
-		bmi.s	loc_D82E
-		cmpi.w	#224,d1
-		bge.s	loc_D82E
-		moveq	#0,d0
-		rts
-; ---------------------------------------------------------------------------
 
-loc_D82E:
-		moveq	#1,d0
-		rts
-; ---------------------------------------------------------------------------
-		moveq	#0,d1
-		move.b	obActWid(a0),d1
-		move.w	obX(a0),d0
-		sub.w	(Camera_RAM).w,d0
-		add.w	d1,d0
-		bmi.s	loc_D862
-		add.w	d1,d1
-		sub.w	d1,d0
-		cmpi.w	#320,d0
-		bge.s	loc_D862
-		move.w	obY(a0),d1
-		sub.w	(Camera_Y_pos).w,d1
-		bmi.s	loc_D862
-		cmpi.w	#224,d1
-		bge.s	loc_D862
-		moveq	#0,d0
-		rts
-; ---------------------------------------------------------------------------
-
-loc_D862:
-		moveq	#1,d0
-		rts
+		include	"_incObj/S1/sub ChkObjectVisible.asm"
 ; ---------------------------------------------------------------------------
 		nop
 
