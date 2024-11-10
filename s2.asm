@@ -8481,253 +8481,8 @@ Map_obj23:	binclude	"mappings/sprite/obj23.bin"
 
 ; ===========================================================================
 		nop
-; ===========================================================================
-;----------------------------------------------------------------------------
-; Object 25 - Rings
-;----------------------------------------------------------------------------
 
-Obj25:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj25_Index(pc,d0.w),d1
-		jmp	Obj25_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj25_Index:	dc.w loc_A81C-Obj25_Index
-		dc.w loc_A88A-Obj25_Index
-		dc.w loc_A8A6-Obj25_Index
-		dc.w loc_A8CC-Obj25_Index
-		dc.w loc_A8DA-Obj25_Index
-; ---------------------------------------------------------------------------
-; Distances between rings (format: horizontal, vertical)
-; ---------------------------------------------------------------------------
-		; unused table from S1
-		dc.b $10, 0		; horizontal tight
-		dc.b $18, 0		; horizontal normal
-		dc.b $20, 0		; horizontal wide
-		dc.b 0,	$10		; vertical tight
-		dc.b 0,	$18		; vertical normal
-		dc.b 0,	$20		; vertical wide
-		dc.b $10, $10		; diagonal
-		dc.b $18, $18
-		dc.b $20, $20
-		dc.b $F0, $10
-		dc.b $E8, $18
-		dc.b $E0, $20
-		dc.b $10, 8
-		dc.b $18, $10
-		dc.b $F0, 8
-		dc.b $E8, $10
-; ---------------------------------------------------------------------------
-
-loc_A81C:
-		movea.l	a0,a1
-		moveq	#0,d1
-		move.w	obX(a0),d2
-		move.w	obY(a0),d3
-		bra.s	loc_A832
-; ---------------------------------------------------------------------------
-
-loc_A82A:
-		swap	d1
-		bsr.w	FindFreeObj
-		bne.s	loc_A88A
-
-loc_A832:
-		_move.b	#id_Obj25,obID(a1)
-		addq.b	#2,obRoutine(a1)
-		move.w	d2,obX(a1)
-		move.w	obX(a0),objoff_32(a1)
-		move.w	d3,obY(a1)
-		move.l	#Map_Obj25,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#4,obRender(a1)
-		move.b	#2,obPriority(a1)
-		move.b	#$47,obColType(a1)
-		move.b	#8,obActWid(a1)
-		move.b	obRespawnNo(a0),obRespawnNo(a1)
-		move.b	d1,objoff_34(a1)
-		addq.w	#1,d1
-		add.w	d5,d2
-		add.w	d6,d3
-		swap	d1
-		dbf	d1,loc_A82A
-
-loc_A88A:
-		move.b	(v_ani1_frame).w,obFrame(a0)
-		out_of_range.s	loc_A8DA,objoff_32(a0)
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_A8A6:
-		addq.b	#2,obRoutine(a0)
-		move.b	#0,obColType(a0)
-		move.b	#1,obPriority(a0)
-		bsr.w	sub_A8DE
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		move.b	objoff_34(a0),d1
-		bset	d1,2(a2,d0.w)
-
-loc_A8CC:
-		lea	(Ani_Obj25).l,a1
-		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_A8DA:
-		bra.w	DeleteObject
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_A8DE:
-		addq.w	#1,(v_rings).w
-		ori.b	#1,(f_ringcount).w
-		move.w	#sfx_Ring,d0
-		cmpi.w	#100,(v_rings).w
-		bcs.s	loc_A918
-		bset	#1,(v_lifecount).w
-		beq.s	loc_A90C
-		cmpi.w	#200,(v_rings).w
-		bcs.s	loc_A918
-		bset	#2,(v_lifecount).w
-		bne.s	loc_A918
-
-loc_A90C:
-		addq.b	#1,(v_lives).w
-		addq.b	#1,(f_lifecount).w
-		move.w	#bgm_ExtraLife,d0
-
-loc_A918:
-		jmp	(PlaySound_Special).l
-; End of function sub_A8DE
-
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 37 - Rings flying out of you when you get hit
-;----------------------------------------------------
-
-Obj37:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj37_Index(pc,d0.w),d1
-		jmp	Obj37_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj37_Index:	dc.w loc_A936-Obj37_Index
-		dc.w loc_A9FA-Obj37_Index
-		dc.w loc_AA4C-Obj37_Index
-		dc.w loc_AA60-Obj37_Index
-		dc.w loc_AA6E-Obj37_Index
-; ---------------------------------------------------------------------------
-
-loc_A936:
-		movea.l	a0,a1
-		moveq	#0,d5
-		move.w	(v_rings).w,d5
-		moveq	#32,d0
-		cmp.w	d0,d5
-		bcs.s	loc_A946
-		move.w	d0,d5
-
-loc_A946:
-		subq.w	#1,d5
-		move.w	#$288,d4
-		bra.s	loc_A956
-; ---------------------------------------------------------------------------
-
-loc_A94E:
-		bsr.w	FindFreeObj
-		bne.w	loc_A9DE
-
-loc_A956:
-		_move.b	#id_Obj37,obID(a1)
-		addq.b	#2,obRoutine(a1)
-		move.b	#8,obHeight(a1)
-		move.b	#8,obWidth(a1)
-		move.w	obX(a0),obX(a1)
-		move.w	obY(a0),obY(a1)
-		move.l	#Map_Obj25,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#4,obRender(a1)
-		move.b	#3,obPriority(a1)
-		move.b	#$47,obColType(a1)
-		move.b	#8,obActWid(a1)
-		move.b	#-1,(v_ani3_time).w
-		tst.w	d4
-		bmi.s	loc_A9CE
-		move.w	d4,d0
-		bsr.w	CalcSine
-		move.w	d4,d2
-		lsr.w	#8,d2
-		asl.w	d2,d0
-		asl.w	d2,d1
-		move.w	d0,d2
-		move.w	d1,d3
-		addi.b	#$10,d4
-		bcc.s	loc_A9CE
-		subi.w	#$80,d4
-		bcc.s	loc_A9CE
-		move.w	#$288,d4
-
-loc_A9CE:
-		move.w	d2,obVelX(a1)
-		move.w	d3,obVelY(a1)
-		neg.w	d2
-		neg.w	d4
-		dbf	d5,loc_A94E
-
-loc_A9DE:
-		move.w	#0,(v_rings).w
-		move.b	#$80,(f_ringcount).w
-		move.b	#0,(v_lifecount).w
-		move.w	#sfx_RingLoss,d0
-		jsr	(PlaySound_Special).l
-
-loc_A9FA:
-		move.b	(v_ani3_frame).w,obFrame(a0)
-		bsr.w	ObjectMove
-		addi.w	#$18,obVelY(a0)
-		bmi.s	loc_AA34
-		move.b	(Vint_runcount+3).w,d0
-		add.b	d7,d0
-		andi.b	#3,d0
-		bne.s	loc_AA34
-		jsr	(ObjHitFloor).l
-		tst.w	d1
-		bpl.s	loc_AA34
-		add.w	d1,obY(a0)
-		move.w	obVelY(a0),d0
-		asr.w	#2,d0
-		sub.w	d0,obVelY(a0)
-		neg.w	obVelY(a0)
-
-loc_AA34:
-		tst.b	(v_ani3_time).w
-		beq.s	loc_AA6E
-		move.w	(Camera_Max_Y_pos).w,d0
-		addi.w	#224,d0
-		cmp.w	obY(a0),d0
-		bcs.s	loc_AA6E
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_AA4C:
-		addq.b	#2,obRoutine(a0)
-		move.b	#0,obColType(a0)
-		move.b	#1,obPriority(a0)
-		bsr.w	sub_A8DE
-
-loc_AA60:
-		lea	(Ani_Obj25).l,a1
-		bsr.w	AnimateSprite
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_AA6E:
-		bra.w	DeleteObject
+		include	"_incObj/25 & 37 Rings.asm"
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
 ; Sonic	1 Object 4B - leftover giant ring code
@@ -8862,7 +8617,7 @@ loc_ABE6:
 		bra.w	DeleteObject
 ; ---------------------------------------------------------------------------
 Ani_Obj25:	dc.w byte_ABEC-Ani_Obj25
-byte_ABEC:	dc.b   5,  4,  5,  6,  7,$FC		; 0
+byte_ABEC:	dc.b   5,  4,  5,  6,  7,$FC
 		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -8876,39 +8631,39 @@ Map_S1Obj4B:	dc.w word_AC5E-Map_S1Obj4B
 		dc.w word_ACF2-Map_S1Obj4B
 		dc.w word_AD14-Map_S1Obj4B
 word_AC5E:	dc.w $A
-		dc.w $E008,    0,    0,$FFE8		; 0
-		dc.w $E008,    3,    1,	   0		; 4
-		dc.w $E80C,    6,    3,$FFE0		; 8
-		dc.w $E80C,   $A,    5,	   0		; 12
-		dc.w $F007,   $E,    7,$FFE0		; 16
-		dc.w $F007,  $16,   $B,	 $10		; 20
-		dc.w $100C,  $1E,   $F,$FFE0		; 24
-		dc.w $100C,  $22,  $11,	   0		; 28
-		dc.w $1808,  $26,  $13,$FFE8		; 32
-		dc.w $1808,  $29,  $14,	   0		; 36
+		dc.w $E008,    0,    0,$FFE8
+		dc.w $E008,    3,    1,	   0
+		dc.w $E80C,    6,    3,$FFE0
+		dc.w $E80C,   $A,    5,	   0
+		dc.w $F007,   $E,    7,$FFE0
+		dc.w $F007,  $16,   $B,	 $10
+		dc.w $100C,  $1E,   $F,$FFE0
+		dc.w $100C,  $22,  $11,	   0
+		dc.w $1808,  $26,  $13,$FFE8
+		dc.w $1808,  $29,  $14,	   0
 word_ACB0:	dc.w 8
-		dc.w $E00C,  $2C,  $16,$FFF0		; 0
-		dc.w $E808,  $30,  $18,$FFE8		; 4
-		dc.w $E809,  $33,  $19,	   0		; 8
-		dc.w $F007,  $39,  $1C,$FFE8		; 12
-		dc.w $F805,  $41,  $20,	   8		; 16
-		dc.w  $809,  $45,  $22,	   0		; 20
-		dc.w $1008,  $4B,  $25,$FFE8		; 24
-		dc.w $180C,  $4E,  $27,$FFF0		; 28
+		dc.w $E00C,  $2C,  $16,$FFF0
+		dc.w $E808,  $30,  $18,$FFE8
+		dc.w $E809,  $33,  $19,	   0
+		dc.w $F007,  $39,  $1C,$FFE8
+		dc.w $F805,  $41,  $20,	   8
+		dc.w  $809,  $45,  $22,	   0
+		dc.w $1008,  $4B,  $25,$FFE8
+		dc.w $180C,  $4E,  $27,$FFF0
 word_ACF2:	dc.w 4
-		dc.w $E007,  $52,  $29,$FFF4		; 0
-		dc.w $E003, $852, $829,	   4		; 4
-		dc.w	 7,  $5A,  $2D,$FFF4		; 8
-		dc.w	 3, $85A, $82D,	   4		; 12
+		dc.w $E007,  $52,  $29,$FFF4
+		dc.w $E003, $852, $829,	   4
+		dc.w	 7,  $5A,  $2D,$FFF4
+		dc.w	 3, $85A, $82D,	   4
 word_AD14:	dc.w 8
-		dc.w $E00C, $82C, $816,$FFF0		; 0
-		dc.w $E808, $830, $818,	   0		; 4
-		dc.w $E809, $833, $819,$FFE8		; 8
-		dc.w $F007, $839, $81C,	   8		; 12
-		dc.w $F805, $841, $820,$FFE8		; 16
-		dc.w  $809, $845, $822,$FFE8		; 20
-		dc.w $1008, $84B, $825,	   0		; 24
-		dc.w $180C, $84E, $827,$FFF0		; 28
+		dc.w $E00C, $82C, $816,$FFF0
+		dc.w $E808, $830, $818,	   0
+		dc.w $E809, $833, $819,$FFE8
+		dc.w $F007, $839, $81C,	   8
+		dc.w $F805, $841, $820,$FFE8
+		dc.w  $809, $845, $822,$FFE8
+		dc.w $1008, $84B, $825,	   0
+		dc.w $180C, $84E, $827,$FFF0
 Map_S1Obj7C:	dc.w word_AD66-Map_S1Obj7C
 		dc.w word_AD78-Map_S1Obj7C
 		dc.w word_AD9A-Map_S1Obj7C
@@ -8918,41 +8673,41 @@ Map_S1Obj7C:	dc.w word_AD66-Map_S1Obj7C
 		dc.w word_AE22-Map_S1Obj7C
 		dc.w word_AE34-Map_S1Obj7C
 word_AD66:	dc.w 2
-		dc.w $E00F,    0,    0,	   0		; 0
-		dc.w	$F,$1000,$1000,	   0		; 4
+		dc.w $E00F,    0,    0,	   0
+		dc.w	$F,$1000,$1000,	   0
 word_AD78:	dc.w 4
-		dc.w $E00F,  $10,    8,$FFF0		; 0
-		dc.w $E007,  $20,  $10,	 $10		; 4
-		dc.w	$F,$1010,$1008,$FFF0		; 8
-		dc.w	 7,$1020,$1010,	 $10		; 12
+		dc.w $E00F,  $10,    8,$FFF0
+		dc.w $E007,  $20,  $10,	 $10
+		dc.w	$F,$1010,$1008,$FFF0
+		dc.w	 7,$1020,$1010,	 $10
 word_AD9A:	dc.w 4
-		dc.w $E00F,  $28,  $14,$FFE8		; 0
-		dc.w $E00B,  $38,  $1C,	   8		; 4
-		dc.w	$F,$1028,$1014,$FFE8		; 8
-		dc.w	$B,$1038,$101C,	   8		; 12
+		dc.w $E00F,  $28,  $14,$FFE8
+		dc.w $E00B,  $38,  $1C,	   8
+		dc.w	$F,$1028,$1014,$FFE8
+		dc.w	$B,$1038,$101C,	   8
 word_ADBC:	dc.w 4
-		dc.w $E00F, $834, $81A,$FFE0		; 0
-		dc.w $E00F,  $34,  $1A,	   0		; 4
-		dc.w	$F,$1834,$181A,$FFE0		; 8
-		dc.w	$F,$1034,$101A,	   0		; 12
+		dc.w $E00F, $834, $81A,$FFE0
+		dc.w $E00F,  $34,  $1A,	   0
+		dc.w	$F,$1834,$181A,$FFE0
+		dc.w	$F,$1034,$101A,	   0
 word_ADDE:	dc.w 4
-		dc.w $E00B, $838, $81C,$FFE0		; 0
-		dc.w $E00F, $828, $814,$FFF8		; 4
-		dc.w	$B,$1838,$181C,$FFE0		; 8
-		dc.w	$F,$1828,$1814,$FFF8		; 12
+		dc.w $E00B, $838, $81C,$FFE0
+		dc.w $E00F, $828, $814,$FFF8
+		dc.w	$B,$1838,$181C,$FFE0
+		dc.w	$F,$1828,$1814,$FFF8
 word_AE00:	dc.w 4
-		dc.w $E007, $820, $810,$FFE0		; 0
-		dc.w $E00F, $810, $808,$FFF0		; 4
-		dc.w	 7,$1820,$1810,$FFE0		; 8
-		dc.w	$F,$1810,$1808,$FFF0		; 12
+		dc.w $E007, $820, $810,$FFE0
+		dc.w $E00F, $810, $808,$FFF0
+		dc.w	 7,$1820,$1810,$FFE0
+		dc.w	$F,$1810,$1808,$FFF0
 word_AE22:	dc.w 2
-		dc.w $E00F, $800, $800,$FFE0		; 0
-		dc.w	$F,$1800,$1800,$FFE0		; 4
+		dc.w $E00F, $800, $800,$FFE0
+		dc.w	$F,$1800,$1800,$FFE0
 word_AE34:	dc.w 4
-		dc.w $E00F,  $44,  $22,$FFE0		; 0
-		dc.w $E00F, $844, $822,	   0		; 4
-		dc.w	$F,$1044,$1022,$FFE0		; 8
-		dc.w	$F,$1844,$1822,	   0		; 12
+		dc.w $E00F,  $44,  $22,$FFE0
+		dc.w $E00F, $844, $822,	   0
+		dc.w	$F,$1044,$1022,$FFE0
+		dc.w	$F,$1844,$1822,	   0
 ; ---------------------------------------------------------------------------
 		nop
 ;----------------------------------------------------
@@ -9413,495 +9168,41 @@ Map_Obj0E:	binclude "mappings/sprite/obj0E.bin"
 Ani_Obj2B:	dc.w byte_B7BA-Ani_Obj2B
 		dc.w byte_B7BE-Ani_Obj2B
 		dc.w byte_B7C2-Ani_Obj2B
-byte_B7BA:	dc.b   7,  0,  1,$FF			; 0
-byte_B7BE:	dc.b   3,  0,  1,$FF			; 0
-byte_B7C2:	dc.b   7,  0,$FF,  0			; 0
+byte_B7BA:	dc.b   7,  0,  1,$FF
+byte_B7BE:	dc.b   3,  0,  1,$FF
+byte_B7C2:	dc.b   7,  0,$FF,  0
 Map_Obj2B:	dc.w word_B7CA-Map_Obj2B
 		dc.w word_B7D4-Map_Obj2B
 word_B7CA:	dc.w 1
-		dc.w $F00F,    0,    0,$FFF0		; 0
+		dc.w $F00F,    0,    0,$FFF0
 word_B7D4:	dc.w 1
-		dc.w $F00F,  $10,    8,$FFF0		; 0
+		dc.w $F00F,  $10,    8,$FFF0
 ; ---------------------------------------------------------------------------
 
 		include	"_incObj/S1/2C Jaws.asm"
 ; ---------------------------------------------------------------------------
-Ani_Obj2C:	dc.b   0,  2,  7,  0,  1,  2,  3,$FF	; 0
+Ani_Obj2C:	dc.b   0,  2,  7,  0,  1,  2,  3,$FF
 Map_Obj2C:	dc.w word_B880-Map_Obj2C
 		dc.w word_B892-Map_Obj2C
 		dc.w word_B8A4-Map_Obj2C
 		dc.w word_B8B6-Map_Obj2C
 word_B880:	dc.w 2
-		dc.w $F40E,    0,    0,$FFF0		; 0
-		dc.w $F505,  $18,   $C,	 $10		; 4
+		dc.w $F40E,    0,    0,$FFF0
+		dc.w $F505,  $18,   $C,	 $10
 word_B892:	dc.w 2
-		dc.w $F40E,   $C,    6,$FFF0		; 0
-		dc.w $F505,  $1C,   $E,	 $10		; 4
+		dc.w $F40E,   $C,    6,$FFF0
+		dc.w $F505,  $1C,   $E,	 $10
 word_B8A4:	dc.w 2
-		dc.w $F40E,    0,    0,$FFF0		; 0
-		dc.w $F505,$1018,$100C,	 $10		; 4
+		dc.w $F40E,    0,    0,$FFF0
+		dc.w $F505,$1018,$100C,	 $10
 word_B8B6:	dc.w 2
-		dc.w $F40E,   $C,    6,$FFF0		; 0
-		dc.w $F505,$101C,$100E,	 $10		; 4
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 34 - leftover Sonic 1 title cards
-;----------------------------------------------------
-
-Obj34:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj34_Index(pc,d0.w),d1
-		jmp	Obj34_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj34_Index:	dc.w Obj34_CheckLZ4-Obj34_Index		; 0
-		dc.w Obj34_CheckPos-Obj34_Index		; 1
-		dc.w Obj34_Wait-Obj34_Index		; 2
-		dc.w Obj34_Wait-Obj34_Index		; 3
+		dc.w $F40E,   $C,    6,$FFF0
+		dc.w $F505,$101C,$100E,	 $10
 ; ---------------------------------------------------------------------------
 
-Obj34_CheckLZ4:
-		movea.l	a0,a1
-		moveq	#0,d0
-		move.b	(Current_Zone).w,d0
-		cmpi.w	#(id_LZ<<8)+3,(Current_ZoneAndAct).w
-		bne.s	Obj34_CheckFZ
-		moveq	#5,d0
-
-Obj34_CheckFZ:
-		move.w	d0,d2
-		cmpi.w	#(id_SBZ<<8)+2,(Current_ZoneAndAct).w
-		bne.s	Obj34_CheckConfig
-		moveq	#6,d0
-		moveq	#$B,d2
-
-Obj34_CheckConfig:
-		lea	(Obj34_Config).l,a3
-		lsl.w	#4,d0
-		adda.w	d0,a3
-		lea	(Obj34_ItemData).l,a2
-		moveq	#3,d1
-
-Obj34_Loop:
-		_move.b	#id_Obj34,obID(a1)
-		move.w	(a3),obX(a1)
-		move.w	(a3)+,objoff_32(a1)
-		move.w	(a3)+,objoff_30(a1)
-		move.w	(a2)+,obScreenY(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,d0
-		bne.s	Obj34_ActNumber
-		move.b	d2,d0
-
-Obj34_ActNumber:
-		cmpi.b	#7,d0
-		bne.s	Obj34_MakeSprite
-		add.b	(Current_Act).w,d0
-		cmpi.b	#3,(Current_Act).w
-		bne.s	Obj34_MakeSprite
-		subq.b	#1,d0
-
-Obj34_MakeSprite:
-		move.b	d0,obFrame(a1)
-		move.l	#Map_Obj34,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#$78,obActWid(a1)
-		move.b	#0,obRender(a1)
-		move.b	#0,obPriority(a1)
-		move.w	#60,obTimeFrame(a1)
-		lea	object_size(a1),a1
-		dbf	d1,Obj34_Loop
-
-Obj34_CheckPos:
-		moveq	#$10,d1
-		move.w	objoff_30(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_B98E
-		bge.s	Obj34_Move
-		neg.w	d1
-
-Obj34_Move:
-		add.w	d1,obX(a0)
-
-loc_B98E:
-		move.w	obX(a0),d0
-		bmi.s	Obj34_NoDisplay
-		cmpi.w	#$200,d0
-		bcc.s	Obj34_NoDisplay
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-Obj34_NoDisplay:
-		rts
-; ---------------------------------------------------------------------------
-
-Obj34_Wait:
-		tst.w	obTimeFrame(a0)
-		beq.s	Obj34_CheckPos2
-		subq.w	#1,obTimeFrame(a0)
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-Obj34_CheckPos2:
-		tst.b	obRender(a0)
-		bpl.s	Obj34_ChangeArt
-		moveq	#$20,d1
-		move.w	objoff_32(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	Obj34_ChangeArt
-		bge.s	Obj34_Move2
-		neg.w	d1
-
-Obj34_Move2:
-		add.w	d1,obX(a0)
-		move.w	obX(a0),d0
-		bmi.s	Obj34_NoDisplay2
-		cmpi.w	#$200,d0
-		bcc.s	Obj34_NoDisplay2
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-Obj34_NoDisplay2:
-		rts
-; ---------------------------------------------------------------------------
-
-Obj34_ChangeArt:
-		cmpi.b	#4,obRoutine(a0)
-		bne.s	Obj34_Delete
-		moveq	#plcid_Explode,d0
-		jsr	(LoadPLC).l
-		moveq	#0,d0
-		move.b	(Current_Zone).w,d0
-		addi.w	#plcid_GHZAnimals,d0
-		jsr	(LoadPLC).l
-
-Obj34_Delete:
-		bra.w	DeleteObject
-; ---------------------------------------------------------------------------
-Obj34_ItemData:	dc.w $D0
-		dc.b   2,  0				; 0
-		dc.w $E4
-		dc.b   2,  6				; 0
-		dc.w $EA
-		dc.b   2,  7				; 0
-		dc.w $E0
-		dc.b   2, $A				; 0
-Obj34_Config:	dc.w	 0, $120,$FEFC,	$13C, $414, $154, $214,	$154 ; 0
-		dc.w	 0, $120,$FEF4,	$134, $40C, $14C, $20C,	$14C ; 8
-		dc.w	 0, $120,$FEE0,	$120, $3F8, $138, $1F8,	$138 ; 16
-		dc.w	 0, $120,$FEFC,	$13C, $414, $154, $214,	$154 ; 24
-		dc.w	 0, $120,$FF04,	$144, $41C, $15C, $21C,	$15C ; 32
-		dc.w	 0, $120,$FF04,	$144, $41C, $15C, $21C,	$15C ; 40
-		dc.w	 0, $120,$FEE4,	$124, $3EC, $3EC, $1EC,	$12C ; 48
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 39 - Game over	/ time over
-;----------------------------------------------------
-
-Obj39:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj39_Index(pc,d0.w),d1
-		jmp	Obj39_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj39_Index:	dc.w loc_BA98-Obj39_Index
-		dc.w loc_BADC-Obj39_Index
-		dc.w loc_BAFE-Obj39_Index
-; ---------------------------------------------------------------------------
-
-loc_BA98:
-		tst.l	(v_plc_buffer).w
-		beq.s	loc_BAA0
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BAA0:
-		addq.b	#2,obRoutine(a0)
-		move.w	#$50,obX(a0)
-		btst	#0,obFrame(a0)
-		beq.s	loc_BAB8
-		move.w	#$1F0,obX(a0)
-
-loc_BAB8:
-		move.w	#$F0,obScreenY(a0)
-		move.l	#Map_Obj39,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Game_Over,0,1),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-		move.b	#0,obRender(a0)
-		move.b	#0,obPriority(a0)
-
-loc_BADC:
-		moveq	#$10,d1
-		cmpi.w	#$120,obX(a0)
-		beq.s	loc_BAF2
-		bcs.s	loc_BAEA
-		neg.w	d1
-
-loc_BAEA:
-		add.w	d1,obX(a0)
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BAF2:
-		move.w	#720,obTimeFrame(a0)
-		addq.b	#2,obRoutine(a0)
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BAFE:
-		move.b	(v_jpadpress1).w,d0
-		andi.b	#btnABC,d0
-		bne.s	loc_BB1E
-		btst	#0,obFrame(a0)
-		bne.s	loc_BB42
-		tst.w	obTimeFrame(a0)
-		beq.s	loc_BB1E
-		subq.w	#1,obTimeFrame(a0)
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_BB1E:
-		tst.b	(f_timeover).w
-		bne.s	loc_BB38
-		move.b	#GameModeID_ContinueScreen,(v_gamemode).w
-		tst.b	(v_continues).w
-		bne.s	loc_BB42
-		move.b	#GameModeID_SegaScreen,(v_gamemode).w
-		bra.s	loc_BB42
-; ---------------------------------------------------------------------------
-
-loc_BB38:
-		clr.l	(v_lamp_time).w
-		move.w	#1,(Level_Inactive_flag).w
-
-loc_BB42:
-		bra.w	DisplaySprite
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Object 3A - End of level results screen
-; ---------------------------------------------------------------------------
-
-Obj3A:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj3A_Index(pc,d0.w),d1
-		jmp	Obj3A_Index(pc,d1.w)
-; ===========================================================================
-Obj3A_Index:	dc.w Obj3A_ChkPLC-Obj3A_Index
-		dc.w Obj3A_ChkPos-Obj3A_Index
-		dc.w Obj3A_Wait-Obj3A_Index
-		dc.w Obj3A_NextLevel-Obj3A_Index
-; ===========================================================================
-; loc_BB5C:
-Obj3A_ChkPLC:
-		tst.l	(v_plc_buffer).w
-		beq.s	Obj3A_Config
-		rts
-; ---------------------------------------------------------------------------
-; loc_BB64:
-Obj3A_Config:
-		movea.l	a0,a1
-		lea	(Obj3A_Conf).l,a2
-		moveq	#6,d1
-; loc_BB6E:
-Obj3A_Init:
-		_move.b	#id_Obj3A,obID(a1)
-		move.w	(a2),obX(a1)
-		move.w	(a2)+,objoff_32(a1)
-		move.w	(a2)+,objoff_30(a1)
-		move.w	(a2)+,obScreenY(a1)
-		move.b	(a2)+,obRoutine(a1)
-		move.b	(a2)+,d0
-		cmpi.b	#6,d0
-		bne.s	loc_BB94
-		add.b	(Current_Act).w,d0
-
-loc_BB94:
-		move.b	d0,obFrame(a1)
-		move.l	#Map_Obj3A,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Title_Card,0,1),obGfx(a1)
-		bsr.w	Adjust2PArtPointer2
-		move.b	#0,obRender(a1)
-		lea	object_size(a1),a1
-		dbf	d1,Obj3A_Init
-; loc_BBB8:
-Obj3A_ChkPos:
-		moveq	#$10,d1
-		move.w	objoff_30(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_BBEA
-		bge.s	Obj3A_Move
-		neg.w	d1
-; loc_BBC8:
-Obj3A_Move
-		add.w	d1,obX(a0)
-
-loc_BBCC:
-		move.w	obX(a0),d0
-		bmi.s	locret_BBDE
-		cmpi.w	#$200,d0
-		bcc.s	locret_BBDE
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ===========================================================================
-
-locret_BBDE:
-		rts
-; ===========================================================================
-
-loc_BBE0:
-		move.b	#$E,obRoutine(a0)
-		bra.w	loc_BCF8
-; ===========================================================================
-
-loc_BBEA:
-		cmpi.b	#$E,(v_endcardring+obRoutine).w
-		beq.s	loc_BBE0
-		cmpi.b	#4,obFrame(a0)
-		bne.s	loc_BBCC
-		addq.b	#2,obRoutine(a0)
-		move.w	#180,obTimeFrame(a0)
-; loc_BC04:
-Obj3A_Wait:
-		subq.w	#1,obTimeFrame(a0)
-		bne.s	locret_BC0E
-		addq.b	#2,obRoutine(a0)
-
-locret_BC0E:
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ===========================================================================
-; Obj3A_TimeBonus:
-		bsr.w	DisplaySprite
-		move.b	#1,(f_endactbonus).w
-		moveq	#0,d0
-		tst.w	(v_timebonus).w
-		beq.s	Obj3A_RingBonus
-		addi.w	#10,d0
-		subi.w	#10,(v_timebonus).w
-; loc_BC30:
-Obj3A_RingBonus:
-		tst.w	(v_ringbonus).w
-		beq.s	Obj3A_ChkBonus
-		addi.w	#10,d0
-		subi.w	#10,(v_ringbonus).w
-; loc_BC40:
-Obj3A_ChkBonus:
-		tst.w	d0
-		bne.s	Obj3A_AddBonus
-		move.w	#sfx_Cash,d0
-		jsr	(PlaySound_Special).l
-		addq.b	#2,obRoutine(a0)
-		cmpi.w	#(id_SBZ<<8)+1,(Current_ZoneAndAct).w
-		bne.s	Obj3A_SetDelay
-		addq.b	#4,obRoutine(a0)
-; loc_BC5E:
-Obj3A_SetDelay:
-		move.w	#180,obTimeFrame(a0)
-
-locret_BC64:
-		rts
-; ===========================================================================
-; loc_BC66:
-Obj3A_AddBonus:
-		jsr	(AddPoints).l
-		move.b	(Vint_runcount+3).w,d0
-		andi.b	#3,d0
-		bne.s	locret_BC64
-		move.w	#sfx_Switch,d0
-		jmp	(PlaySound_Special).l
-; ===========================================================================
-; loc_BC80:
-Obj3A_NextLevel:
-		move.b	(Current_Zone).w,d0
-		andi.w	#7,d0
-		lsl.w	#3,d0
-		move.b	(Current_Act).w,d1
-		andi.w	#3,d1
-		add.w	d1,d1
-		add.w	d1,d0
-		move.w	LevelOrder(pc,d0.w),d0
-		move.w	d0,(Current_ZoneAndAct).w
-		tst.w	d0
-		bne.s	Obj3A_ChkSS
-		move.b	#GameModeID_SegaScreen,(v_gamemode).w
-		bra.s	locret_BCC2
-; ===========================================================================
-; loc_BCAA:
-Obj3A_ChkSS:
-		clr.b	(v_lastlamp).w
-		tst.b	(f_bigring).w
-		beq.s	loc_BCBC
-		move.b	#GameModeID_SpecialStage,(v_gamemode).w
-		bra.s	locret_BCC2
-; ===========================================================================
-
-loc_BCBC:
-		move.w	#1,(Level_Inactive_flag).w
-
-locret_BCC2:
-		rts
-; ---------------------------------------------------------------------------
-		bra.w	DisplaySprite
-; ===========================================================================
-LevelOrder:	dc.w	 1,    2, $200,	   0		; 0
-		dc.w  $101, $102, $300,	$502		; 4
-		dc.w  $201, $202, $400,	   0		; 8
-		dc.w  $301, $302, $500,	   0		; 12
-		dc.w  $401, $402, $100,	   0		; 16
-		dc.w  $501, $103,    0,	   0		; 20
-; ---------------------------------------------------------------------------
-
-loc_BCF8:
-		moveq	#$20,d1
-		move.w	objoff_32(a0),d0
-		cmp.w	obX(a0),d0
-		beq.s	loc_BD1E
-		bge.s	loc_BD08
-		neg.w	d1
-
-loc_BD08:
-		add.w	d1,obX(a0)
-		move.w	obX(a0),d0
-		bmi.s	locret_BD1C
-		cmpi.w	#$200,d0
-		bcc.s	locret_BD1C
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-locret_BD1C:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_BD1E:
-		cmpi.b	#4,obFrame(a0)
-		bne.w	DeleteObject
-		addq.b	#2,obRoutine(a0)
-		clr.b	(f_lockctrl).w
-		move.w	#bgm_FZ,d0
-		jmp	(PlaySound).l
-; ---------------------------------------------------------------------------
-		addq.w	#2,(Camera_Max_X_pos).w
-		cmpi.w	#$2100,(Camera_Max_X_pos).w
-		beq.w	DeleteObject
-		rts
-; ---------------------------------------------------------------------------
-Obj3A_Conf:	dc.w	 4, $124,  $BC,	$200		; 0
-		dc.w $FEE0, $120,  $D0,	$201		; 4
-		dc.w  $40C, $14C,  $D6,	$206		; 8
-		dc.w  $520, $120,  $EC,	$202		; 12
-		dc.w  $540, $120,  $FC,	$203		; 16
-		dc.w  $560, $120, $10C,	$204		; 20
-		dc.w  $20C, $14C,  $CC,	$205		; 24
+		include	"_incObj/S1/34 Title Cards.asm"
+		include	"_incObj/S1/39 Game Over.asm"
+		include	"_incObj/S1/3A Got Through Card.asm"
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
 ; Sonic	1 Object 7E - leftover S1 Special Stage	results
@@ -10058,11 +9359,11 @@ loc_BEF2:
 loc_BF02:
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
-S1Obj7E_Conf:	dc.w   $20, $120,  $C4,	$200		; 0
-		dc.w  $320, $120, $118,	$201		; 4
-		dc.w  $360, $120, $128,	$202		; 8
-		dc.w  $1EC, $11C,  $C4,	$203		; 12
-		dc.w  $3A0, $120, $138,	$206		; 16
+S1Obj7E_Conf:	dc.w   $20, $120,  $C4,	$200
+		dc.w  $320, $120, $118,	$201
+		dc.w  $360, $120, $128,	$202
+		dc.w  $1EC, $11C,  $C4,	$203
+		dc.w  $3A0, $120, $138,	$206
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
 ; Sonic	1 Object 7F - leftover Sonic 1 SS emeralds
@@ -10133,114 +9434,114 @@ Map_Obj34:	dc.w word_BFD8-Map_Obj34
 		dc.w word_C1E4-Map_Obj34
 		dc.w word_C24E-Map_Obj34
 word_BFD8:	dc.w 9
-		dc.w $F805,  $18,   $C,$FFB4		; 0
-		dc.w $F805,  $3A,  $1D,$FFC4		; 4
-		dc.w $F805,  $10,    8,$FFD4		; 8
-		dc.w $F805,  $10,    8,$FFE4		; 12
-		dc.w $F805,  $2E,  $17,$FFF4		; 16
-		dc.w $F805,  $1C,   $E,	 $14		; 20
-		dc.w $F801,  $20,  $10,	 $24		; 24
-		dc.w $F805,  $26,  $13,	 $2C		; 28
-		dc.w $F805,  $26,  $13,	 $3C		; 32
+		dc.w $F805,  $18,   $C,$FFB4
+		dc.w $F805,  $3A,  $1D,$FFC4
+		dc.w $F805,  $10,    8,$FFD4
+		dc.w $F805,  $10,    8,$FFE4
+		dc.w $F805,  $2E,  $17,$FFF4
+		dc.w $F805,  $1C,   $E,	 $14
+		dc.w $F801,  $20,  $10,	 $24
+		dc.w $F805,  $26,  $13,	 $2C
+		dc.w $F805,  $26,  $13,	 $3C
 word_C022:	dc.w 9
-		dc.w $F805,  $26,  $13,$FFBC		; 0
-		dc.w $F805,    0,    0,$FFCC		; 4
-		dc.w $F805,    4,    2,$FFDC		; 8
-		dc.w $F805,  $4A,  $25,$FFEC		; 12
-		dc.w $F805,  $3A,  $1D,$FFFC		; 16
-		dc.w $F801,  $20,  $10,	  $C		; 20
-		dc.w $F805,  $2E,  $17,	 $14		; 24
-		dc.w $F805,  $42,  $21,	 $24		; 28
-		dc.w $F805,  $1C,   $E,	 $34		; 32
+		dc.w $F805,  $26,  $13,$FFBC
+		dc.w $F805,    0,    0,$FFCC
+		dc.w $F805,    4,    2,$FFDC
+		dc.w $F805,  $4A,  $25,$FFEC
+		dc.w $F805,  $3A,  $1D,$FFFC
+		dc.w $F801,  $20,  $10,	  $C
+		dc.w $F805,  $2E,  $17,	 $14
+		dc.w $F805,  $42,  $21,	 $24
+		dc.w $F805,  $1C,   $E,	 $34
 word_C06C:	dc.w 6
-		dc.w $F805,  $2A,  $15,$FFCF		; 0
-		dc.w $F805,    0,    0,$FFE0		; 4
-		dc.w $F805,  $3A,  $1D,$FFF0		; 8
-		dc.w $F805,    4,    2,	   0		; 12
-		dc.w $F805,  $26,  $13,	 $10		; 16
-		dc.w $F805,  $10,    8,	 $20		; 20
+		dc.w $F805,  $2A,  $15,$FFCF
+		dc.w $F805,    0,    0,$FFE0
+		dc.w $F805,  $3A,  $1D,$FFF0
+		dc.w $F805,    4,    2,	   0
+		dc.w $F805,  $26,  $13,	 $10
+		dc.w $F805,  $10,    8,	 $20
 word_C09E:	dc.w 9
-		dc.w $F805,  $3E,  $1F,$FFB4		; 0
-		dc.w $F805,  $42,  $21,$FFC4		; 4
-		dc.w $F805,    0,    0,$FFD4		; 8
-		dc.w $F805,  $3A,  $1D,$FFE4		; 12
-		dc.w $F805,  $26,  $13,	   4		; 16
-		dc.w $F801,  $20,  $10,	 $14		; 20
-		dc.w $F805,  $18,   $C,	 $1C		; 24
-		dc.w $F805,  $1C,   $E,	 $2C		; 28
-		dc.w $F805,  $42,  $21,	 $3C		; 32
+		dc.w $F805,  $3E,  $1F,$FFB4
+		dc.w $F805,  $42,  $21,$FFC4
+		dc.w $F805,    0,    0,$FFD4
+		dc.w $F805,  $3A,  $1D,$FFE4
+		dc.w $F805,  $26,  $13,	   4
+		dc.w $F801,  $20,  $10,	 $14
+		dc.w $F805,  $18,   $C,	 $1C
+		dc.w $F805,  $1C,   $E,	 $2C
+		dc.w $F805,  $42,  $21,	 $3C
 word_C0E8:	dc.w $A
-		dc.w $F805,  $3E,  $1F,$FFAC		; 0
-		dc.w $F805,  $36,  $1B,$FFBC		; 4
-		dc.w $F805,  $3A,  $1D,$FFCC		; 8
-		dc.w $F801,  $20,  $10,$FFDC		; 12
-		dc.w $F805,  $2E,  $17,$FFE4		; 16
-		dc.w $F805,  $18,   $C,$FFF4		; 20
-		dc.w $F805,  $4A,  $25,	 $14		; 24
-		dc.w $F805,    0,    0,	 $24		; 28
-		dc.w $F805,  $3A,  $1D,	 $34		; 32
-		dc.w $F805,   $C,    6,	 $44		; 36
+		dc.w $F805,  $3E,  $1F,$FFAC
+		dc.w $F805,  $36,  $1B,$FFBC
+		dc.w $F805,  $3A,  $1D,$FFCC
+		dc.w $F801,  $20,  $10,$FFDC
+		dc.w $F805,  $2E,  $17,$FFE4
+		dc.w $F805,  $18,   $C,$FFF4
+		dc.w $F805,  $4A,  $25,	 $14
+		dc.w $F805,    0,    0,	 $24
+		dc.w $F805,  $3A,  $1D,	 $34
+		dc.w $F805,   $C,    6,	 $44
 word_C13A:	dc.w $A
-		dc.w $F805,  $3E,  $1F,$FFAC		; 0
-		dc.w $F805,    8,    4,$FFBC		; 4
-		dc.w $F805,  $3A,  $1D,$FFCC		; 8
-		dc.w $F805,    0,    0,$FFDC		; 12
-		dc.w $F805,  $36,  $1B,$FFEC		; 16
-		dc.w $F805,    4,    2,	  $C		; 20
-		dc.w $F805,  $3A,  $1D,	 $1C		; 24
-		dc.w $F805,    0,    0,	 $2C		; 28
-		dc.w $F801,  $20,  $10,	 $3C		; 32
-		dc.w $F805,  $2E,  $17,	 $44		; 36
+		dc.w $F805,  $3E,  $1F,$FFAC
+		dc.w $F805,    8,    4,$FFBC
+		dc.w $F805,  $3A,  $1D,$FFCC
+		dc.w $F805,    0,    0,$FFDC
+		dc.w $F805,  $36,  $1B,$FFEC
+		dc.w $F805,    4,    2,	  $C
+		dc.w $F805,  $3A,  $1D,	 $1C
+		dc.w $F805,    0,    0,	 $2C
+		dc.w $F801,  $20,  $10,	 $3C
+		dc.w $F805,  $2E,  $17,	 $44
 word_C18C:	dc.w 4
-		dc.w $F805,  $4E,  $27,$FFE0		; 0
-		dc.w $F805,  $32,  $19,$FFF0		; 4
-		dc.w $F805,  $2E,  $17,	   0		; 8
-		dc.w $F805,  $10,    8,	 $10		; 12
+		dc.w $F805,  $4E,  $27,$FFE0
+		dc.w $F805,  $32,  $19,$FFF0
+		dc.w $F805,  $2E,  $17,	   0
+		dc.w $F805,  $10,    8,	 $10
 word_C1AE:	dc.w 2
-		dc.w  $40C,  $53,  $29,$FFEC		; 0
-		dc.w $F402,  $57,  $2B,	  $C		; 4
+		dc.w  $40C,  $53,  $29,$FFEC
+		dc.w $F402,  $57,  $2B,	  $C
 word_C1C0:	dc.w 2
-		dc.w  $40C,  $53,  $29,$FFEC		; 0
-		dc.w $F406,  $5A,  $2D,	   8		; 4
+		dc.w  $40C,  $53,  $29,$FFEC
+		dc.w $F406,  $5A,  $2D,	   8
 word_C1D2:	dc.w 2
-		dc.w  $40C,  $53,  $29,$FFEC		; 0
-		dc.w $F406,  $60,  $30,	   8		; 4
+		dc.w  $40C,  $53,  $29,$FFEC
+		dc.w $F406,  $60,  $30,	   8
 word_C1E4:	dc.w $D
-		dc.w $E40C,  $70,  $38,$FFF4		; 0
-		dc.w $E402,  $74,  $3A,	 $14		; 4
-		dc.w $EC04,  $77,  $3B,$FFEC		; 8
-		dc.w $F405,  $79,  $3C,$FFE4		; 12
-		dc.w $140C,$1870,$1838,$FFEC		; 16
-		dc.w  $402,$1874,$183A,$FFE4		; 20
-		dc.w  $C04,$1877,$183B,	   4		; 24
-		dc.w $FC05,$1879,$183C,	  $C		; 28
-		dc.w $EC08,  $7D,  $3E,$FFFC		; 32
-		dc.w $F40C,  $7C,  $3E,$FFF4		; 36
-		dc.w $FC08,  $7C,  $3E,$FFF4		; 40
-		dc.w  $40C,  $7C,  $3E,$FFEC		; 44
-		dc.w  $C08,  $7C,  $3E,$FFEC		; 48
+		dc.w $E40C,  $70,  $38,$FFF4
+		dc.w $E402,  $74,  $3A,	 $14
+		dc.w $EC04,  $77,  $3B,$FFEC
+		dc.w $F405,  $79,  $3C,$FFE4
+		dc.w $140C,$1870,$1838,$FFEC
+		dc.w  $402,$1874,$183A,$FFE4
+		dc.w  $C04,$1877,$183B,	   4
+		dc.w $FC05,$1879,$183C,	  $C
+		dc.w $EC08,  $7D,  $3E,$FFFC
+		dc.w $F40C,  $7C,  $3E,$FFF4
+		dc.w $FC08,  $7C,  $3E,$FFF4
+		dc.w  $40C,  $7C,  $3E,$FFEC
+		dc.w  $C08,  $7C,  $3E,$FFEC
 word_C24E:	dc.w 5
-		dc.w $F805,  $14,   $A,$FFDC		; 0
-		dc.w $F801,  $20,  $10,$FFEC		; 4
-		dc.w $F805,  $2E,  $17,$FFF4		; 8
-		dc.w $F805,    0,    0,	   4		; 12
-		dc.w $F805,  $26,  $13,	 $14		; 16
+		dc.w $F805,  $14,   $A,$FFDC
+		dc.w $F801,  $20,  $10,$FFEC
+		dc.w $F805,  $2E,  $17,$FFF4
+		dc.w $F805,    0,    0,	   4
+		dc.w $F805,  $26,  $13,	 $14
 Map_Obj39:	dc.w word_C280-Map_Obj39
 		dc.w word_C292-Map_Obj39
 		dc.w word_C2A4-Map_Obj39
 		dc.w word_C2B6-Map_Obj39
 word_C280:	dc.w 2
-		dc.w $F80D,    0,    0,$FFB8		; 0
-		dc.w $F80D,    8,    4,$FFD8		; 4
+		dc.w $F80D,    0,    0,$FFB8
+		dc.w $F80D,    8,    4,$FFD8
 word_C292:	dc.w 2
-		dc.w $F80D,  $14,   $A,	   8		; 0
-		dc.w $F80D,   $C,    6,	 $28		; 4
+		dc.w $F80D,  $14,   $A,	   8
+		dc.w $F80D,   $C,    6,	 $28
 word_C2A4:	dc.w 2
-		dc.w $F809,  $1C,   $E,$FFC4		; 0
-		dc.w $F80D,    8,    4,$FFDC		; 4
+		dc.w $F809,  $1C,   $E,$FFC4
+		dc.w $F80D,    8,    4,$FFDC
 word_C2B6:	dc.w 2
-		dc.w $F80D,  $14,   $A,	  $C		; 0
-		dc.w $F80D,   $C,    6,	 $2C		; 4
+		dc.w $F80D,  $14,   $A,	  $C
+		dc.w $F80D,   $C,    6,	 $2C
 Map_Obj3A:	dc.w word_C2DA-Map_Obj3A
 		dc.w word_C31C-Map_Obj3A
 		dc.w word_C34E-Map_Obj3A
@@ -10251,44 +9552,44 @@ Map_Obj3A:	dc.w word_C2DA-Map_Obj3A
 		dc.w word_C1C0-Map_Obj3A
 		dc.w word_C1D2-Map_Obj3A
 word_C2DA:	dc.w 8
-		dc.w $F805,  $3E,  $1F,$FFB8		; 0
-		dc.w $F805,  $32,  $19,$FFC8		; 4
-		dc.w $F805,  $2E,  $17,$FFD8		; 8
-		dc.w $F801,  $20,  $10,$FFE8		; 12
-		dc.w $F805,    8,    4,$FFF0		; 16
-		dc.w $F805,  $1C,   $E,	 $10		; 20
-		dc.w $F805,    0,    0,	 $20		; 24
-		dc.w $F805,  $3E,  $1F,	 $30		; 28
+		dc.w $F805,  $3E,  $1F,$FFB8
+		dc.w $F805,  $32,  $19,$FFC8
+		dc.w $F805,  $2E,  $17,$FFD8
+		dc.w $F801,  $20,  $10,$FFE8
+		dc.w $F805,    8,    4,$FFF0
+		dc.w $F805,  $1C,   $E,	 $10
+		dc.w $F805,    0,    0,	 $20
+		dc.w $F805,  $3E,  $1F,	 $30
 word_C31C:	dc.w 6
-		dc.w $F805,  $36,  $1B,$FFD0		; 0
-		dc.w $F805,    0,    0,$FFE0		; 4
-		dc.w $F805,  $3E,  $1F,$FFF0		; 8
-		dc.w $F805,  $3E,  $1F,	   0		; 12
-		dc.w $F805,  $10,    8,	 $10		; 16
-		dc.w $F805,   $C,    6,	 $20		; 20
+		dc.w $F805,  $36,  $1B,$FFD0
+		dc.w $F805,    0,    0,$FFE0
+		dc.w $F805,  $3E,  $1F,$FFF0
+		dc.w $F805,  $3E,  $1F,	   0
+		dc.w $F805,  $10,    8,	 $10
+		dc.w $F805,   $C,    6,	 $20
 word_C34E:	dc.w 6
-		dc.w $F80D, $14A,  $A5,$FFB0		; 0
-		dc.w $F801, $162,  $B1,$FFD0		; 4
-		dc.w $F809, $164,  $B2,	 $18		; 8
-		dc.w $F80D, $16A,  $B5,	 $30		; 12
-		dc.w $F704,  $6E,  $37,$FFCD		; 16
-		dc.w $FF04,$186E,$1837,$FFCD		; 20
+		dc.w $F80D, $14A,  $A5,$FFB0
+		dc.w $F801, $162,  $B1,$FFD0
+		dc.w $F809, $164,  $B2,	 $18
+		dc.w $F80D, $16A,  $B5,	 $30
+		dc.w $F704,  $6E,  $37,$FFCD
+		dc.w $FF04,$186E,$1837,$FFCD
 word_C380:	dc.w 7
-		dc.w $F80D, $15A,  $AD,$FFB0		; 0
-		dc.w $F80D,  $66,  $33,$FFD9		; 4
-		dc.w $F801, $14A,  $A5,$FFF9		; 8
-		dc.w $F704,  $6E,  $37,$FFF6		; 12
-		dc.w $FF04,$186E,$1837,$FFF6		; 16
-		dc.w $F80D,$FFF0,$FBF8,	 $28		; 20
-		dc.w $F801, $170,  $B8,	 $48		; 24
+		dc.w $F80D, $15A,  $AD,$FFB0
+		dc.w $F80D,  $66,  $33,$FFD9
+		dc.w $F801, $14A,  $A5,$FFF9
+		dc.w $F704,  $6E,  $37,$FFF6
+		dc.w $FF04,$186E,$1837,$FFF6
+		dc.w $F80D,$FFF0,$FBF8,	 $28
+		dc.w $F801, $170,  $B8,	 $48
 word_C3BA:	dc.w 7
-		dc.w $F80D, $152,  $A9,$FFB0		; 0
-		dc.w $F80D,  $66,  $33,$FFD9		; 4
-		dc.w $F801, $14A,  $A5,$FFF9		; 8
-		dc.w $F704,  $6E,  $37,$FFF6		; 12
-		dc.w $FF04,$186E,$1837,$FFF6		; 16
-		dc.w $F80D,$FFF8,$FBFC,	 $28		; 20
-		dc.w $F801, $170,  $B8,	 $48		; 24
+		dc.w $F80D, $152,  $A9,$FFB0
+		dc.w $F80D,  $66,  $33,$FFD9
+		dc.w $F801, $14A,  $A5,$FFF9
+		dc.w $F704,  $6E,  $37,$FFF6
+		dc.w $FF04,$186E,$1837,$FFF6
+		dc.w $F80D,$FFF8,$FBFC,	 $28
+		dc.w $F801, $170,  $B8,	 $48
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - special stage results screen
 ; ---------------------------------------------------------------------------
@@ -10301,200 +9602,22 @@ Map_S1Obj7F:	dc.w word_C624-Map_S1Obj7F
 		dc.w word_C656-Map_S1Obj7F
 		dc.w word_C660-Map_S1Obj7F
 word_C624:	dc.w 1
-		dc.w $F805,$2004,$2002,$FFF8		; 0
+		dc.w $F805,$2004,$2002,$FFF8
 word_C62E:	dc.w 1
-		dc.w $F805,    0,    0,$FFF8		; 0
+		dc.w $F805,    0,    0,$FFF8
 word_C638:	dc.w 1
-		dc.w $F805,$4004,$4002,$FFF8		; 0
+		dc.w $F805,$4004,$4002,$FFF8
 word_C642:	dc.w 1
-		dc.w $F805,$6004,$6002,$FFF8		; 0
+		dc.w $F805,$6004,$6002,$FFF8
 word_C64C:	dc.w 1
-		dc.w $F805,$2008,$2004,$FFF8		; 0
+		dc.w $F805,$2008,$2004,$FFF8
 word_C656:	dc.w 1
-		dc.w $F805,$200C,$2006,$FFF8		; 0
+		dc.w $F805,$200C,$2006,$FFF8
 word_C660:	dc.w 0
 ; ---------------------------------------------------------------------------
 		nop
-;----------------------------------------------------
-; Object 36 - Spikes
-;----------------------------------------------------
 
-Obj36:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj36_Index(pc,d0.w),d1
-		jmp	Obj36_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj36_Index:	dc.w loc_C682-Obj36_Index
-		dc.w loc_C6CE-Obj36_Index
-Obj36_Conf:	dc.b   0,$10				; 0
-		dc.b   0,$10				; 2
-		dc.b   0,$10				; 4
-		dc.b   0,$10				; 6
-		dc.b   0,$10				; 8
-		dc.b   0,$10				; 10
-; ---------------------------------------------------------------------------
-
-loc_C682:
-		addq.b	#2,obRoutine(a0)
-		move.l	#Map_Obj36,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Spikes,1,0),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-		ori.b	#4,obRender(a0)
-		move.b	#4,obPriority(a0)
-		move.b	obSubtype(a0),d0
-		andi.b	#$F,obSubtype(a0)
-		andi.w	#$F0,d0
-		lea	Obj36_Conf(pc),a1
-		lsr.w	#3,d0
-		adda.w	d0,a1
-		move.b	(a1)+,obFrame(a0)
-		move.b	(a1)+,obActWid(a0)
-		move.w	obX(a0),objoff_30(a0)
-		move.w	obY(a0),objoff_32(a0)
-
-loc_C6CE:
-		bsr.w	sub_C788
-		move.w	#4,d2
-		cmpi.b	#5,obFrame(a0)
-		beq.s	loc_C6EA
-		cmpi.b	#1,obFrame(a0)
-		bne.s	loc_C70C
-		move.w	#$14,d2
-
-loc_C6EA:
-		move.w	#$1B,d1
-		move.w	d2,d3
-		addq.w	#1,d3
-		move.w	obX(a0),d4
-		bsr.w	SolidObject
-		btst	#3,obStatus(a0)
-		bne.s	loc_C766
-		swap	d6
-		andi.w	#3,d6
-		bne.s	loc_C736
-		bra.s	loc_C766
-; ---------------------------------------------------------------------------
-
-loc_C70C:
-		moveq	#0,d1
-		move.b	obActWid(a0),d1
-		addi.w	#$B,d1
-		move.w	#$10,d2
-		move.w	#$11,d3
-		move.w	obX(a0),d4
-		bsr.w	SolidObject
-		btst	#3,obStatus(a0)
-		bne.s	loc_C736
-		swap	d6
-		andi.w	#$C0,d6
-		beq.s	loc_C766
-
-loc_C736:
-		tst.b	(v_invinc).w
-		bne.s	loc_C766
-		move.l	a0,-(sp)
-		movea.l	a0,a2
-		lea	(v_player).w,a0
-		cmpi.b	#4,obRoutine(a0)
-		bcc.s	loc_C764
-		move.l	obY(a0),d3
-		move.w	obVelY(a0),d0
-		ext.l	d0
-		asl.l	#8,d0
-		sub.l	d0,d3
-		move.l	d3,obY(a0)
-		jsr	(HurtSonic).l
-
-loc_C764:
-		movea.l	(sp)+,a0
-
-loc_C766:
-		tst.w	(Two_player_mode).w
-		beq.s	loc_C770
-		bra.w	DisplaySprite
-; ---------------------------------------------------------------------------
-
-loc_C770:
-		out_of_range.w	DeleteObject,objoff_30(a0)
-		bra.w	DisplaySprite
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_C788:
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		add.w	d0,d0
-		move.w	off_C798(pc,d0.w),d1
-		jmp	off_C798(pc,d1.w)
-; End of function sub_C788
-
-; ---------------------------------------------------------------------------
-off_C798:	dc.w locret_C79E-off_C798
-		dc.w loc_C7A0-off_C798
-		dc.w loc_C7B4-off_C798
-; ---------------------------------------------------------------------------
-
-locret_C79E:
-		rts
-; ---------------------------------------------------------------------------
-
-loc_C7A0:
-		bsr.w	sub_C7C8
-		moveq	#0,d0
-		move.b	objoff_34(a0),d0
-		add.w	objoff_32(a0),d0
-		move.w	d0,obY(a0)
-		rts
-; ---------------------------------------------------------------------------
-
-loc_C7B4:
-		bsr.w	sub_C7C8
-		moveq	#0,d0
-		move.b	objoff_34(a0),d0
-		add.w	objoff_30(a0),d0
-		move.w	d0,obX(a0)
-		rts
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_C7C8:
-		tst.w	objoff_38(a0)
-		beq.s	loc_C7E6
-		subq.w	#1,objoff_38(a0)
-		bne.s	locret_C828
-		tst.b	obRender(a0)
-		bpl.s	locret_C828
-		move.w	#sfx_SpikesMove,d0
-		jsr	(PlaySound_Special).l
-		bra.s	locret_C828
-; ---------------------------------------------------------------------------
-
-loc_C7E6:
-		tst.w	objoff_36(a0)
-		beq.s	loc_C808
-		subi.w	#$800,objoff_34(a0)
-		bcc.s	locret_C828
-		move.w	#0,objoff_34(a0)
-		move.w	#0,objoff_36(a0)
-		move.w	#60,objoff_38(a0)
-		bra.s	locret_C828
-; ---------------------------------------------------------------------------
-
-loc_C808:
-		addi.w	#$800,objoff_34(a0)
-		cmpi.w	#$2000,objoff_34(a0)
-		bcs.s	locret_C828
-		move.w	#$2000,objoff_34(a0)
-		move.w	#1,objoff_36(a0)
-		move.w	#60,objoff_38(a0)
-
-locret_C828:
-		rts
-; End of function sub_C7C8
-
+		include	"_incObj/36 Spikes.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj36:	dc.w word_C836-Map_Obj36
 		dc.w word_C836-Map_Obj36
@@ -10503,15 +9626,15 @@ Map_Obj36:	dc.w word_C836-Map_Obj36
 		dc.w word_C836-Map_Obj36
 		dc.w word_C836-Map_Obj36
 word_C836:	dc.w 2
-		dc.w $F007,    0,    0,$FFF0		; 0
-		dc.w $F007,    0,    0,	   0		; 4
+		dc.w $F007,    0,    0,$FFF0
+		dc.w $F007,    0,    0,	   0
 ; ---------------------------------------------------------------------------
 		include	"_incObj/S1/3B Purple Rock.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj3B:	dc.w word_C8B0-Map_Obj3B
 word_C8B0:	dc.w 2
-		dc.w $F00B,    0,    0,$FFE8		; 0
-		dc.w $F00B,   $C,    6,	   0		; 4
+		dc.w $F00B,    0,    0,$FFE8
+		dc.w $F00B,   $C,    6,	   0
 		align 4
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
@@ -10533,7 +9656,7 @@ Obj3C_Index:	dc.w loc_C8DC-Obj3C_Index
 loc_C8DC:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj3C,obMap(a0)
-		move.w	#$4590,obGfx(a0)
+		move.w	#make_art_tile($590,2,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#4,obRender(a0)
 		move.b	#$10,obActWid(a0)
@@ -10641,52 +9764,52 @@ loc_CA1C:
 ; End of function sub_C99E
 
 ; ---------------------------------------------------------------------------
-Obj3C_FragSpdRight:dc.w	 $400,-$500			; 0
-		dc.w  $600,-$100			; 2
-		dc.w  $600, $100			; 4
-		dc.w  $400, $500			; 6
-		dc.w  $600,-$600			; 8
-		dc.w  $800,-$200			; 10
-		dc.w  $800, $200			; 12
-		dc.w  $600, $600			; 14
-Obj3C_FragSpdLeft:dc.w $FA00,$FA00			; 0
-		dc.w $F800,$FE00			; 2
-		dc.w $F800, $200			; 4
-		dc.w $FA00, $600			; 6
-		dc.w $FC00,$FB00			; 8
-		dc.w $FA00,$FF00			; 10
-		dc.w $FA00, $100			; 12
-		dc.w $FC00, $500			; 14
+Obj3C_FragSpdRight:dc.w	 $400,-$500
+		dc.w  $600,-$100
+		dc.w  $600, $100
+		dc.w  $400, $500
+		dc.w  $600,-$600
+		dc.w  $800,-$200
+		dc.w  $800, $200
+		dc.w  $600, $600
+Obj3C_FragSpdLeft:dc.w -$600,-$600
+		dc.w -$800,-$200
+		dc.w -$800, $200
+		dc.w -$600, $600
+		dc.w -$400,-$500
+		dc.w -$600,-$100
+		dc.w -$600, $100
+		dc.w -$400, $500
 Map_Obj3C:	dc.w word_CA6C-Map_Obj3C
 		dc.w word_CAAE-Map_Obj3C
 		dc.w word_CAF0-Map_Obj3C
 word_CA6C:	dc.w 8
-		dc.w $E005,    0,    0,$FFF0		; 0
-		dc.w $F005,    0,    0,$FFF0		; 4
-		dc.w	 5,    0,    0,$FFF0		; 8
-		dc.w $1005,    0,    0,$FFF0		; 12
-		dc.w $E005,    4,    2,	   0		; 16
-		dc.w $F005,    4,    2,	   0		; 20
-		dc.w	 5,    4,    2,	   0		; 24
-		dc.w $1005,    4,    2,	   0		; 28
+		dc.w $E005,    0,    0,$FFF0
+		dc.w $F005,    0,    0,$FFF0
+		dc.w	 5,    0,    0,$FFF0
+		dc.w $1005,    0,    0,$FFF0
+		dc.w $E005,    4,    2,	   0
+		dc.w $F005,    4,    2,	   0
+		dc.w	 5,    4,    2,	   0
+		dc.w $1005,    4,    2,	   0
 word_CAAE:	dc.w 8
-		dc.w $E005,    4,    2,$FFF0		; 0
-		dc.w $F005,    4,    2,$FFF0		; 4
-		dc.w	 5,    4,    2,$FFF0		; 8
-		dc.w $1005,    4,    2,$FFF0		; 12
-		dc.w $E005,    4,    2,	   0		; 16
-		dc.w $F005,    4,    2,	   0		; 20
-		dc.w	 5,    4,    2,	   0		; 24
-		dc.w $1005,    4,    2,	   0		; 28
+		dc.w $E005,    4,    2,$FFF0
+		dc.w $F005,    4,    2,$FFF0
+		dc.w	 5,    4,    2,$FFF0
+		dc.w $1005,    4,    2,$FFF0
+		dc.w $E005,    4,    2,	   0
+		dc.w $F005,    4,    2,	   0
+		dc.w	 5,    4,    2,	   0
+		dc.w $1005,    4,    2,	   0
 word_CAF0:	dc.w 8
-		dc.w $E005,    4,    2,$FFF0		; 0
-		dc.w $F005,    4,    2,$FFF0		; 4
-		dc.w	 5,    4,    2,$FFF0		; 8
-		dc.w $1005,    4,    2,$FFF0		; 12
-		dc.w $E005,    8,    4,	   0		; 16
-		dc.w $F005,    8,    4,	   0		; 20
-		dc.w	 5,    8,    4,	   0		; 24
-		dc.w $1005,    8,    4,	   0		; 28
+		dc.w $E005,    4,    2,$FFF0
+		dc.w $F005,    4,    2,$FFF0
+		dc.w	 5,    4,    2,$FFF0
+		dc.w $1005,    4,    2,$FFF0
+		dc.w $E005,    8,    4,	   0
+		dc.w $F005,    8,    4,	   0
+		dc.w	 5,    8,    4,	   0
+		dc.w $1005,    8,    4,	   0
 ; ---------------------------------------------------------------------------
 		nop
 
