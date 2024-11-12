@@ -8943,10 +8943,7 @@ word_C836:	dc.w 2
 
 		include	"_incObj/S1/3B Purple Rock.asm"
 
-Map_Obj3B:	dc.w word_C8B0-Map_Obj3B
-word_C8B0:	dc.w 2
-		dc.w $F00B,    0,    0,$FFE8
-		dc.w $F00B,   $C,    6,	   0
+Map_Obj3B:	include	"mappings/sprite/S1/Purple Rock.asm"
 		align 4
 
 		include	"_incObj/S1/3C Smashable Wall.asm"
@@ -20527,11 +20524,12 @@ Obj19:
 ; ---------------------------------------------------------------------------
 Obj19_Index:	dc.w Obj19_Init-Obj19_Index
 		dc.w Obj19_Main-Obj19_Index
-Obj19_WidthArray:dc.w $2000				; 0
-		dc.w $2001				; 1
-		dc.w $2002				; 2
-		dc.w $4003				; 3
-		dc.w $3004				; 4
+Obj19_WidthArray:
+		dc.b $20,0
+		dc.b $20,1
+		dc.b $20,2
+		dc.b $40,3
+		dc.b $30,4
 ; ---------------------------------------------------------------------------
 
 Obj19_Init:
@@ -22315,13 +22313,13 @@ Obj4B_Roaming:
 		bsr.w	Obj4B_ChkPlayers
 		subq.w	#1,objoff_30(a0)
 		move.w	objoff_30(a0),d0
-		cmpi.w	#$F,d0
+		cmpi.w	#15,d0
 		beq.s	Obj4B_TurnAround
 		tst.w	d0
 		bpl.s	locret_168E4
 		subq.w	#1,objoff_2E(a0)
 		bgt.w	j_ObjectMove_5
-		move.w	#$1E,objoff_30(a0)
+		move.w	#30,objoff_30(a0)
 
 locret_168E4:
 		rts
@@ -22409,13 +22407,23 @@ Obj4B_ShootProjectile:
 		move.b	#2,obAnim(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
+	if FixBugs
+		addi.w	#$18,obY(a1)			; align vertically with stinger
+		move.w	#13,d0				; absolute horizontal offset for stinger
+	endif
 		move.w	#$180,obVelY(a1)
 		move.w	#-$180,obVelX(a1)
 		btst	#0,obRender(a1)			; is object facing left?
 		beq.s	locret_169D8			; if not, branch
 		neg.w	obVelX(a1)			; move in other direction
+	if FixBugs
+		neg.w	d0				; make offset negative
+	endif
 
 locret_169D8:
+	if FixBugs
+		add.w	d0,obX(a1)			; align horizontally with stinger
+	endif
 		rts
 ; ===========================================================================
 ; animation script
@@ -23250,6 +23258,7 @@ byte_1757A:	dc.b   7,  0,$FF,  0
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj53:	binclude	"mappings/sprite/obj53.bin"
+		align 4
 
 ; ===========================================================================
 
@@ -26511,21 +26520,21 @@ LoadLevelBlocks_2P:
 ; Map16Delta_Index:
 AnimPatMaps:
 		dc.w APM_EHZ-AnimPatMaps	; GHZ
-		dc.w APM_LZ-AnimPatMaps		; LZ
+		dc.w APM_None-AnimPatMaps	; LZ
 		dc.w APM_CPZ-AnimPatMaps	; CPZ
 		dc.w APM_EHZ-AnimPatMaps	; EHZ
 		dc.w APM_HPZ-AnimPatMaps	; HPZ
 		dc.w APM_EHZ-AnimPatMaps	; HTZ
-		dc.w APM_LZ-AnimPatMaps
-		dc.w APM_LZ-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
 		dc.w APM_HPZ-AnimPatMaps
-		dc.w APM_LZ-AnimPatMaps
-		dc.w APM_LZ-AnimPatMaps
-		dc.w APM_LZ-AnimPatMaps
-		dc.w APM_LZ-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
 		dc.w APM_CPZ-AnimPatMaps
-		dc.w APM_LZ-AnimPatMaps
-		dc.w APM_LZ-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
+		dc.w APM_None-AnimPatMaps
 
 begin_animpat macro {INTLABEL}
 __LABEL__ label *
@@ -26582,17 +26591,90 @@ APM_EHZ:	begin_animpat
 		dc.w make_block_tile(ArtTile_Art_Flowers4+$1,0,0,3,1),make_block_tile(ArtTile_Art_Flowers4+$1,1,0,3,1)
 APM_EHZ_End:
 
-APM_LZ:
-		dc.w	 0, $C80,  $9B,$43A1,$43A2,$43A3,$43A4,$43A5,$43A6,$43A7,$43A8,$43A9,$43AA,$43AB,$43AC,$43AD
-		dc.w $43AE,$43AF,$43B0,$43B1,$43B2,$43B3,$43B4,$43B5,$43B6,$43B7,$43B8,$43B9,$43BA,$43BB,$43BC,$43BD
-		dc.w $43BE,$43BF,$43C0,$43C1,$43C2,$43C3,$43C4,$63A0,$63A0,$63A0,$63A0,$63A0,$63A0,$63A0,$63A0,	   0
-		dc.w	 0,$6340,$6344,	   0,	 0,$6348,$634C,$6341,$6345,$6342,$6346,$6349,$634D,$634A,$634E,$6343
-		dc.w $6347,$4358,$4359,$634B,$634F,$435A,$435B,$6380,$6384,$6381,$6385,$6388,$638C,$6389,$638D,$6382
-		dc.w $6386,$6383,$6387,$638A,$638E,$638B,$638F,$6390,$6394,$6391,$6395,$6398,$639C,$6399,$639D,$6392
-		dc.w $6396,$6393,$6397,$639A,$639E,$639B,$639F,$4378,$4379,$437A,$437B,$437C,$437D,$437E,$437F,$235C
-		dc.w $235D,$235E,$235F,$2360,$2361,$2362,$2363,$2364,$2365,$2366,$2367,$2368,$2369,$236A,$236B,	   0
-		dc.w	 0,$636C,$636D,	   0,	 0,$636E,    0,$636F,$6370,$6371,$6372,$6373,	 0,$6374,    0,$6375
-		dc.w $6376,$4358,$4359,$6377,	 0,$435A,$435B,$C378,$C379,$C37A,$C37B,$C37C,$C37D,$C37E,$C37F
+APM_None:	dc.w 0
+APM_None_End:
+
+APM_LZ:;	begin_animpat
+		dc.w $1800-$B80 ; Bug: This should be $1800-$138
+		dc.w bytesToWcnt($138)
+		dc.w make_block_tile($3A0+$1,0,0,2,0),make_block_tile($3A0+$2,0,0,2,0)
+		dc.w make_block_tile($3A0+$3,0,0,2,0),make_block_tile($3A0+$4,0,0,2,0)
+		dc.w make_block_tile($3A0+$5,0,0,2,0),make_block_tile($3A0+$6,0,0,2,0)
+		dc.w make_block_tile($3A0+$7,0,0,2,0),make_block_tile($3A0+$8,0,0,2,0)
+		dc.w make_block_tile($3A0+$9,0,0,2,0),make_block_tile($3A0+$A,0,0,2,0)
+		dc.w make_block_tile($3A0+$B,0,0,2,0),make_block_tile($3A0+$C,0,0,2,0)
+		dc.w make_block_tile($3A0+$D,0,0,2,0),make_block_tile($3A0+$E,0,0,2,0)
+		dc.w make_block_tile($3A0+$F,0,0,2,0),make_block_tile($3A0+$10,0,0,2,0)
+		dc.w make_block_tile($3A0+$11,0,0,2,0),make_block_tile($3A0+$12,0,0,2,0)
+		dc.w make_block_tile($3A0+$13,0,0,2,0),make_block_tile($3A0+$14,0,0,2,0)
+		dc.w make_block_tile($3A0+$15,0,0,2,0),make_block_tile($3A0+$16,0,0,2,0)
+		dc.w make_block_tile($3A0+$17,0,0,2,0),make_block_tile($3A0+$18,0,0,2,0)
+		dc.w make_block_tile($3A0+$19,0,0,2,0),make_block_tile($3A0+$1A,0,0,2,0)
+		dc.w make_block_tile($3A0+$1B,0,0,2,0),make_block_tile($3A0+$1C,0,0,2,0)
+		dc.w make_block_tile($3A0+$1D,0,0,2,0),make_block_tile($3A0+$1E,0,0,2,0)
+		dc.w make_block_tile($3A0+$1F,0,0,2,0),make_block_tile($3A0+$20,0,0,2,0)
+		dc.w make_block_tile($3A0+$21,0,0,2,0),make_block_tile($3A0+$22,0,0,2,0)
+		dc.w make_block_tile($3A0+$23,0,0,2,0),make_block_tile($3A0+$24,0,0,2,0)
+		dc.w make_block_tile($3A0+$0,0,0,3,0),make_block_tile($3A0+$0,0,0,3,0)
+		dc.w make_block_tile($3A0+$0,0,0,3,0),make_block_tile($3A0+$0,0,0,3,0)
+		dc.w make_block_tile($3A0+$0,0,0,3,0),make_block_tile($3A0+$0,0,0,3,0)
+		dc.w make_block_tile($3A0+$0,0,0,3,0),make_block_tile($3A0+$0,0,0,3,0)
+		dc.w make_block_tile(0+$0,0,0,0,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w make_block_tile($340+$0,0,0,3,0),make_block_tile($340+$4,0,0,3,0)
+		dc.w make_block_tile(0+$0,0,0,0,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w make_block_tile($340+$8,0,0,3,0),make_block_tile($340+$C,0,0,3,0)
+		dc.w make_block_tile($340+$1,0,0,3,0),make_block_tile($340+$5,0,0,3,0)
+		dc.w make_block_tile($340+$2,0,0,3,0),make_block_tile($340+$6,0,0,3,0)
+		dc.w make_block_tile($340+$9,0,0,3,0),make_block_tile($340+$D,0,0,3,0)
+		dc.w make_block_tile($340+$A,0,0,3,0),make_block_tile($340+$E,0,0,3,0)
+		dc.w make_block_tile($340+$3,0,0,3,0),make_block_tile($340+$7,0,0,3,0)
+		dc.w make_block_tile($340+$18,0,0,2,0),make_block_tile($340+$19,0,0,2,0)
+		dc.w $634B,$634F
+		dc.w $435A,$435B
+		dc.w $6380,$6384
+		dc.w $6381,$6385
+		dc.w $6388,$638C
+		dc.w $6389,$638D
+		dc.w $6382,$6386
+		dc.w $6383,$6387
+		dc.w $638A,$638E
+		dc.w $638B,$638F
+		dc.w $6390,$6394
+		dc.w $6391,$6395
+		dc.w $6398,$639C
+		dc.w $6399,$639D
+		dc.w $6392,$6396
+		dc.w $6393,$6397
+		dc.w $639A,$639E
+		dc.w $639B,$639F
+		dc.w $4378,$4379
+		dc.w $437A,$437B
+		dc.w $437C,$437D
+		dc.w $437E,$437F
+		dc.w $235C,$235D
+		dc.w $235E,$235F
+		dc.w $2360,$2361
+		dc.w $2362,$2363
+		dc.w $2364,$2365
+		dc.w $2366,$2367
+		dc.w $2368,$2369
+		dc.w $236A,$236B
+		dc.w make_block_tile(0+$0,0,0,0,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w $636C,$636D
+		dc.w make_block_tile(0+$0,0,0,0,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w $636E,make_block_tile(0+$0,0,0,0,0)
+		dc.w $636F,$6370
+		dc.w $6371,$6372
+		dc.w $6373,make_block_tile(0+$0,0,0,0,0)
+		dc.w $6374,make_block_tile(0+$0,0,0,0,0)
+		dc.w $6375,$6376
+		dc.w $4358,$4359
+		dc.w $6377,make_block_tile(0+$0,0,0,0,0)
+		dc.w $435A,$435B
+		dc.w $C378,$C379
+		dc.w $C37A,$C37B
+		dc.w $C37C,$C37D
+		dc.w $C37E,$C37F
 APM_LZ_End:
 
 APM_CPZ:	begin_animpat
@@ -26778,7 +26860,7 @@ loc_1B286:
 		tst.w	(f_pause).w
 		bne.s	loc_1B2E2
 		lea	(v_time).w,a1
-		cmpi.l	#$93B3B,(a1)+			; if the timer has passed 9:59...
+		cmpi.l	#9<<16|59<<8|59,(a1)+		; if the timer has passed 9:59...
 		nop					; ...do nothing since this has been nopped out
 		addq.b	#1,-(a1)
 		cmpi.b	#60,(a1)
@@ -27377,10 +27459,10 @@ Debug_Control:
 		moveq	#0,d4
 		move.w	#1,d1
 		move.b	(v_jpadpress1).w,d4
-		andi.w	#btnUp+btnDn+btnL+btnR,d4
+		andi.w	#btnUp|btnDn|btnL|btnR,d4
 		bne.s	Debug_Move
 		move.b	(v_jpadhold1).w,d0
-		andi.w	#btnUp+btnDn+btnL+btnR,d0
+		andi.w	#btnUp|btnDn|btnL|btnR,d0
 		bne.s	Debug_ContinueMoving
 		move.b	#$C,(Debug_Accel_Timer).w
 		move.b	#$F,(Debug_Speed).w
@@ -27704,8 +27786,20 @@ Art_BigRing:	binclude	"art/uncompressed/Giant Ring.bin"
 ; leftover level layouts from a	previous build
 ; --------------------------------------------------------------------------------------
 Leftover_LevelLayouts:
-		binclude	"misc/leftovers/2C292.bin"
+		align	4
+		binclude	"misc/leftovers/HTZ_2.bin"
 		even
+		binclude	"level/layout/HTZ_BG.bin"
+		even
+		binclude	"level/layout/CPZ_1.bin"
+		even
+		binclude	"level/layout/HPZ_1.bin"
+		even
+		binclude	"level/layout/CPZ_BG.bin"
+		even
+		binclude	"level/layout/HPZ_BG.bin"
+		even
+		dc.l	0
 ;----------------------------------------------------
 ; A duplicate copy of the big ring art
 ;----------------------------------------------------
@@ -27717,6 +27811,10 @@ Leftover_Art_BigRing:
 ; --------------------------------------------------------------------------------------
 Leftover_LevelMappings:
 		binclude	"misc/leftovers/2E292.bin"
+		even
+		binclude	"misc/leftovers/2EB00.bin"
+		even
+		binclude	"misc/leftovers/2EC00.bin"
 		even
 ; --------------------------------------------------------------------------------------
 ; leftover art - full 128 character ASCII table
@@ -27858,9 +27956,13 @@ ObjPos_Null:	dc.w $FFFF,    0,    0
 ; https://tcrf.net/Proto:Sonic_the_Hedgehog_2_(Genesis)/Nick_Arcade_Prototype/Symbol_Tables
 ; ---------------------------------------------------------------------------
 		binclude	"misc/leftovers/symbols/symbol1.bin"
+		even
 		binclude	"misc/leftovers/symbols/symbol1a.bin"
+		even
 		binclude	"misc/leftovers/4DB08.bin"
+		even
 		binclude	"misc/leftovers/symbols/symbol2.bin"
+		even
 		binclude	"misc/leftovers/4FB08.bin"
 		even
 ; ---------------------------------------------------------------------------
@@ -27920,7 +28022,6 @@ RingPos_HTZ2:	binclude	"level/rings/HTZ_2.bin"
 		even
 RingPos_CPZ1:	binclude	"level/rings/CPZ_1.bin"
 		even
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Yet another symbol table that doesn't match up with the prototype
@@ -27930,41 +28031,61 @@ RingPos_CPZ1:	binclude	"level/rings/CPZ_1.bin"
 ; ---------------------------------------------------------------------------
 
 Leftover_50A9C:	binclude	"misc/leftovers/50A9C.bin"
-;		binclude	"misc/leftovers/50A9C - Copy.bin"
-;		binclude	"misc/leftovers/symbols/symbol3.bin"
-;		binclude	"misc/leftovers/54110.bin"
-;		binclude	"misc/leftovers/symbols/symbol4.bin"
-;		binclude	"misc/leftovers/code/code_546f8.bin"
-;		binclude	"misc/leftovers/symbols/symbol5.bin"
-;		binclude	"misc/leftovers/code/code_557b8.bin"
-;		binclude	"misc/leftovers/symbols/symbol6.bin"
-;		binclude	"misc/leftovers/code/code_56424.bin"
-;		binclude	"misc/leftovers/symbols/symbol7.bin"
-;		binclude	"misc/leftovers/code/code_5669c.bin"
-;		binclude	"misc/leftovers/symbols/symbol8.bin"
-;		binclude	"misc/leftovers/code/code_56ccc.bin"
-;		binclude	"misc/leftovers/symbols/symbol9.bin"
-;		binclude	"misc/leftovers/code/code_57644.bin"
-;		binclude	"misc/leftovers/symbols/symbol10.bin"
-;		binclude	"misc/leftovers/code/code_57ff8.bin"
-;		binclude	"misc/leftovers/symbols/symbol11.bin"
-;		binclude	"misc/leftovers/code/code_59304.bin"
-;		binclude	"misc/leftovers/symbols/symbol12.bin"
-;		binclude	"misc/leftovers/code/code_5a12c.bin"
-;		binclude	"misc/leftovers/symbols/symbol13.bin"
-;		binclude	"misc/leftovers/code/code_5a718.bin"
-;		binclude	"misc/leftovers/symbols/symbol14.bin"
-;		binclude	"misc/leftovers/code/code_5b1fc.bin"
-;		binclude	"misc/leftovers/symbols/symbol15.bin"
-;		binclude	"misc/leftovers/code/code_5c0b0.bin"
-;		binclude	"misc/leftovers/symbols/symbol16.bin"
-;		binclude	"misc/leftovers/code/code_5c572.bin"
-;		binclude	"misc/leftovers/symbols/symbol17.bin"
-;		binclude	"misc/leftovers/code/code_5d000.bin"
-;		binclude	"misc/leftovers/symbols/symbol18.bin"
-;		binclude	"misc/leftovers/s2proto_code.txt"
+		binclude	"misc/leftovers/symbols/symbol3.bin"
+		binclude	"misc/leftovers/54110.bin"
+		binclude	"misc/leftovers/symbols/symbol4.bin"
+		binclude	"misc/leftovers/code/code_546f8.bin"
+		binclude	"misc/leftovers/symbols/symbol5.bin"
+		binclude	"misc/leftovers/code/code_557b8.bin"
+		binclude	"misc/leftovers/symbols/symbol6.bin"
+		binclude	"misc/leftovers/code/code_56424.bin"
+		binclude	"misc/leftovers/symbols/symbol7.bin"
+		binclude	"misc/leftovers/code/code_5669c.bin"
+		binclude	"misc/leftovers/symbols/symbol8.bin"
+		binclude	"misc/leftovers/code/code_56ccc.bin"
+		binclude	"misc/leftovers/symbols/symbol9.bin"
+		binclude	"misc/leftovers/code/code_57644.bin"
+		binclude	"misc/leftovers/symbols/symbol10.bin"
+		binclude	"misc/leftovers/code/code_57ff8.bin"
+		binclude	"misc/leftovers/symbols/symbol11.bin"
+		binclude	"misc/leftovers/code/code_59304.bin"
+		binclude	"misc/leftovers/symbols/symbol12.bin"
+		binclude	"misc/leftovers/code/code_5a12c.bin"
+		binclude	"misc/leftovers/symbols/symbol13.bin"
+		binclude	"misc/leftovers/code/code_5a718.bin"
+		binclude	"misc/leftovers/symbols/symbol14.bin"
+		binclude	"misc/leftovers/code/code_5b1fc.bin"
+		binclude	"misc/leftovers/symbols/symbol15.bin"
+		binclude	"misc/leftovers/code/code_5c0b0.bin"
+		binclude	"misc/leftovers/symbols/symbol16.bin"
+		binclude	"misc/leftovers/code/code_5c572.bin"
+		binclude	"misc/leftovers/symbols/symbol17.bin"
+		binclude	"misc/leftovers/code/code_5d000.bin"
+		binclude	"misc/leftovers/symbols/symbol18.bin"
+		binclude	"misc/leftovers/s2proto_code.txt"
+		binclude	"misc/leftovers/60BE0.bin"
+		binclude	"misc/leftovers/symbols/symbol19.bin"
+		binclude	"misc/leftovers/code/code_62230.bin"
+		binclude	"misc/leftovers/symbols/symbol20.bin"
+		binclude	"misc/leftovers/code/code_62c48.bin"
+		binclude	"misc/leftovers/symbols/symbol21.bin"
+		binclude	"misc/leftovers/code/code_65260.bin"
+		binclude	"misc/leftovers/symbols/symbol22.bin"
+		binclude	"misc/leftovers/code/code_66548.bin"
+		binclude	"misc/leftovers/symbols/symbol23.bin"
+		binclude	"misc/leftovers/code/code_67894.bin"
+		binclude	"misc/leftovers/symbols/symbol24.bin"
+		binclude	"misc/leftovers/code/code_68464.bin"
+		binclude	"misc/leftovers/symbols/symbol25.bin"
+		binclude	"misc/leftovers/code/code_69464.bin"
+		binclude	"art/uncompressed/HUD Numbers.bin"
+		binclude	"art/uncompressed/Lives Counter Numbers.bin"
+		binclude	"misc/leftovers/69EE6.bin"
+		binclude	"misc/leftovers/symbols/symbol26.bin"
+		binclude	"misc/leftovers/symbols/symbol26a.bin"
+		binclude	"misc/leftovers/code/left_6b5c4_mainloadblocks.bin"
+		binclude	"misc/leftovers/symbols/symbol27.bin"
 		even
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Modified Type 1b 68000 Sound Driver
@@ -28242,7 +28363,7 @@ Nem_Flicky:	binclude	"art/nemesis/S1/Animal Flicky.nem"
 Nem_Squirrel:	binclude	"art/nemesis/S1/Animal Squirrel.nem"
 		even
 Map16_EHZ:	binclude	"mappings/16x16/EHZ.unc"
-		even
+Map16_EHZ_End:	even
 Nem_EHZ:	binclude	"art/nemesis/8x8 - EHZ.nem"
 		even
 Map16_HTZ:	binclude	"mappings/16x16/HTZ.unc"
@@ -28255,13 +28376,13 @@ Nem_HTZ_AniPlaceholders:
 Map128_EHZ:	binclude	"mappings/128x128/EHZ_HTZ.unc"
 		even
 Map16_HPZ:	binclude	"mappings/16x16/HPZ.unc"
-		even
+Map16_HPZ_End:	even
 Nem_HPZ:	binclude	"art/nemesis/8x8 - HPZ.nem"
 		even
 Map128_HPZ:	binclude	"mappings/128x128/HPZ.unc"
 		even
 Map16_CPZ:	binclude	"mappings/16x16/CPZ.unc"
-		even
+Map16_CPZ_End:	even
 Nem_CPZ:	binclude	"art/nemesis/8x8 - CPZ.nem"
 		even
 Nem_CPZ_Buildings:
@@ -28270,7 +28391,7 @@ Nem_CPZ_Buildings:
 Map128_CPZ:	binclude	"mappings/128x128/CPZ.unc"
 		even
 Map16_GHZ:	binclude	"mappings/16x16/GHZ.unc"
-		even
+Map16_GHZ_End:	even
 Nem_GHZ:	binclude	"art/nemesis/8x8 - GHZ.nem"
 		even
 Nem_GHZ2:	binclude	"art/nemesis/8x8 - GHZ2.nem"
