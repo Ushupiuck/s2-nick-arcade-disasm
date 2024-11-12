@@ -22408,7 +22408,6 @@ Obj4B_ShootProjectile:
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
 	if FixBugs
-		addi.w	#$18,obY(a1)			; align vertically with stinger
 		move.w	#13,d0				; absolute horizontal offset for stinger
 	endif
 		move.w	#$180,obVelY(a1)
