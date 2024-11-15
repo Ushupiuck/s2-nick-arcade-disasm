@@ -913,11 +913,11 @@ VDP_Loop:
 		move.w	d0,(v_vdp_buffer1).w
 		move.w	#$8A00+224-1,(v_hbla_hreg).w
 		moveq	#0,d0
-		move.l	#$40000010,(vdp_control_port).l
+		move.l	#$40000010,(vdp_control_port).l	; write to VRAM port
 		move.w	d0,(a1)
 		move.w	d0,(a1)
-		move.l	#$C0000000,(vdp_control_port).l
-		move.w	#bytesToWcnt(palette_size),d7
+		move.l	#$C0000000,(vdp_control_port).l	; write to CRAM port
+		move.w	#bytesToWcnt(palette_size),d7	; get palette size
 
 VDP_ClrCRAM:
 		move.w	d0,(a1)
@@ -4400,9 +4400,9 @@ loc_5D98:
 		move.w	d0,d4
 		lsr.w	#1,d4
 		move.w	d0,(v_bg3scrposx_vdp).w
-		subi.w	#$E0,(v_bg3scrposx_vdp).w
+		subi.w	#224,(v_bg3scrposx_vdp).w
 		move.w	(Camera_Y_pos_P2).w,(v_bg3scrposy_vdp).w
-		subi.w	#$E0,(v_bg3scrposy_vdp).w
+		subi.w	#224,(v_bg3scrposy_vdp).w
 		andi.l	#$FFFEFFFE,(v_bg3scrposy_vdp).w
 		move.w	(Camera_X_pos_P2).w,d0
 		cmpi.b	#GameModeID_TitleScreen,(v_gamemode).w
@@ -4784,11 +4784,11 @@ loc_621C:
 		bsr.s	sub_6264
 		moveq	#0,d0
 		move.w	d0,(v_bg3scrposx_vdp).w
-		subi.w	#$E0,(v_bg3scrposx_vdp).w
+		subi.w	#224,(v_bg3scrposx_vdp).w
 		move.w	(Camera_Y_pos_P2).w,(v_bg3scrposy_vdp).w
 
 loc_624A:
-		subi.w	#$E0,(v_bg3scrposy_vdp).w
+		subi.w	#224,(v_bg3scrposy_vdp).w
 		andi.l	#$FFFEFFFE,(v_bg3scrposy_vdp).w
 		lea	(v_hscrolltablebuffer+$1B0).w,a1
 		move.w	(Camera_X_pos_P2).w,d0
@@ -5111,7 +5111,7 @@ loc_64D6:
 
 ScrollHorizontal:
 		move.w	(a1),d4
-		bsr.s	sub_6514
+		bsr.s	ScrollHoriz
 		move.w	(a1),d0
 		andi.w	#$10,d0
 		move.b	(a2),d1
@@ -5135,68 +5135,95 @@ locret_6512:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_6514:
-		move.w	(a5),d1
-		beq.s	loc_6536
-		subi.w	#$100,d1
-		move.w	d1,(a5)
+;sub_6514:
+ScrollHoriz:
+	if FixBugs
+		; To prevent the bug that is described below, this caps the position
+		; array index offset so that it does not access position data from
+		; before the spin dash was performed. Note that this required
+		; modifications to 'Sonic_UpdateSpindash' and 'Tails_UpdateSpindash'.
+		move.b	Horiz_scroll_delay_val-Camera_Delay(a5),d1	; should scrolling be delayed?
+		beq.s	.scrollNotDelayed				; if not, branch
+		lsl.b	#2,d1		; multiply by 4, the size of a position buffer entry
+		subq.b	#1,Horiz_scroll_delay_val-Camera_Delay(a5)	; reduce delay value
+		move.b	Sonic_Pos_Record_Index+1-Camera_Delay(a5),d0
+		sub.b	Horiz_scroll_delay_val+1-Camera_Delay(a5),d0
+		cmp.b	d0,d1
+		blo.s	.doNotCap
+		move.b	d0,d1
+.doNotCap:
+	else
+		; The intent of this code is to make the camera briefly lag behind the
+		; player right after releasing a spin dash, however it does this by
+		; simply making the camera use position data from previous frames. This
+		; means that if the camera had been moving recently enough, then
+		; releasing a spin dash will cause the camera to jerk around instead of
+		; remain still. This can be encountered by running into a wall, and
+		; quickly turning around and spin dashing away. Sonic 3 would have had
+		; this same issue with the Fire Shield's dash abiliity, but it shoddily
+		; works around the issue by resetting the old position values to the
+		; current position (see 'Reset_Player_Position_Array').
+		move.w	Horiz_scroll_delay_val-Camera_Delay(a5),d1	; should scrolling be delayed?
+		beq.s	.scrollNotDelayed				; if not, branch
+		subi.w	#$100,d1					; reduce delay value
+		move.w	d1,Horiz_scroll_delay_val-Camera_Delay(a5)
 		moveq	#0,d1
-		move.b	(a5),d1
-		lsl.b	#2,d1
+		move.b	Horiz_scroll_delay_val-Camera_Delay(a5),d1	; get delay value
+		lsl.b	#2,d1		; multiply by 4, the size of a position buffer entry
 		addq.b	#4,d1
-		move.w	2(a5),d0
+	endif
+		move.w	Sonic_Pos_Record_Index-Camera_Delay(a5),d0
 		sub.b	d1,d0
 		move.w	(a6,d0.w),d0
 		andi.w	#$3FFF,d0
-		bra.s	loc_653A
+		bra.s	.checkIfShouldScroll
 ; ---------------------------------------------------------------------------
 
-loc_6536:
+.scrollNotDelayed:
 		move.w	obX(a0),d0
 
-loc_653A:
+.checkIfShouldScroll:
 		sub.w	(a1),d0
-		subi.w	#$90,d0
-		blt.s	loc_654C
-		subi.w	#$10,d0
-		bge.s	loc_6564
+		subi.w	#(320/2)-16,d0
+		blt.s	.scrollLeft
+		subi.w	#16,d0
+		bge.s	.scrollRight
 		clr.w	(a4)
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_654C:
+.scrollLeft:
 		cmpi.w	#-16,d0
-		bgt.s	loc_6556
+		bgt.s	.maxNotReached
 		move.w	#-16,d0
 
-loc_6556:
+.maxNotReached:
 		add.w	(a1),d0
 		cmp.w	(Camera_Min_X_pos).w,d0
-		bgt.s	loc_657A
+		bgt.s	.doScroll
 		move.w	(Camera_Min_X_pos).w,d0
-		bra.s	loc_657A
+		bra.s	.doScroll
 ; ---------------------------------------------------------------------------
 
-loc_6564:
+.scrollRight:
 		cmpi.w	#16,d0
-		bcs.s	loc_656E
+		bcs.s	.maxNotReached2
 		move.w	#16,d0
 
-loc_656E:
+.maxNotReached2:
 		add.w	(a1),d0
 		cmp.w	(Camera_Max_X_pos).w,d0
-		blt.s	loc_657A
+		blt.s	.doScroll
 		move.w	(Camera_Max_X_pos).w,d0
 
-loc_657A:
+.doScroll:
 		move.w	d0,d1
 		sub.w	(a1),d1
 		asl.w	#8,d1
 		move.w	d0,(a1)
 		move.w	d1,(a4)
 		rts
-; End of function sub_6514
+; End of function ScrollHoriz
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -6926,8 +6953,8 @@ LevelLayoutLoad2:
 		lea	(a1,d0.w),a1
 		moveq	#0,d1
 		move.w	d1,d2
-		move.b	(a1)+,d1
-		move.b	(a1)+,d2
+		move.b	(a1)+,d1			; load level width (in tiles)
+		move.b	(a1)+,d2			; load level height (in tiles)
 		move.l	d1,d5
 		addq.l	#1,d5
 		moveq	#0,d3
@@ -6949,7 +6976,7 @@ loc_73E6:
 		movea.l	(sp)+,a1
 		dbf	d4,loc_73E2
 		lea	(a1,d5.w),a1
-		lea	$100(a3),a3
+		lea	$80*2(a3),a3
 		dbf	d2,loc_73DE
 		rts
 ; End of function LevelLayoutLoad
@@ -6978,7 +7005,7 @@ loc_7426:
 		movea.l	a3,a0
 
 loc_742A:
-		move.b	(a1)+,d3
+		move.b	(a1)+,d3			; get chunk ID
 		subq.b	#1,d3				; subtract 1 from chunk ID
 		bcc.s	loc_7440			; if chunk is not $00, branch
 		moveq	#0,d3				; set 'air' chunk to $00
@@ -6990,7 +7017,7 @@ loc_742A:
 ; ===========================================================================
 
 loc_7440:
-		lsl.b	#2,d3
+		lsl.b	#2,d3				; multiply chunk ID by 4
 		addq.b	#1,d3				; add 1 to chunk ID
 		move.b	d3,(a0)+			; load first chunk
 		addq.b	#1,d3				; add 1 to chunk ID
@@ -7002,7 +7029,7 @@ loc_7440:
 
 loc_7456:
 		dbf	d0,loc_742A			; load 1 row
-		lea	$200(a3),a3			; do next row
+		lea	$80*4(a3),a3			; do next row
 		dbf	d2,loc_7426			; repeat for number of rows
 		rts
 ; End of function LevelLayoutLoad_GHZ
@@ -14079,7 +14106,7 @@ locret_10360:
 
 ; Sonic_Spindash:
 Sonic_CheckSpindash:
-		tst.b	objoff_39(a0)
+		tst.b	spindash_flag(a0)
 		bne.s	Sonic_UpdateSpindash
 		cmpi.b	#AniIDSonAni_Duck,obAnim(a0)
 		bne.s	locret_10394
@@ -14090,7 +14117,7 @@ Sonic_CheckSpindash:
 		move.w	#sfx_Roll,d0
 		jsr	(PlaySound_Special).l
 		addq.l	#4,sp
-		move.b	#1,objoff_39(a0)
+		move.b	#1,spindash_flag(a0)
 
 locret_10394:
 		rts
@@ -14106,8 +14133,17 @@ Sonic_UpdateSpindash:
 		move.b	#7,obWidth(a0)
 		move.b	#AniIDSonAni_Roll,obAnim(a0)
 		addq.w	#5,obY(a0)			; add the difference between Sonic's rolling and standing heights
-		move.b	#0,objoff_39(a0)
+		move.b	#0,spindash_flag(a0)
+	if FixBugs
+		; To fix a bug in 'ScrollHoriz', we need an extra variable, so this
+		; code has been modified to make the delay value only a single byte.
+		; This is used by the fixed 'ScrollHoriz'.
+		move.b	#$20,(Horiz_scroll_delay_val).w
+		; Back up the position array index for later.
+		move.b	(Sonic_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
+	else
 		move.w	#$2000,(Horiz_scroll_delay_val).w
+	endif
 		move.w	#$800,obInertia(a0)
 		btst	#0,obStatus(a0)
 		beq.s	loc_103D4
@@ -15966,7 +16002,7 @@ locret_114DA:
 
 
 Tails_Spindash:
-		tst.b	objoff_39(a0)
+		tst.b	spindash_flag(a0)
 		bne.s	loc_11510
 		cmpi.b	#8,obAnim(a0)
 		bne.s	locret_1150E
@@ -15977,7 +16013,7 @@ Tails_Spindash:
 		move.w	#sfx_Roll,d0
 		jsr	(PlaySound_Special).l
 		addq.l	#4,sp
-		move.b	#1,objoff_39(a0)
+		move.b	#1,spindash_flag(a0)
 
 locret_1150E:
 		rts
@@ -15991,8 +16027,17 @@ loc_11510:
 		move.b	#7,obWidth(a0)
 		move.b	#2,obAnim(a0)
 		addq.w	#5,obY(a0)
-		move.b	#0,objoff_39(a0)
+		move.b	#0,spindash_flag(a0)
+	if FixBugs
+		; To fix a bug in 'ScrollHoriz', we need an extra variable, so this
+		; code has been modified to make the delay value only a single byte.
+		; This is used by the fixed 'ScrollHoriz'.
+		move.b	#$20,(Horiz_scroll_delay_val).w
+		; Back up the position array index for later.
+		move.b	(Sonic_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
+	else
 		move.w	#$2000,(Horiz_scroll_delay_val).w
+	endif
 		move.w	#$800,obInertia(a0)
 		btst	#0,obStatus(a0)
 		beq.s	loc_1154E

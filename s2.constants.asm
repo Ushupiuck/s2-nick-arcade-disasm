@@ -42,6 +42,7 @@ flashtime:	equ $30					; time between flashes after getting hit
 invtime:	equ $32					; time left for invincibility
 shoetime:	equ $34					; time left for speed shoes
 stick_to_convex:equ objoff_38
+spindash_flag:	equ $39					; 0 for normal, 1 for charging a spindash or forced rolling
 standonobject:	equ $3D					; object Sonic stands on
 
 ; Miscellaneous object scratch-RAM
@@ -291,25 +292,39 @@ GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 ; Main RAM
 	phase	ramaddr($FFFF0000)
 v_start:
-v_128x128:		ds.b	$8000			; 128x128 tile mappings ($8000 bytes)
-v_128x128_end:
+RAM_Start:
 
-v_lvllayout:		ds.b	$1000			; level layout buffer ($1000 bytes)
+v_128x128:
+Chunk_Table:		ds.b	$8000			; 128x128 tile mappings ($8000 bytes)
+v_128x128_end:
+Chunk_Table_End:
+
+v_lvllayout:
+Level_Layout:		ds.b	$1000			; level layout buffer ($1000 bytes)
 v_lvllayout_end:
+Level_Layout_End:
 v_lvllayoutbg:		= v_lvllayout+$80
 
-v_16x16:		ds.b	$1800			; 16x16 tile mappings ($1800 bytes)
+v_16x16:
+Block_Table:		ds.b	$1800			; 16x16 tile mappings ($1800 bytes)
 v_16x16_end:
+Block_Table_End:
 
-v_bgscroll_buffer:	ds.b	$200			; background scroll buffer
-v_ngfx_buffer:		ds.b	$200			; Nemesis graphics decompression buffer
+v_bgscroll_buffer:
+TempArray_LayerDef:	ds.b	$200			; background scroll buffer
+v_ngfx_buffer:
+Decomp_Buffer:		ds.b	$200			; Nemesis graphics decompression buffer
 v_ngfx_buffer_end:
+Decomp_Buffer_End:
 
-v_spritequeue:		ds.b	$400			; sprite display queue, in order of priority
+v_spritequeue:
+Object_Display_Lists:	ds.b	$400			; sprite display queue, in order of priority
 v_spritequeue_end:
+Object_Display_Lists_End:
 
 v_objspace:		ds.b	object_size*$80		; object variable space ($40 bytes per object)
 v_objspace_end:
+
 ; 2P mode reserves 6 'blocks' of 12 RAM slots at the end.
 Dynamic_Object_RAM_2P_End = v_objspace_end - ($C * 6) * object_size
 
@@ -384,13 +399,17 @@ v_endeggman	= v_objspace+object_size*2		; object variable space for Eggman after
 v_tryagain	= v_objspace+object_size*3		; object variable space for the "TRY AGAIN" text ($40 bytes)
 v_eggmanchaos	= v_objspace+object_size*32		; object variable space for the emeralds juggled by Eggman ($180 bytes)
 
-v_colladdr1:		ds.b	$600
+v_colladdr1:
+Primary_Collision:	ds.b	$600
 v_colladdr1_end:
-v_colladdr2:		ds.b	$600
+Primary_Collision_End:
+v_colladdr2:
+Secondary_Collision:	ds.b	$600
 v_colladdr2_end:
+Secondary_Collision_End:
 
-VDP_Command_Buffer:	ds.w	7*$12
-VDP_Command_Buffer_Slot:	ds.l	1
+VDP_Command_Buffer:	ds.w	7*$12			; stores 18 ($12) VDP commands to issue the next time ProcessDMAQueue is called
+VDP_Command_Buffer_Slot:	ds.l	1		; stores the address of the next open slot for a queued VDP command
 
 v_spritetablebuffer:	ds.b	$300			; sprite table (last $80 bytes are overwritten by v_pal_water_dup)
 v_spritetablebuffer_end:
@@ -423,7 +442,7 @@ Camera_BG2_X_pos:
 v_bg2screenposx:	ds.l	1			; used in CPZ
 Camera_BG2_Y_pos:	
 v_bg2screenposy:	ds.l	1			; used in CPZ
-Camera_BG3_X_pos:	
+Camera_BG3_X_pos:
 v_bg3screenposx:	ds.l	1			; unused (only initialised at beginning of level)?
 Camera_BG3_Y_pos:	
 v_bg3screenposy:	ds.l	1			; unused (only initialised at beginning of level)?
