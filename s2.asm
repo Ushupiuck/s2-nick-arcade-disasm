@@ -16034,7 +16034,7 @@ loc_11510:
 		; This is used by the fixed 'ScrollHoriz'.
 		move.b	#$20,(Horiz_scroll_delay_val).w
 		; Back up the position array index for later.
-		move.b	(Sonic_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
+		move.b	(Tails_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
 	else
 		move.w	#$2000,(Horiz_scroll_delay_val).w
 	endif
