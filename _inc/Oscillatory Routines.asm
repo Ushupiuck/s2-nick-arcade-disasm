@@ -34,48 +34,49 @@ OscillateNumInit:
 
 
 OscillateNumDo:
-		cmpi.b	#6,(v_player+obRoutine).w
-		bcc.s	locret_46FC
+		cmpi.b	#6,(v_player+obRoutine).w ; has Sonic just died?
+		bhs.s	.end		; if yes, branch
 		lea	(v_oscillate).w,a1
-		lea	(OscData2).l,a2
-		move.w	(a1)+,d3
-		moveq	#$F,d1
+		lea	(.settings).l,a2
+		move.w	(a1)+,d3	; get oscillation direction bitfield
+		moveq	#bytesToLcnt(.settings_end-.settings),d1
 
-loc_46BC:
-		move.w	(a2)+,d2
-		move.w	(a2)+,d4
-		btst	d1,d3
-		bne.s	loc_46DC
-		move.w	2(a1),d0
-		add.w	d2,d0
+.loop:
+		move.w	(a2)+,d2	; get frequency
+		move.w	(a2)+,d4	; get amplitude
+		btst	d1,d3		; check oscillation direction
+		bne.s	.down		; branch if 1
+
+.up:
+		move.w	2(a1),d0	; get current rate
+		add.w	d2,d0		; add frequency
 		move.w	d0,2(a1)
-		_add.w	d0,0(a1)
+		_add.w	d0,0(a1)	; add rate to value
 		_cmp.b	0(a1),d4
-		bhi.s	loc_46F2
+		bhi.s	.next
 		bset	d1,d3
-		bra.s	loc_46F2
-; ---------------------------------------------------------------------------
+		bra.s	.next
 
-loc_46DC:
+.down:
 		move.w	2(a1),d0
 		sub.w	d2,d0
 		move.w	d0,2(a1)
 		_add.w	d0,0(a1)
 		_cmp.b	0(a1),d4
-		bls.s	loc_46F2
+		bls.s	.next
 		bclr	d1,d3
 
-loc_46F2:
+.next:
 		addq.w	#4,a1
-		dbf	d1,loc_46BC
+		dbf	d1,.loop
 		move.w	d3,(v_oscillate).w
 
-locret_46FC:
+.end:
 		rts
 ; End of function OscillateNumDo
 
 ; ---------------------------------------------------------------------------
-OscData2:	dc.w	 2,  $10
+.settings:	dc.w	 2,  $10
 		dc.w	 2,  $18
 		dc.w	 2,  $20
 		dc.w	 2,  $30
@@ -91,3 +92,4 @@ OscData2:	dc.w	 2,  $10
 		dc.w	 7,  $70
 		dc.w	 2,  $10
 		dc.w	 2,  $10
+.settings_end:	even

@@ -793,13 +793,7 @@ loc_110E:
 		move.w	#$8228,(vdp_control_port).l
 		move.l	#$40000010,(vdp_control_port).l
 		move.l	(Camera_X_pos_copy).w,(vdp_data_port).l
-		lea	(vdp_control_port).l,a5
-		move.l	#$94019340,(a5)
-		move.l	#$96EE9580,(a5)
-		move.w	#$977F,(a5)
-		move.w	#$7800,(a5)
-		move.w	#$83,(v_vdp_buffer2).w
-		move.w	(v_vdp_buffer2).w,(a5)
+		writeVRAM	Sprite_Table_2P,vram_sprites
 
 loc_1166:
 		move.w	(vdp_control_port).l,d0
@@ -925,14 +919,7 @@ VDP_ClrCRAM:
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 		move.l	d1,-(sp)
-		fillVRAM	0,$FFFF,0
-
-.waitforDMA:
-		move.w	(a5),d1
-		btst	#1,d1		; is DMA (fillVRAM) still running?
-		bne.s	.waitforDMA	; if yes, branch
-
-		move.w	#$8F02,(a5)	; set VDP increment size
+		fillVRAM	0,0,$10000	; clear the entirety of VRAM
 		move.l	(sp)+,d1
 		rts
 ; End of function VDPSetupGame
@@ -963,22 +950,9 @@ VDPSetupArray_End:
 
 
 ClearScreen:
-		fillVRAM	0,$FFF,vram_fg ; clear foreground namespace
+		fillVRAM	0, vram_fg, vram_fg+plane_size_64x32 ; clear foreground namespace
+		fillVRAM	0, vram_bg, vram_bg+plane_size_64x32 ; clear background namespace
 
-.wait1:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	.wait1
-
-		move.w	#$8F02,(a5)
-		fillVRAM	0,$FFF,vram_bg ; clear background namespace
-
-.wait2:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	.wait2
-
-		move.w	#$8F02,(a5)
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
 	if FixBugs
@@ -2862,18 +2836,7 @@ Level_NoMusicFade:
 		lea	(Nem_TitleCard).l,a0
 		bsr.w	NemDec
 		bsr.w	ClearScreen
-		lea	(vdp_control_port).l,a5
-		move.w	#$8F01,(a5)
-		move.l	#$940F93FF,(a5)
-		move.w	#$9780,(a5)
-		move.l	#$60000082,(a5)
-		move.w	#0,(vdp_data_port).l
-
-loc_3B84:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	loc_3B84
-		move.w	#$8F02,(a5)
+		fillVRAM	0, vram_window, vram_window+plane_size_64x32 ; clear window namespace
 		move	#$2300,sr
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
@@ -2911,12 +2874,12 @@ loc_3BB6:
 		move.w	#$8720,(a6)
 		move.w	#$8A00+224-1,(v_hbla_hreg).w
 		tst.w	(Two_player_mode).w	; is two player mode enabled?
-		beq.s	.no2p			; if not, skip horizontal interrupts
+		beq.s	.not2P			; if not, skip horizontal interrupts
 		move.w	#$8A00+108-1,(v_hbla_hreg).w
 		move.w	#$8014,(a6)
 		move.w	#$8C87,(a6)
 
-.no2p:
+.not2P:
 		move.w	(v_hbla_hreg).w,(a6)
 		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w	; reset the DMA Queue
 		tst.b	(Water_flag).w
@@ -3382,18 +3345,7 @@ SpecialStage:
 		move.w	d0,(vdp_control_port).l
 		bsr.w	ClearScreen
 		move	#$2300,sr
-		lea	(vdp_control_port).l,a5
-		move.w	#$8F01,(a5)
-		move.l	#$946F93FF,(a5)
-		move.w	#$9780,(a5)
-		move.l	#$50000081,(a5)
-		move.w	#0,(vdp_data_port).l
-
-loc_507C:
-		move.w	(a5),d1
-		btst	#1,d1
-		bne.s	loc_507C
-		move.w	#$8F02,(a5)
+		fillVRAM	0, ArtTile_SS_Plane_1*tile_size+plane_size_64x32, ArtTile_SS_Plane_5*tile_size
 		bsr.w	S1_SSBGLoad
 		moveq	#plcid_SpecialStage,d0
 		bsr.w	QuickPLC
@@ -3438,7 +3390,7 @@ loc_509C:
 		clr.w	(v_rings).w
 		clr.b	(v_lifecount).w
 		move.w	#0,(Debug_placement_mode).w
-		move.w	#$708,(v_demolength).w
+		move.w	#1800,(v_demolength).w
 		tst.b	(f_debugcheat).w
 		beq.s	loc_5158
 		btst	#bitA,(v_jpadhold1).w
@@ -4613,7 +4565,7 @@ loc_6088:
 		andi.w	#$3F0,d0
 		lsr.w	#3,d0
 		lea	(a2,d0.w),a2
-		bra.w	loc_6306
+		bra.w	Bg_Scroll_X
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -4877,9 +4829,9 @@ loc_62F6:
 
 ; ---------------------------------------------------------------------------
 
-loc_6306:
+Bg_Scroll_X:
 		lea	(v_hscrolltablebuffer).w,a1
-		move.w	#15-1,d1
+		move.w	#224/16+1-1,d1
 		move.w	(Camera_RAM).w,d0
 		neg.w	d0
 		swap	d0
@@ -4924,10 +4876,21 @@ Deform_HPZ:
 		asl.l	#7,d5
 		moveq	#6,d6
 		bsr.w	ScrollBlock2
+
+		; Update the background's vertical scrolling.
 		move.w	(Camera_BG_Y_pos).w,(v_bgscrposy_vdp).w
+
+		; Rather than scroll each individual line of the background, this
+		; zone scrolls entire blocks of lines (16 lines) at once. The scroll
+		; value of each row is written to 'TempArray_LayerDef', before it is
+		; applied to 'Horiz_Scroll_Buf' in 'Deform_HPZ_Continued'. This is
+		; vaguely similar to how Chemical Plant Zone scrolls its background,
+		; even overflowing 'Horiz_Scroll_Buf' in the same way.
 		lea	(v_bgscroll_buffer).w,a1
 		move.w	(Camera_RAM).w,d2
 		neg.w	d2
+
+		; Do 8 line blocks.
 		move.w	d2,d0
 		asr.w	#1,d0
 		move.w	#8-1,d1
@@ -4940,14 +4903,14 @@ loc_637E:
 		sub.w	d2,d0
 		ext.l	d0
 		asl.l	#3,d0
-		divs.w	#8,d0
+		divs.w	#8,d0	; this could be replaced with asr.w #3,d0 to save 150 cycles and 2 bytes of space
 		ext.l	d0
 		asl.l	#4,d0
 		asl.l	#8,d0
 		moveq	#0,d3
 		move.w	d2,d3
 		asr.w	#1,d3
-		lea	(v_bgscroll_buffer+$60).w,a2
+		lea	(v_bgscroll_buffer+(8+7+26+7)*2).w,a2
 		swap	d3
 		add.l	d0,d3
 		swap	d3
@@ -4974,6 +4937,8 @@ loc_637E:
 		swap	d3
 		move.w	d3,(a1)+
 		move.w	d3,-(a2)
+
+		; Do 26 line blocks.
 		move.w	(Camera_BG_X_pos).w,d0
 		neg.w	d0
 		move.w	#26-1,d1
@@ -4981,7 +4946,11 @@ loc_637E:
 loc_63E0:
 		move.w	d0,(a1)+
 		dbf	d1,loc_63E0
-		adda.w	#$E,a1
+
+		; Skip 7 line blocks which were done earlier.
+		adda.w	#7*2,a1
+
+		; Do 24 line blocks.
 		move.w	d2,d0
 		asr.w	#1,d0
 		move.w	#24-1,d1
@@ -4995,7 +4964,7 @@ loc_63F2:
 		andi.w	#$3F0,d0
 		lsr.w	#3,d0
 		lea	(a2,d0.w),a2
-		bra.w	loc_6306
+		bra.w	Bg_Scroll_X
 ; ---------------------------------------------------------------------------
 
 Deform_HTZ:
@@ -5864,7 +5833,7 @@ locret_6ACE:
 byte_6AD0:	dc.b 0
 		dc.b   0,  0,  0,  0,  6,  6,  6,  6,  6,  6,  6,  6,  6,  6,  4,  4
 		dc.b   4,  4,  4,  4,  4,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2
-		dc.b 0
+		even
 ; ---------------------------------------------------------------------------
 
 loc_6AF2:
@@ -5964,7 +5933,7 @@ byte_6BCA:	dc.b 0
 		dc.b   2,  2,  2,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4
 		dc.b   4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4
 		dc.b   4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4,  4
-		dc.b 0
+		even
 ; ---------------------------------------------------------------------------
 
 loc_6C0C:
@@ -6151,7 +6120,7 @@ sub_6D84:
 
 
 sub_6D8C:
-		moveq	#$15,d6
+		moveq	#(1+320/16+1)-1,d6 ; Just enough blocks to cover the screen.
 		add.w	(a3),d5
 ; End of function sub_6D8C
 
@@ -8957,19 +8926,10 @@ word_C660:	dc.w 0
 		nop
 
 		include	"_incObj/36 Spikes.asm"
+Map_Obj36:	include	"mappings/sprite/obj36.asm"
 
-Map_Obj36:	dc.w word_C836-Map_Obj36
-		dc.w word_C836-Map_Obj36
-		dc.w word_C836-Map_Obj36
-		dc.w word_C836-Map_Obj36
-		dc.w word_C836-Map_Obj36
-		dc.w word_C836-Map_Obj36
-word_C836:	dc.w 2
-		dc.w $F007,    0,    0,$FFF0
-		dc.w $F007,    0,    0,	   0
 
 		include	"_incObj/S1/3B Purple Rock.asm"
-
 Map_Obj3B:	include	"mappings/sprite/S1/Purple Rock.asm"
 		align 4
 
@@ -10191,7 +10151,7 @@ dword_D432:	dc.l 0
 ; ---------------------------------------------------------------------------
 
 loc_D442:
-		lea	(v_spritetablebuffer).w,a2
+		lea	(Sprite_Table_2P).w,a2
 		moveq	#0,d5
 		moveq	#0,d4
 		tst.b	(Level_started_flag).w
@@ -22743,7 +22703,12 @@ Obj4C_Index:	dc.w Obj4C_Init-Obj4C_Index
 
 Obj4C_Init:
 		move.l	#Map_Obj4C,obMap(a0)
+	if FixBugs
+		move.w	#make_art_tile(ArtTile_BBat,0,0),obGfx(a0)
+	else
+		; This uses a very awkward palette line which makes the flames look very yellow.
 		move.w	#make_art_tile(ArtTile_BBat,1,0),obGfx(a0)
+	endif
 		ori.b	#4,obRender(a0)
 		move.b	#$A,obColType(a0)
 		move.b	#4,obPriority(a0)

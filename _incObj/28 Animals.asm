@@ -110,7 +110,7 @@ loc_9C4A:
 		move.b	#7,obTimeFrame(a0)
 		move.b	#2,obFrame(a0)
 		move.w	#-$400,obVelY(a0)
-		tst.b	($FFFFF7A7).w
+		tst.b	(v_bossstatus).w
 		bne.s	loc_9CAA
 		bsr.w	FindFreeObj
 		bne.s	loc_9CA6

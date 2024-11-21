@@ -88,10 +88,10 @@ locret_40C6:
 ; End of function DynamicWaterHeight
 
 ; ---------------------------------------------------------------------------
-DynWater_Index:	dc.w DynWater_HPZ1-DynWater_Index	; 0
-		dc.w DynWater_HPZ2-DynWater_Index	; 1 ; leftover from Sonic 1's LZ2
-		dc.w DynWater_HPZ3-DynWater_Index	; 2 ; leftover from Sonic 1's LZ3
-		dc.w DynWater_HPZ4-DynWater_Index	; 3
+DynWater_Index:	dc.w DynWater_HPZ1-DynWater_Index
+		dc.w DynWater_HPZ2-DynWater_Index	; leftover from Sonic 1's LZ2
+		dc.w DynWater_HPZ3-DynWater_Index	; leftover from Sonic 1's LZ3
+		dc.w DynWater_HPZ4-DynWater_Index
 ; ---------------------------------------------------------------------------
 
 DynWater_HPZ1:						; This uses the 2nd controller to make the water level move up or down

@@ -294,33 +294,38 @@ GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 v_start:
 RAM_Start:
 
-v_128x128:
-Chunk_Table:		ds.b	$8000			; 128x128 tile mappings ($8000 bytes)
-v_128x128_end:
+Chunk_Table:		ds.w	64*$100			; 128x128 tile mappings ($8000 bytes)
 Chunk_Table_End:
 
-v_lvllayout:
-Level_Layout:		ds.b	$1000			; level layout buffer ($1000 bytes)
-v_lvllayout_end:
-Level_Layout_End:
-v_lvllayoutbg:		= v_lvllayout+$80
+v_128x128:=		Chunk_Table
+v_128x128_end:=		Chunk_Table_End
 
-v_16x16:
-Block_Table:		ds.b	$1800			; 16x16 tile mappings ($1800 bytes)
-v_16x16_end:
+Level_Layout:		ds.b	$1000			; level layout buffer ($1000 bytes)
+Level_Layout_End:
+
+v_lvllayout:= 		Level_Layout
+v_lvllayout_end:= 	Level_Layout_End
+v_lvllayoutbg:= 	Level_Layout+$80
+
+Block_Table:		ds.w	4*$300			; 16x16 tile mappings ($1800 bytes)
 Block_Table_End:
 
-v_bgscroll_buffer:
+v_16x16:=		Block_Table
+v_16x16_end:=		Block_Table_End
+
 TempArray_LayerDef:	ds.b	$200			; background scroll buffer
-v_ngfx_buffer:
 Decomp_Buffer:		ds.b	$200			; Nemesis graphics decompression buffer
-v_ngfx_buffer_end:
 Decomp_Buffer_End:
 
-v_spritequeue:
+v_bgscroll_buffer:=	TempArray_LayerDef
+v_ngfx_buffer:=		Decomp_Buffer
+v_ngfx_buffer_end:=	Decomp_Buffer_End
+
 Object_Display_Lists:	ds.b	$400			; sprite display queue, in order of priority
-v_spritequeue_end:
 Object_Display_Lists_End:
+
+v_spritequeue:=		Object_Display_Lists
+v_spritequeue_end:=	Object_Display_Lists_End
 
 v_objspace:		ds.b	object_size*$80		; object variable space ($40 bytes per object)
 v_objspace_end:
@@ -399,20 +404,24 @@ v_endeggman	= v_objspace+object_size*2		; object variable space for Eggman after
 v_tryagain	= v_objspace+object_size*3		; object variable space for the "TRY AGAIN" text ($40 bytes)
 v_eggmanchaos	= v_objspace+object_size*32		; object variable space for the emeralds juggled by Eggman ($180 bytes)
 
-v_colladdr1:
 Primary_Collision:	ds.b	$600
-v_colladdr1_end:
 Primary_Collision_End:
-v_colladdr2:
+
+v_colladdr1:=		Primary_Collision
+v_colladdr1_end:=	Primary_Collision_End
+
 Secondary_Collision:	ds.b	$600
-v_colladdr2_end:
 Secondary_Collision_End:
+
+v_colladdr2:=		Secondary_Collision
+v_colladdr2_end:=	Secondary_Collision_End
 
 VDP_Command_Buffer:	ds.w	7*$12			; stores 18 ($12) VDP commands to issue the next time ProcessDMAQueue is called
 VDP_Command_Buffer_Slot:	ds.l	1		; stores the address of the next open slot for a queued VDP command
 
-v_spritetablebuffer:	ds.b	$300			; sprite table (last $80 bytes are overwritten by v_pal_water_dup)
-v_spritetablebuffer_end:
+Sprite_Table_2P:	ds.b	$280			; 2 player sprite table
+Sprite_Table_2P_end:
+			ds.b	$80			; unused
 
 v_hscrolltablebuffer:	ds.b	$380			; scrolling table data
 v_hscrolltablebuffer_end:
@@ -430,23 +439,24 @@ Ring_Positions_End:
 Camera_RAM:
 
 Camera_Positions:
-Camera_X_pos:
-v_screenposx:		ds.l	1
-Camera_Y_pos:
-v_screenposy:		ds.l	1
-Camera_BG_X_pos:
-v_bgscreenposx:		ds.l	1			; only used sometimes as the layer deformation makes it sort of redundant
-Camera_BG_Y_pos:
-v_bgscreenposy:		ds.l	1
-Camera_BG2_X_pos:	
-v_bg2screenposx:	ds.l	1			; used in CPZ
-Camera_BG2_Y_pos:	
-v_bg2screenposy:	ds.l	1			; used in CPZ
-Camera_BG3_X_pos:
-v_bg3screenposx:	ds.l	1			; unused (only initialised at beginning of level)?
-Camera_BG3_Y_pos:	
-v_bg3screenposy:	ds.l	1			; unused (only initialised at beginning of level)?
+Camera_X_pos:		ds.l	1
+Camera_Y_pos:		ds.l	1
+Camera_BG_X_pos:	ds.l	1			; only used sometimes as the layer deformation makes it sort of redundant
+Camera_BG_Y_pos:	ds.l	1
+Camera_BG2_X_pos:	ds.l	1			; used in CPZ
+Camera_BG2_Y_pos:	ds.l	1			; used in CPZ
+Camera_BG3_X_pos:	ds.l	1			; unused (only initialised at beginning of level)?
+Camera_BG3_Y_pos:	ds.l	1			; unused (only initialised at beginning of level)?
 Camera_Positions_End:
+
+v_screenposx:=		Camera_X_pos
+v_screenposy:=		Camera_Y_pos
+v_bgscreenposx:=	Camera_BG_X_pos
+v_bgscreenposy:=	Camera_BG_Y_pos
+v_bg2screenposx:=	Camera_BG2_X_pos
+v_bg2screenposy:=	Camera_BG2_Y_pos
+v_bg3screenposx:=	Camera_BG3_X_pos
+v_bg3screenposy:=	Camera_BG3_Y_pos
 
 Camera_Positions_P2:
 Camera_X_pos_P2:	ds.l	1
@@ -527,7 +537,7 @@ Camera_Difference_P2:
 Camera_X_pos_diff_P2:	ds.w	1			; (new X pos - old X pos) * 256
 Camera_Y_pos_diff_P2:	ds.w	1			; (new Y pos - old Y pos) * 256
 Camera_Difference_P2_End:
-			ds.l	1			; $FFFFEEBC-$FFFFEEBF ; seems unused
+			ds.b	4			; $FFFFEEBC-$FFFFEEBF ; seems unused
 
 Camera_Min_X_pos_target:	ds.w	1		; unused, except on write in LevelSizeLoad...
 Camera_Max_X_pos_target:	ds.w	1		; unused
@@ -536,14 +546,15 @@ Camera_Max_Y_pos_target:	ds.w	1
 
 Camera_Boundaries:
 Camera_Min_X_pos:	ds.w	1
-v_limitleft2:
-Camera_Max_X_pos:
-v_limitright2:		ds.w	1
-Camera_Min_Y_pos:
-v_limittop2:		ds.w	1
-Camera_Max_Y_pos:
-v_limitbtm2:		ds.w	1
+Camera_Max_X_pos:	ds.w	1
+Camera_Min_Y_pos:	ds.w	1
+Camera_Max_Y_pos:	ds.w	1
 Camera_Boundaries_End:
+
+v_limitleft2:=		Camera_Min_X_pos
+v_limitright2:=		Camera_Max_X_pos
+v_limittop2:=		Camera_Min_Y_pos
+v_limitbtm2:=		Camera_Max_Y_pos
 
 Camera_Delay:
 Horiz_scroll_delay_val:	ds.w	1			; if its value is a, where a != 0, X scrolling will be based on the player's X position a-1 frames ago
