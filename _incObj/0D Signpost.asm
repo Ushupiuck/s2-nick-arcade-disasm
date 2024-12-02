@@ -31,9 +31,9 @@ Obj0D_Init:
 Obj0D_Main:
 		move.w	(v_player+obX).w,d0
 		sub.w	obX(a0),d0
-		bcs.s	locret_F026
-		cmpi.w	#$20,d0
-		bcc.s	locret_F026
+		blo.s	locret_F026
+		cmpi.w	#32,d0
+		bhs.s	locret_F026
 		move.w	#sfx_Signpost,d0
 		jsr	(PlaySound).l
 		clr.b	(f_timecount).w
@@ -56,7 +56,7 @@ Obj0D_Spin:
 Obj0D_Sparkle:
 		subq.w	#1,objoff_32(a0)
 		bpl.s	locret_F0B2
-		move.w	#$B,objoff_32(a0)
+		move.w	#12-1,objoff_32(a0)
 		moveq	#0,d0
 		move.b	objoff_34(a0),d0
 		addq.b	#2,objoff_34(a0)
@@ -86,10 +86,14 @@ locret_F0B2:
 ; ===========================================================================
 ; dword_F0B4:
 Obj0D_RingSparklePositions:
-		dc.l $E8F00808
-		dc.l $F00018F8
-		dc.l $F81000
-		dc.l $E8081810
+		dc.b -$18,-$10		; x-position, y-position
+		dc.b	8,   8
+		dc.b -$10,   0
+		dc.b  $18,  -8
+		dc.b	0,  -8
+		dc.b  $10,   0
+		dc.b -$18,   8
+		dc.b  $18, $10
 ; ===========================================================================
 ; loc_F0C4:
 Obj0D_EndLevel:
@@ -106,7 +110,7 @@ loc_F0E0:
 		beq.s	loc_F0F6
 		move.w	(v_player+obX).w,d0
 		move.w	(Camera_Max_X_pos).w,d1
-		addi.w	#$128,d1
+		addi.w	#320-24,d1
 		cmp.w	d1,d0
 		bcs.s	locret_F15E
 
@@ -139,7 +143,7 @@ Load_EndOfAct:
 		divu.w	#15,d0
 		moveq	#$14,d1
 		cmp.w	d1,d0
-		bcs.s	loc_F140
+		blo.s	loc_F140
 		move.w	d1,d0
 
 loc_F140:

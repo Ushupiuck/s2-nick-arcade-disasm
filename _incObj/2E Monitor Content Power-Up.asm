@@ -48,7 +48,7 @@ sub_B098:
 
 loc_B0AC:
 		addq.b	#2,obRoutine(a0)
-		move.w	#29,obTimeFrame(a0)
+		move.w	#30-1,obTimeFrame(a0)
 		moveq	#0,d0
 		move.b	obAnim(a0),d0
 		add.w	d0,d0

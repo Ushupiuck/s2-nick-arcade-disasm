@@ -45,7 +45,7 @@ loc_1A62:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1A78
+		bhs.s	loc_1A78
 		move.b	(a6)+,(a2)+
 
 loc_1A78:
@@ -71,7 +71,7 @@ loc_1A84:
 
 loc_1A98:
 		add.b	d1,d1
-		bcc.s	loc_1AAC
+		bhs.s	loc_1AAC
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1ABE
@@ -133,7 +133,7 @@ loc_1ADE:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1AF2
+		bhs.s	loc_1AF2
 		move.b	(a6)+,(a2)+
 
 loc_1AF2:
@@ -159,7 +159,7 @@ loc_1AFE:
 
 loc_1B12:
 		add.b	d1,d1
-		bcc.s	loc_1B26
+		bhs.s	loc_1B26
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1B38
@@ -221,7 +221,7 @@ loc_1B58:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1B6C
+		bhs.s	loc_1B6C
 		move.b	(a6)+,(a2)+
 
 loc_1B6C:
@@ -249,7 +249,7 @@ loc_1B78:
 loc_1B8E:
 		move.b	(a0)+,d1
 		add.b	d1,d1
-		bcc.s	loc_1BA4
+		bhs.s	loc_1BA4
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1BB6
@@ -311,7 +311,7 @@ loc_1BD6:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1BEA
+		bhs.s	loc_1BEA
 		move.b	(a6)+,(a2)+
 
 loc_1BEA:
@@ -338,7 +338,7 @@ loc_1BF6:
 
 loc_1C0C:
 		add.b	d1,d1
-		bcc.s	loc_1C20
+		bhs.s	loc_1C20
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1C32
@@ -399,7 +399,7 @@ loc_1C52:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1C66
+		bhs.s	loc_1C66
 		move.b	(a6)+,(a2)+
 
 loc_1C66:
@@ -427,7 +427,7 @@ loc_1C72:
 
 loc_1C8A:
 		add.b	d1,d1
-		bcc.s	loc_1C9E
+		bhs.s	loc_1C9E
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1CB0
@@ -489,7 +489,7 @@ loc_1CD0:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1CE4
+		bhs.s	loc_1CE4
 		move.b	(a6)+,(a2)+
 
 loc_1CE4:
@@ -517,7 +517,7 @@ loc_1CF0:
 
 loc_1D08:
 		add.b	d1,d1
-		bcc.s	loc_1D1C
+		bhs.s	loc_1D1C
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1D2E
@@ -580,7 +580,7 @@ loc_1D4E:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1D64
+		bhs.s	loc_1D64
 		move.b	(a6)+,(a2)+
 
 loc_1D64:
@@ -607,7 +607,7 @@ loc_1D70:
 
 loc_1D86:
 		add.b	d1,d1
-		bcc.s	loc_1D9A
+		bhs.s	loc_1D9A
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1DAC
@@ -669,7 +669,7 @@ loc_1DCC:
 		move.b	(a1)+,d5
 		suba.l	d5,a6
 		add.b	d1,d1
-		bcc.s	loc_1DE2
+		bhs.s	loc_1DE2
 		move.b	(a6)+,(a2)+
 
 loc_1DE2:
@@ -695,7 +695,7 @@ loc_1DEE:
 
 loc_1E02:
 		add.b	d1,d1
-		bcc.s	loc_1E16
+		bhs.s	loc_1E16
 		moveq	#0,d0
 		move.b	(a1)+,d0
 		beq.s	loc_1E28

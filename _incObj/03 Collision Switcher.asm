@@ -66,14 +66,14 @@ loc_13EE0:
 		movea.l	d4,a1
 		move.w	obX(a1),d4
 		cmp.w	d0,d4
-		bcs.w	loc_13F10
+		blo.w	loc_13F10
 		cmp.w	d1,d4
-		bcc.w	loc_13F10
+		bhs.w	loc_13F10
 		move.w	obY(a1),d4
 		cmp.w	d2,d4
-		bcs.w	loc_13F10
+		blo.w	loc_13F10
 		cmp.w	d3,d4
-		bcc.w	loc_13F10
+		bhs.w	loc_13F10
 		ori.w	#$8000,d5
 		bra.w	loc_13FA8
 ; ---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ loc_13F10:
 loc_13F26:
 		move.w	obX(a1),d4
 		cmp.w	obX(a0),d4
-		bcs.s	loc_13F62
+		blo.s	loc_13F62
 		move.b	#$C,obTopSolidBit(a1)
 		move.b	#$D,obLRBSolidBit(a1)
 		btst	#3,d0
@@ -162,14 +162,14 @@ loc_13FE2:
 		movea.l	d4,a1
 		move.w	obX(a1),d4
 		cmp.w	d0,d4
-		bcs.w	loc_14012
+		blo.w	loc_14012
 		cmp.w	d1,d4
-		bcc.w	loc_14012
+		bhs.w	loc_14012
 		move.w	obY(a1),d4
 		cmp.w	d2,d4
-		bcs.w	loc_14012
+		blo.w	loc_14012
 		cmp.w	d3,d4
-		bcc.w	loc_14012
+		bhs.w	loc_14012
 		ori.w	#$8000,d5
 		bra.w	loc_140AA
 ; ---------------------------------------------------------------------------
@@ -186,7 +186,7 @@ loc_14012:
 loc_14028:
 		move.w	obY(a1),d4
 		cmp.w	obY(a0),d4
-		bcs.s	loc_14064
+		blo.s	loc_14064
 		move.b	#$C,obTopSolidBit(a1)
 		move.b	#$D,obLRBSolidBit(a1)
 		btst	#3,d0

@@ -123,7 +123,7 @@ loc_7CDE:
 		move.b	objoff_3F(a0),d0
 		sub.b	objoff_3B(a0),d0
 		beq.s	loc_7CFA
-		bcc.s	loc_7CF6
+		bhs.s	loc_7CF6
 		addq.b	#1,objoff_3F(a0)
 		bra.s	loc_7CFA
 ; ---------------------------------------------------------------------------
@@ -193,7 +193,7 @@ loc_7D74:
 		move.b	objoff_3F(a0),d0
 		sub.b	objoff_3B(a0),d0
 		beq.s	loc_7D90
-		bcc.s	loc_7D8C
+		bhs.s	loc_7D8C
 		addq.b	#1,objoff_3F(a0)
 		bra.s	loc_7D90
 ; ---------------------------------------------------------------------------
@@ -252,7 +252,7 @@ sub_7DDA:
 		add.w	d1,d0
 		bmi.s	loc_7DFA
 		cmp.w	d2,d0
-		bcs.s	loc_7E08
+		blo.s	loc_7E08
 
 loc_7DFA:
 		bclr	#3,obStatus(a1)
@@ -266,7 +266,7 @@ loc_7E08:
 		move.b	d0,(a0,d5.w)
 		movea.l	objoff_30(a0),a2
 		cmpi.w	#8,d0
-		bcs.s	loc_7E20
+		blo.s	loc_7E20
 		movea.l	objoff_34(a0),a2
 		subi.w	#8,d0
 
@@ -473,7 +473,7 @@ loc_7F9A:
 		lea	(a4,d3.w),a3
 		adda.w	d2,a3
 		subq.w	#1,d2
-		bcs.s	locret_7FE4
+		blo.s	locret_7FE4
 
 loc_7FC0:
 		moveq	#0,d0
