@@ -1922,42 +1922,42 @@ PalLoad4_Water:
 ; ---------------------------------------------------------------------------
 ; Palette data
 ; ---------------------------------------------------------------------------
-Pal_SegaBG:		binclude	"palette/Sega Background.bin"
-			even
-Pal_Title:		binclude	"palette/Title Screen.bin"
-			even
-Pal_LevelSelect:	binclude	"palette/Level Select.bin"
-			even
-Pal_SonicTails:		binclude	"palette/Sonic and Tails.bin"
-			even
-Pal_GHZ:		binclude	"palette/GHZ.bin"
-			even
-Pal_HPZWater:		binclude	"palette/HPZ Underwater.bin"
-			even
-Pal_CPZ:		binclude	"palette/CPZ.bin"
-			even
-Pal_EHZ:		binclude	"palette/EHZ.bin"
-			even
-Pal_HPZ:		binclude	"palette/HPZ.bin"
-			even
-Pal_HTZ:		binclude	"palette/HTZ.bin"
-			even
+Pal_SegaBG:	binclude	"palette/Sega Background.bin"
+		even
+Pal_Title:	binclude	"palette/Title Screen.bin"
+		even
+Pal_LevelSel:	binclude	"palette/Level Select.bin"
+		even
+Pal_SonicTails:	binclude	"palette/Sonic and Tails.bin"
+		even
+Pal_GHZ:	binclude	"palette/GHZ.bin"
+		even
+Pal_HPZWater:	binclude	"palette/HPZ Underwater.bin"
+		even
+Pal_CPZ:	binclude	"palette/CPZ.bin"
+		even
+Pal_EHZ:	binclude	"palette/EHZ.bin"
+		even
+Pal_HPZ:	binclude	"palette/HPZ.bin"
+		even
+Pal_HTZ:	binclude	"palette/HTZ.bin"
+		even
 Pal_S1SpecialStage:	binclude	"palette/S1 Special Stage.bin"
-			even
-Pal_LZ4:		binclude	"palette/LZ4.bin"
-			even
-Pal_LZ4Water:		binclude	"palette/LZ4 Underwater.bin"
-			even
+		even
+Pal_LZ4:	binclude	"palette/LZ4.bin"
+		even
+Pal_LZ4Water:	binclude	"palette/LZ4 Underwater.bin"
+		even
 Pal_LZSonicWater:	binclude	"palette/LZ Sonic Underwater.bin"
-			even
+		even
 Pal_LZ4SonicWater:	binclude	"palette/LZ4 Sonic Underwater.bin"
-			even
+		even
 Pal_S1SpeResults:	binclude	"palette/S1 Special Stage Results.bin"
-			even
-Pal_S1Continue:		binclude	"palette/S1 Continue Screen.bin"
-			even
-Pal_S1Ending:		binclude	"palette/S1 Ending.bin"
-			even
+		even
+Pal_S1Continue:	binclude	"palette/S1 Continue Screen.bin"
+		even
+Pal_S1Ending:	binclude	"palette/S1 Ending.bin"
+		even
 
 		nop
 

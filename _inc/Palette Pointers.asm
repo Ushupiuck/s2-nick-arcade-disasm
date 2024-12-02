@@ -13,7 +13,7 @@ palptr	macro	ptr,ram,size
 PalPointers:	
 ptr_Pal_SegaBG:		palptr	Pal_SegaBG,v_palette,$20
 ptr_Pal_Title:		palptr	Pal_Title,v_palette,$20
-ptr_Pal_LevelSel:	palptr	Pal_LevelSelect,v_palette,$20
+ptr_Pal_LevelSel:	palptr	Pal_LevelSel,v_palette,$20
 ptr_Pal_SonicTails:	palptr	Pal_SonicTails,v_palette,8
 Pal_Levels:
 ptr_Pal_GHZ:		palptr	Pal_GHZ,v_palette+$20,$18
