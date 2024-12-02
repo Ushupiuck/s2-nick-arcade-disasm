@@ -19753,8 +19753,8 @@ Obj12_Display:
 ; ---------------------------------------------------------------------------
 Map_Obj12:	dc.w word_14444-Map_Obj12
 word_14444:	dc.w 2
-		dc.w $F00F,    0,    0,$FFE0		; 0
-		dc.w $F00F,  $10,    8,	   0		; 4
+		dc.w $F00F,    0,    0,$FFE0
+		dc.w $F00F,  $10,    8,	   0
 ; ---------------------------------------------------------------------------
 		nop
 ;----------------------------------------------------
@@ -20050,6 +20050,8 @@ Obj06_PlayerAngleArray:dc.b   0,  0,  1,  1		; 0
 		dc.b $DC,$DC,$DC,$DC			; 40
 		dc.b $F2,$F2,$F2,$F2			; 44
 		dc.b   1,  1,  0,  0			; 48
+		even
+
 Obj06_PlayerDeltaYArray:dc.b  $20, $20,	$20, $20, $20, $20, $20, $20, $20, $20,	$20, $20, $20, $20, $20, $20
 		dc.b  $20, $20,	$20, $20, $20, $20, $20, $20, $20, $20,	$20, $20, $20, $20, $1F, $1F ; 16
 		dc.b  $1F, $1F,	$1F, $1F, $1F, $1F, $1F, $1F, $1F, $1F,	$1F, $1F, $1F, $1E, $1E, $1E ; 32
@@ -20421,7 +20423,6 @@ Map_obj14:	binclude	"mappings/sprite/obj14_a.bin"
 ; sprite mappings
 ; -------------------------------------------------------------------------------
 Map_obj14b:	binclude	"mappings/sprite/obj14_b.bin"
-
 ; ---------------------------------------------------------------------------
 		nop
 
@@ -21096,8 +21097,9 @@ Ani_Obj4D:	dc.w byte_159D0-Ani_Obj4D
 		dc.w byte_159DE-Ani_Obj4D
 		dc.w byte_159E1-Ani_Obj4D
 byte_159D0:	dc.b   2,  0,  0,  0,  3,  3,  4,  1,  1,  2,  5,  5,  5,$FF
-byte_159DE:	dc.b  $F,  0,$FF			; 0
-byte_159E1:	dc.b   2,  6,  7,$FF,  0		; 0
+byte_159DE:	dc.b  $F,  0,$FF
+byte_159E1:	dc.b   2,  6,  7,$FF
+		even
 Map_Obj4D:	dc.w word_159F6-Map_Obj4D
 		dc.w word_15A20-Map_Obj4D
 		dc.w word_15A4A-Map_Obj4D
@@ -21331,6 +21333,7 @@ byte_15D4E:	dc.b  $E,  0,  1,$FF			; 0
 byte_15D52:	dc.b   3,  0,  1,$FF			; 0
 byte_15D56:	dc.b  $E,  2,  3,$FF			; 0
 byte_15D5A:	dc.b   3,  2,  3,$FF			; 0
+		even
 Map_Obj52:	dc.w word_15D66-Map_Obj52
 		dc.w word_15D70-Map_Obj52
 		dc.w word_15D7A-Map_Obj52
@@ -21937,14 +21940,15 @@ Ani_Obj50:	dc.w byte_163B0-Ani_Obj50
 		dc.w byte_163C8-Ani_Obj50
 		dc.w byte_163CB-Ani_Obj50
 		dc.w byte_163CF-Ani_Obj50
-byte_163B0:	dc.b  $E,  0,$FF			; 0
-byte_163B3:	dc.b   5,  3,  4,  3,  4,  3,  4,$FF	; 0
-byte_163BB:	dc.b   3,  5,  6,  7,  6,$FF		; 0
-byte_163C1:	dc.b   3,  1,  2,$FF			; 0
-byte_163C5:	dc.b   1,  5,$FF			; 0
-byte_163C8:	dc.b  $E,  8,$FF			; 0
-byte_163CB:	dc.b   1,  9, $A,$FF			; 0
-byte_163CF:	dc.b   5, $B, $C, $B, $C, $B, $C,$FF,  0
+byte_163B0:	dc.b  $E,  0,$FF
+byte_163B3:	dc.b   5,  3,  4,  3,  4,  3,  4,$FF
+byte_163BB:	dc.b   3,  5,  6,  7,  6,$FF
+byte_163C1:	dc.b   3,  1,  2,$FF
+byte_163C5:	dc.b   1,  5,$FF
+byte_163C8:	dc.b  $E,  8,$FF
+byte_163CB:	dc.b   1,  9, $A,$FF
+byte_163CF:	dc.b   5, $B, $C, $B, $C, $B, $C,$FF
+		even
 Map_Obj50:	dc.w word_163F2-Map_Obj50
 		dc.w word_1640C-Map_Obj50
 		dc.w word_16416-Map_Obj50
@@ -22678,6 +22682,8 @@ Ani_Obj4A:	dc.w byte_16C98-Ani_Obj4A
 byte_16C98:	dc.b  $F,  0,$FF			; 0
 byte_16C9B:	dc.b   3,  1,  2,  3,$FF		; 0
 byte_16CA0:	dc.b   2,  5,  6,$FF			; 0
+		even
+
 Map_Obj4A:	dc.w word_16CB2-Map_Obj4A
 		dc.w word_16CC4-Map_Obj4A
 		dc.w word_16CDE-Map_Obj4A
@@ -22988,11 +22994,13 @@ Ani_Obj4C:	dc.w byte_16FC2-Ani_Obj4C
 		dc.w byte_16FC6-Ani_Obj4C
 		dc.w byte_16FD5-Ani_Obj4C
 		dc.w byte_16FE6-Ani_Obj4C
-byte_16FC2:	dc.b   1,  0,  5,$FF			; 0
+byte_16FC2:	dc.b   1,  0,  5,$FF
 byte_16FC6:	dc.b   1,  1,  6,  1,  6,  2,  7,  2,  7,  1,  6,  1,  6,$FD,  0
 byte_16FD5:	dc.b   1,  1,  6,  1,  6,  2,  7,  3,  8,  4,  9,  4,  9,  3,  8,$FE
-		dc.b  $A				; 16
-byte_16FE6:	dc.b   3, $A, $B, $C, $D, $E,$FF,  0	; 0
+		dc.b  $A
+byte_16FE6:	dc.b   3, $A, $B, $C, $D, $E,$FF
+		even
+
 Map_Obj4C:	dc.w word_1700C-Map_Obj4C
 		dc.w word_1702E-Map_Obj4C
 		dc.w word_17050-Map_Obj4C
@@ -23203,9 +23211,11 @@ loc_172E6:
 Ani_Obj4E:	dc.w byte_172F4-Ani_Obj4E
 		dc.w byte_172FC-Ani_Obj4E
 		dc.w byte_172FF-Ani_Obj4E
-byte_172F4:	dc.b   3,  0,  4,  2,  3,  1,  5,$FF	; 0
-byte_172FC:	dc.b  $F,  0,$FF			; 0
+byte_172F4:	dc.b   3,  0,  4,  2,  3,  1,  5,$FF
+byte_172FC:	dc.b  $F,  0,$FF
 byte_172FF:	dc.b   3,  6, $A,  8,  9,  7, $B,$FF,  0
+		even
+
 Map_Obj4E:	dc.w word_17320-Map_Obj4E
 		dc.w word_17342-Map_Obj4E
 		dc.w word_17364-Map_Obj4E
@@ -23303,14 +23313,13 @@ Ani_obj53:	dc.w byte_17572-Ani_obj53
 		dc.w byte_1757A-Ani_obj53
 byte_17572:	dc.b   7,  0,  1,$FF
 byte_17576:	dc.b   3,  0,  1,$FF
-byte_1757A:	dc.b   7,  0,$FF,  0
+byte_1757A:	dc.b   7,  0,$FF
 		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj53:	binclude	"mappings/sprite/obj53.bin"
 		align 4
-
 ; ===========================================================================
 
 loc_175B8:
@@ -23515,8 +23524,9 @@ loc_177EC:
 ; ---------------------------------------------------------------------------
 Ani_Obj54:	dc.w byte_17818-Ani_Obj54
 		dc.w byte_1781C-Ani_Obj54
-byte_17818:	dc.b   5,  0,  1,$FF			; 0
-byte_1781C:	dc.b   1,  0,  1,$FF			; 0
+byte_17818:	dc.b   5,  0,  1,$FF
+byte_1781C:	dc.b   1,  0,  1,$FF
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
@@ -24165,6 +24175,8 @@ byte_18004:	dc.b   1,  1,  1,  1,  2,  2,  2,  3,  3,  3,  4,  4,  4,  0,  0,  0
 		dc.b   0,  0,  0,  0,  0,$FF		; 16
 byte_1801A:	dc.b   1,  0,  0,  0,  0,  0,  0,  0,  0,  4,  4,  4,  3,  3,  3,  2
 		dc.b   2,  2,  1,  1,  1,  5,  6,$FE,  2,  0 ; 16
+		even
+
 Map_Obj58:	dc.w word_18042-Map_Obj58
 		dc.w word_1804C-Map_Obj58
 		dc.w word_18076-Map_Obj58
@@ -24205,9 +24217,11 @@ word_180EE:	dc.w 3
 Ani_Obj58a:	dc.w byte_1810E-Ani_Obj58a
 		dc.w byte_18113-Ani_Obj58a
 		dc.w byte_18117-Ani_Obj58a
-byte_1810E:	dc.b   5,  1,  2,  3,$FF		; 0
-byte_18113:	dc.b   1,  4,  5,$FF			; 0
-byte_18117:	dc.b   1,  6,  7,$FF,  0		; 0
+byte_1810E:	dc.b   5,  1,  2,  3,$FF
+byte_18113:	dc.b   1,  4,  5,$FF
+byte_18117:	dc.b   1,  6,  7,$FF
+		even
+
 Map_Obj58a:	dc.w word_1812E-Map_Obj58a
 		dc.w word_18148-Map_Obj58a
 		dc.w word_18152-Map_Obj58a
@@ -24381,7 +24395,7 @@ loc_18340:
 		jsr	(AnimateSprite).l
 		jmp	(DisplaySprite).l
 ; ===========================================================================
-byte_1836E:	dc.b   0,$FF,  1,  0			; 0
+byte_1836E:	dc.b   0,$FF,  1,  0
 ; ===========================================================================
 
 loc_18372:
@@ -24527,8 +24541,10 @@ word_18550:	dc.w 1
 		dc.w $F00F,  $54,  $2A,$FFF0		; 0
 Ani_Obj55a:	dc.w byte_1855E-Ani_Obj55a
 		dc.w byte_18561-Ani_Obj55a
-byte_1855E:	dc.b  $F,  0,$FF			; 0
-byte_18561:	dc.b   7,  1,  2,$FF,  0		; 0
+byte_1855E:	dc.b  $F,  0,$FF
+byte_18561:	dc.b   7,  1,  2,$FF
+		even
+
 Map_Obj55:	dc.w word_1856C-Map_Obj55
 		dc.w word_1858E-Map_Obj55
 		dc.w word_185B0-Map_Obj55
@@ -24609,7 +24625,6 @@ Obj8A_Display:
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj8A:	binclude	"mappings/sprite/obj8A.bin"
-
 ; ===========================================================================
 		nop
 
@@ -24694,6 +24709,8 @@ byte_192FE:	dc.b   3,  8,  9,$FF
 byte_19302:	dc.b   1,  8,  9,$FF
 byte_19306:	dc.b  $F,  7,$FF
 byte_19309:	dc.b   2,  9,  8, $B, $C, $B, $C,  9,  8,$FE,  2
+		even
+
 Map_Eggman:	dc.w word_1932E-Map_Eggman
 		dc.w word_19360-Map_Eggman
 		dc.w word_19372-Map_Eggman
@@ -24995,6 +25012,8 @@ locret_1972A:
 Ani_Obj3E:	dc.w byte_19730-Ani_Obj3E
 		dc.w byte_19730-Ani_Obj3E
 byte_19730:	dc.b   2,  1,  3,$FF
+		even
+
 Map_Obj3E:	dc.w word_19742-Map_Obj3E
 		dc.w word_1977C-Map_Obj3E
 		dc.w word_19786-Map_Obj3E
@@ -26645,7 +26664,7 @@ APM_EHZ_End:
 APM_None:	dc.w 0
 APM_None_End:
 
-APM_LZ:;	begin_animpat
+APM_Unk:;	begin_animpat
 		dc.w $1800-$B80 ; Bug: This should be $1800-$138
 		dc.w bytesToWcnt($138)
 		dc.w make_block_tile($3A0+$1,0,0,2,0),make_block_tile($3A0+$2,0,0,2,0)
