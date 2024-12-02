@@ -2545,7 +2545,7 @@ Demo_Levels:	dc.b id_CPZ,0
 
 LevelSelect_Controls:
 		move.b	(v_jpadpress1).w,d1
-		andi.b	#btnUp+btnDn,d1
+		andi.b	#btnUp|btnDn,d1
 		bne.s	loc_3706
 		subq.w	#1,(v_levseldelay).w
 		bpl.s	loc_3740
@@ -2553,7 +2553,7 @@ LevelSelect_Controls:
 loc_3706:
 		move.w	#$B,(v_levseldelay).w
 		move.b	(v_jpadhold1).w,d1
-		andi.b	#btnUp+btnDn,d1
+		andi.b	#btnUp|btnDn,d1
 		beq.s	loc_3740
 		move.w	(v_levselitem).w,d0
 		btst	#bitUp,d1
@@ -2580,7 +2580,7 @@ loc_3740:
 		cmpi.w	#$14,(v_levselitem).w
 		bne.s	locret_377A
 		move.b	(v_jpadpress1).w,d1
-		andi.b	#btnL+btnR,d1
+		andi.b	#btnL|btnR,d1
 		beq.s	locret_377A
 		move.w	(v_levselsound).w,d0
 		btst	#bitL,d1
@@ -2699,6 +2699,8 @@ LevelSelect_Text:
 		even
 ; ---------------------------------------------------------------------------
 
+; This appears to be potentially related to 16x16 data despite it using the
+; address for chunk RAM.
 UnknownSub_1:
 		lea	(v_start).l,a1
 		move.w	#bytesToWcnt($5D8),d2
