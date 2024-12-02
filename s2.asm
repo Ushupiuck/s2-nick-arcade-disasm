@@ -274,17 +274,21 @@ GameClrRAM:
 
 MainGameLoop:
 		move.b	(v_gamemode).w,d0
-		andi.w	#$1C,d0
+	if FixBugs
+		andi.w	#GameModeID_SpecialStage,d0	; limit to special stage game mode
+	else
+		andi.w	#GameModeID_S1Credits,d0	; limit to credits game mode (even though it doesn't exist)
+	endif
 		jsr	GameModeArray(pc,d0.w)
 		bra.s	MainGameLoop
 ; ===========================================================================
 ; loc_3A8:
 GameModeArray:
-GameMode_SegaScreen:	bra.w	SegaScreen		; SEGA screen mode
-GameMode_TitleScreen:	bra.w	TitleScreen		; Title screen mode
-GameMode_Demo:		bra.w	Level			; Demo mode
-GameMode_Level:		bra.w	Level			; Zone play mode
-GameMode_SpecialStage:	bra.w	SpecialStage		; Special Stage play mode
+GameMode_SegaScreen:	bra.w	SegaScreen		; SEGA screen mode ($00)
+GameMode_TitleScreen:	bra.w	TitleScreen		; Title screen mode ($04)
+GameMode_Demo:		bra.w	Level			; Demo mode ($08)
+GameMode_Level:		bra.w	Level			; Zone play mode ($0C)
+GameMode_SpecialStage:	bra.w	SpecialStage		; Special Stage play mode ($10)
 ; ===========================================================================
 ; Leftover from Sonic 1, turns the screen red if the checksum check fails
 ChecksumError:
