@@ -283,6 +283,8 @@ GameModeID_SpecialStage =	id(GameMode_SpecialStage) ; $10
 GameModeID_ContinueScreen:	equ $14			; $14 ; referenced despite it not existing
 GameModeID_S1Ending:		equ $18			; $18 ; referenced despite it not existing
 GameModeID_S1Credits:		equ $1C			; $1C ; referenced despite it not existing
+GameModeID_S1End =		GameModeID_S1Credits	; $1C ; referenced despite it not existing
+GameModeID_End =		GameModeID_SpecialStage	; $10
 GameModeFlag_TitleCard:		equ 7			; flag bit
 GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 

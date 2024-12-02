@@ -275,9 +275,9 @@ GameClrRAM:
 MainGameLoop:
 		move.b	(v_gamemode).w,d0
 	if FixBugs
-		andi.w	#GameModeID_SpecialStage,d0	; limit to special stage game mode
+		andi.w	#GameModeID_End,d0	; limit to special stage game mode
 	else
-		andi.w	#GameModeID_S1Credits,d0	; limit to credits game mode (even though it doesn't exist)
+		andi.w	#GameModeID_S1End,d0	; limit to credits game mode (even though it doesn't exist)
 	endif
 		jsr	GameModeArray(pc,d0.w)
 		bra.s	MainGameLoop
@@ -26408,7 +26408,7 @@ AnimCue_CPZ:	zoneanimstart
 
 
 ; sub_1AC1E: ShiftCPZBackground:
-		cmpi.b	#id_CPZ,(Current_Zone).w		; is this Chemical Plant Zone?
+		cmpi.b	#id_CPZ,(Current_Zone).w	; is this Chemical Plant Zone?
 		beq.s	loc_1AC28			; if yes, branch
 
 locret_1AC26:
