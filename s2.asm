@@ -9091,7 +9091,7 @@ ptr_Obj05:	dc.l Obj05				; Tails' tails
 ptr_Obj06:	dc.l Obj06				; Twisting spiral pathway in EHZ
 ptr_Obj07:	dc.l ObjNull
 ptr_Obj08:	dc.l Obj08				; Water splash in HPZ
-ptr_Obj09:	dc.l Obj09				; (S1) Sonic in the Speical Stage
+ptr_Obj09:	dc.l Obj09				; (S1) Sonic in the Special Stage
 ptr_Obj0A:	dc.l Obj0A				; Small bubbles from Sonic's face while underwater
 ptr_Obj0B:	dc.l Obj0B				; (S1) Pole that breaks in LZ
 ptr_Obj0C:	dc.l Obj0C				; Strange floating/falling platform object from CPZ

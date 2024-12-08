@@ -320,6 +320,7 @@ DAC_sample_rate:
 		dc.b dpcmLoopCounter(8750)
 		dc.b dpcmLoopCounter(7150)
 		dc.b dpcmLoopCounter(7000)
+		; These values are invalid
 		dc.b $FF, $FF
 		even
 
@@ -1444,10 +1445,10 @@ StopAllSound:
 		jsr	WriteFMI(pc)
 		movea.l	a6,a0
 	if FixBugs
-		move.w	#(SMPS_RAM.v_1up_ram_copy/4)-1,d0	; Clear $400 bytes: all variables and track data
+		move.w	#bytesToLcnt(SMPS_RAM.v_1up_ram_copy),d0	; Clear $400 bytes: all variables and track data
 	else
 		; DANGER! This should be clearing all variables and track data, but misses the last $10 bytes of v_spcsfx_psg3_Track.
-		move.w	#((SMPS_RAM.v_1up_ram_copy-$10)/4)-1,d0	; Clear $390 bytes: all variables and most track data
+		move.w	#bytesToLcnt(SMPS_RAM.v_1up_ram_copy-$10),d0	; Clear $390 bytes: all variables and most track data
 	endif
 ; loc_725B6:
 .clearramloop:
