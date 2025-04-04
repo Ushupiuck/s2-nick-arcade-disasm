@@ -209,7 +209,7 @@ Crab_BallMove:	; Routine 8
 		bsr.w	AnimateSprite
 		bsr.w	ObjectMoveAndFall
 		move.w	(Camera_Max_Y_pos).w,d0
-		addi.w	#$E0,d0
+		addi.w	#224,d0
 		cmp.w	obY(a0),d0
 		blo.w	DeleteObject
 		bra.w	DisplaySprite

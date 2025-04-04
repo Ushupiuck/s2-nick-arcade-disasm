@@ -12,7 +12,7 @@ Obj17_Index:	dc.w loc_8680-Obj17_Index
 loc_8680:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj17,obMap(a0)
-		move.w	#$4398,obGfx(a0)
+		move.w	#make_art_tile($398,2,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#7,obStatus(a0)
 		move.b	#4,obRender(a0)
@@ -47,18 +47,18 @@ loc_86D4:
 		move.w	d2,obY(a1)
 		move.w	d3,obX(a1)
 		move.l	obMap(a0),obMap(a1)
-		move.w	#$4398,obGfx(a1)
+		move.w	#make_art_tile($398,2,0),obGfx(a1)
 		bsr.w	Adjust2PArtPointer2
 		move.b	#4,obRender(a1)
 		move.b	#3,obPriority(a1)
 		move.b	#8,obActWid(a1)
-		move.b	d6,$3E(a1)
+		move.b	d6,objoff_3E(a1)
 		addq.b	#1,d6
 		andi.b	#7,d6
 		addi.w	#$10,d3
 		cmp.w	obX(a0),d3
 		bne.s	loc_8746
-		move.b	d6,$3E(a0)
+		move.b	d6,objoff_3E(a0)
 		addq.b	#1,d6
 		andi.b	#7,d6
 		addi.w	#$10,d3
@@ -98,7 +98,7 @@ loc_8788:
 sub_878C:
 		move.b	(v_ani0_frame).w,d0
 		move.b	#0,obColType(a0)
-		add.b	$3E(a0),d0
+		add.b	objoff_3E(a0),d0
 		andi.b	#7,d0
 		move.b	d0,obFrame(a0)
 		bne.s	locret_87AA

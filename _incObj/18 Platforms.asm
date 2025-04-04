@@ -101,7 +101,7 @@ sub_890C:
 		move.w	#$400,d1
 		muls.w	d1,d0
 		swap	d0
-		add.w	$2C(a0),d0
+		add.w	objoff_2C(a0),d0
 		move.w	d0,obY(a0)
 		rts
 ; End of function sub_890C
@@ -141,7 +141,7 @@ locret_8956:
 ; ---------------------------------------------------------------------------
 
 loc_8958:
-		move.w	$32(a0),d0
+		move.w	objoff_32(a0),d0
 		move.b	obAngle(a0),d1
 		neg.b	d1
 		addi.b	#$40,d1
@@ -149,7 +149,7 @@ loc_8958:
 ; ---------------------------------------------------------------------------
 
 loc_8968:
-		move.w	$32(a0),d0
+		move.w	objoff_32(a0),d0
 		move.b	obAngle(a0),d1
 		subi.b	#$40,d1
 
@@ -161,7 +161,7 @@ loc_8974:
 ; ---------------------------------------------------------------------------
 
 loc_8980:
-		move.w	$34(a0),d0
+		move.w	objoff_34(a0),d0
 		move.b	(v_oscillate+$E).w,d1
 		neg.b	d1
 		addi.b	#$30,d1
@@ -169,14 +169,14 @@ loc_8980:
 ; ---------------------------------------------------------------------------
 
 loc_8990:
-		move.w	$34(a0),d0
+		move.w	objoff_34(a0),d0
 		move.b	(v_oscillate+$E).w,d1
 		subi.b	#$30,d1
 		bra.s	loc_89BA
 ; ---------------------------------------------------------------------------
 
 loc_899E:
-		move.w	$34(a0),d0
+		move.w	objoff_34(a0),d0
 		move.b	obAngle(a0),d1
 		neg.b	d1
 		addi.b	#$40,d1
@@ -184,40 +184,40 @@ loc_899E:
 ; ---------------------------------------------------------------------------
 
 loc_89AE:
-		move.w	$34(a0),d0
+		move.w	objoff_34(a0),d0
 		move.b	obAngle(a0),d1
 		subi.b	#$40,d1
 
 loc_89BA:
 		ext.w	d1
 		add.w	d1,d0
-		move.w	d0,$2C(a0)
+		move.w	d0,objoff_2C(a0)
 		bra.w	loc_8AD2
 ; ---------------------------------------------------------------------------
 
 loc_89C6:
-		tst.w	$3A(a0)
+		tst.w	objoff_3A(a0)
 		bne.s	loc_89DC
 		btst	#3,obStatus(a0)
 		beq.s	locret_89DA
-		move.w	#$1E,$3A(a0)
+		move.w	#$1E,objoff_3A(a0)
 
 locret_89DA:
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_89DC:
-		subq.w	#1,$3A(a0)
+		subq.w	#1,objoff_3A(a0)
 		bne.s	locret_89DA
-		move.w	#$20,$3A(a0)
+		move.w	#$20,objoff_3A(a0)
 		addq.b	#1,obSubtype(a0)
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_89EE:
-		tst.w	$3A(a0)
+		tst.w	objoff_3A(a0)
 		beq.s	loc_8A2E
-		subq.w	#1,$3A(a0)
+		subq.w	#1,objoff_3A(a0)
 		bne.s	loc_8A2E
 		btst	#3,obStatus(a0)
 		beq.s	loc_8A28
@@ -233,16 +233,16 @@ loc_8A28:
 		move.b	#6,obRoutine(a0)
 
 loc_8A2E:
-		move.l	$2C(a0),d3
+		move.l	objoff_2C(a0),d3
 		move.w	obVelY(a0),d0
 		ext.l	d0
 		asl.l	#8,d0
 		add.l	d0,d3
-		move.l	d3,$2C(a0)
+		move.l	d3,objoff_2C(a0)
 		addi.w	#$38,obVelY(a0)
 		move.w	(Camera_Max_Y_pos).w,d0
-		addi.w	#$E0,d0
-		cmp.w	$2C(a0),d0
+		addi.w	#224,d0
+		cmp.w	objoff_2C(a0),d0
 		bcc.s	locret_8A5A
 		move.b	#4,obRoutine(a0)
 
@@ -251,7 +251,7 @@ locret_8A5A:
 ; ---------------------------------------------------------------------------
 
 loc_8A5C:
-		tst.w	$3A(a0)
+		tst.w	objoff_3A(a0)
 		bne.s	loc_8A7C
 		lea	(f_switch).w,a2
 		moveq	#0,d0
@@ -259,24 +259,24 @@ loc_8A5C:
 		lsr.w	#4,d0
 		tst.b	(a2,d0.w)
 		beq.s	locret_8A7A
-		move.w	#$3C,$3A(a0)
+		move.w	#$3C,objoff_3A(a0)
 
 locret_8A7A:
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_8A7C:
-		subq.w	#1,$3A(a0)
+		subq.w	#1,objoff_3A(a0)
 		bne.s	locret_8A7A
 		addq.b	#1,obSubtype(a0)
 		rts
 ; ---------------------------------------------------------------------------
 
 loc_8A88:
-		subq.w	#2,$2C(a0)
-		move.w	$34(a0),d0
+		subq.w	#2,objoff_2C(a0)
+		move.w	objoff_34(a0),d0
 		subi.w	#$200,d0
-		cmp.w	$2C(a0),d0
+		cmp.w	objoff_2C(a0),d0
 		bne.s	locret_8A9E
 		clr.b	obSubtype(a0)
 
@@ -285,25 +285,25 @@ locret_8A9E:
 ; ---------------------------------------------------------------------------
 
 loc_8AA0:
-		move.w	$34(a0),d0
+		move.w	objoff_34(a0),d0
 		move.b	obAngle(a0),d1
 		subi.b	#$40,d1
 		ext.w	d1
 		asr.w	#1,d1
 		add.w	d1,d0
-		move.w	d0,$2C(a0)
+		move.w	d0,objoff_2C(a0)
 		bra.w	loc_8AD2
 ; ---------------------------------------------------------------------------
 
 loc_8ABA:
-		move.w	$34(a0),d0
+		move.w	objoff_34(a0),d0
 		move.b	obAngle(a0),d1
 		neg.b	d1
 		addi.b	#$40,d1
 		ext.w	d1
 		asr.w	#1,d1
 		add.w	d1,d0
-		move.w	d0,$2C(a0)
+		move.w	d0,objoff_2C(a0)
 
 loc_8AD2:
 		move.b	(v_oscillate+$1A).w,obAngle(a0)

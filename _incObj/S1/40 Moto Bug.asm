@@ -17,7 +17,7 @@ Obj40_Index:	dc.w Obj40_Init-Obj40_Index
 ; loc_F25E:
 Obj40_Init:
 		move.l	#Map_obj40,obMap(a0)
-		move.w	#$4E0,obGfx(a0)
+		move.w	#make_art_tile($4E0,0,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#4,obRender(a0)
 		move.b	#4,obPriority(a0)
@@ -60,7 +60,7 @@ Obj40_Main_Index:	dc.w Obj40_Move-Obj40_Main_Index
 ; ===========================================================================
 ; loc_F2E6:
 Obj40_Move:
-		subq.w	#1,$30(a0)
+		subq.w	#1,objoff_30(a0)
 		bpl.s	locret_F308
 		addq.b	#2,ob2ndRout(a0)
 		move.w	#-$100,obVelX(a0)
@@ -81,9 +81,9 @@ Obj40_Floor:
 		cmpi.w	#$C,d1
 		bge.s	Obj40_StopMoving
 		add.w	d1,obY(a0)
-		subq.b	#1,$33(a0)
+		subq.b	#1,objoff_33(a0)
 		bpl.s	locret_F354
-		move.b	#$F,$33(a0)
+		move.b	#15,objoff_33(a0)
 		bsr.w	FindFreeObj
 		bne.s	locret_F354
 		_move.b	#id_Obj40,obID(a1)
@@ -98,7 +98,7 @@ locret_F354:
 ; loc_F356:
 Obj40_StopMoving:
 		subq.b	#2,ob2ndRout(a0)
-		move.w	#$3B,$30(a0)
+		move.w	#59,objoff_30(a0)
 		move.w	#0,obVelX(a0)
 		move.b	#0,obAnim(a0)
 		rts

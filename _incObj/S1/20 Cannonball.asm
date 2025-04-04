@@ -17,7 +17,7 @@ loc_9742:
 		addq.b	#2,obRoutine(a0)
 		move.b	#7,obHeight(a0)
 		move.l	#Map_S1Obj1E,obMap(a0)
-		move.w	#$2302,obGfx(a0)
+		move.w	#make_art_tile($302,1,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#4,obRender(a0)
 		move.b	#3,obPriority(a0)

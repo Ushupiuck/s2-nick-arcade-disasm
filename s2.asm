@@ -17022,7 +17022,7 @@ Obj0A_Index:	dc.w Obj0A_Init-Obj0A_Index
 Obj0A_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj0A_Bubbles,obMap(a0)
-		move.w	#$8348,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_LZ_Bubbles,0,1),obGfx(a0)
 		move.b	#$84,obRender(a0)
 		move.b	#$10,obActWid(a0)
 		move.b	#1,obPriority(a0)
@@ -17030,7 +17030,7 @@ Obj0A_Init:
 		bpl.s	loc_11ECC
 		addq.b	#8,obRoutine(a0)
 		move.l	#Map_Obj0A_Countdown,obMap(a0)
-		move.w	#$440,obGfx(a0)
+		move.w	#make_art_tile(ArtTile_LZ_Sonic_Drowning,0,0),obGfx(a0)
 		andi.w	#$7F,d0
 		move.b	d0,objoff_33(a0)
 		bra.w	Obj0A_Countdown
@@ -17399,7 +17399,7 @@ Obj38_Init:
 		move.w	#make_art_tile(ArtTile_Shield,0,0),obGfx(a0)
 		cmpi.b	#id_EHZ,(Current_Zone).w		; is this Emerald Hill Zone?
 		bne.s	loc_12406			; if not, branch
-		move.w	#$560,obGfx(a0)
+		move.w	#make_art_tile($560,0,0),obGfx(a0)
 
 loc_12406:
 		bsr.w	Adjust2PArtPointer
@@ -23688,7 +23688,7 @@ loc_179AE:
 		_move.b	#id_Obj58,obID(a1)
 		move.l	a0,objoff_34(a1)
 		move.l	#Map_Obj58,obMap(a1)
-		move.w	#$2540,obGfx(a1)
+		move.w	#make_art_tile($540,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.b	#4,obPriority(a1)
@@ -24048,7 +24048,7 @@ sub_17D9A:
 		_move.b	#id_Obj58,obID(a1)
 		move.l	a0,objoff_34(a1)
 		move.l	#Map_Obj58a,obMap(a1)
-		move.w	#$24C0,obGfx(a1)
+		move.w	#make_art_tile($4C0,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$10,obActWid(a1)
 		move.b	#1,obPriority(a1)
@@ -24070,7 +24070,7 @@ loc_17E0E:
 		_move.b	#id_Obj58,obID(a1)
 		move.l	a0,objoff_34(a1)
 		move.l	#Map_Obj58a,obMap(a1)
-		move.w	#$24C0,obGfx(a1)
+		move.w	#make_art_tile($4C0,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$10,obActWid(a1)
 		move.b	#1,obPriority(a1)
@@ -24092,7 +24092,7 @@ loc_17E82:
 		_move.b	#id_Obj58,obID(a1)
 		move.l	a0,objoff_34(a1)
 		move.l	#Map_Obj58a,obMap(a1)
-		move.w	#$24C0,obGfx(a1)
+		move.w	#make_art_tile($4C0,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$10,obActWid(a1)
 		move.b	#2,obPriority(a1)
@@ -24114,7 +24114,7 @@ loc_17EF6:
 		_move.b	#id_Obj58,obID(a1)
 		move.l	a0,objoff_34(a1)
 		move.l	#Map_Obj58a,obMap(a1)
-		move.w	#$24C0,obGfx(a1)
+		move.w	#make_art_tile($4C0,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$10,obActWid(a1)
 		move.b	#1,obPriority(a1)
@@ -24138,7 +24138,7 @@ loc_17F54:
 		_move.b	#id_Obj58,obID(a1)
 		move.l	a0,objoff_34(a1)
 		move.l	#Map_Obj58a,obMap(a1)
-		move.w	#$4C0,obGfx(a1)
+		move.w	#make_art_tile($4C0,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.b	#2,obPriority(a1)
@@ -24156,7 +24156,7 @@ loc_17F98:
 		_move.b	#id_Obj58,obID(a1)
 		move.l	a0,objoff_34(a1)
 		move.l	#Map_Obj58,obMap(a1)
-		move.w	#$2540,obGfx(a1)
+		move.w	#make_art_tile($540,1,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.b	#4,obPriority(a1)
@@ -24319,7 +24319,7 @@ loc_18230:
 		move.l	a0,objoff_34(a1)
 		move.l	a1,objoff_34(a0)
 		move.l	#Map_Obj55,obMap(a1)
-		move.w	#$400,obGfx(a1)
+		move.w	#make_art_tile($400,0,0),obGfx(a1)
 		move.b	#4,obRender(a1)
 		move.b	#$20,obActWid(a1)
 		move.b	#3,obPriority(a1)
@@ -24343,7 +24343,7 @@ loc_18294:
 
 loc_182AC:
 		move.l	#Map_Obj55a,obMap(a1)
-		move.w	#$4D0,obGfx(a1)
+		move.w	#make_art_tile($4D0,0,0),obGfx(a1)
 		move.b	#1,obTimeFrame(a0)
 
 loc_182C0:
@@ -24436,7 +24436,7 @@ loc_183C6:
 loc_183D4:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj55b,obMap(a0)
-		move.w	#$4D8,obGfx(a0)
+		move.w	#make_art_tile($4D8,0,0),obGfx(a0)
 		move.b	#0,obFrame(a0)
 		move.b	#5,obTimeFrame(a0)
 		movea.l	objoff_34(a0),a1
@@ -25943,7 +25943,7 @@ loc_1A0E8:
 		move.w	(a1)+,(v_player+obY).w
 		movea.l	S1SS_LayoutIndex(pc,d0.w),a0
 		lea	(v_ssbuffer2).l,a1
-		move.w	#0,d0
+		move.w	#make_art_tile(ArtTile_SS_Background_Clouds,0,0),d0
 		jsr	(EniDec).l
 		lea	(v_ssbuffer1).l,a1
 		move.w	#bytesToLcnt(v_ssbuffer2-v_ssbuffer1),d0

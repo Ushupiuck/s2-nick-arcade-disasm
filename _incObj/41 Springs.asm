@@ -142,7 +142,7 @@ loc_E342:
 sub_E34E:
 		move.w	#$100,obAnim(a0)
 		addq.w	#8,obY(a1)
-		move.w	$30(a0),obVelY(a1)
+		move.w	objoff_30(a0),obVelY(a1)
 		bset	#1,obStatus(a1)
 		bclr	#3,obStatus(a1)
 		move.b	#$10,obAnim(a1)
@@ -155,18 +155,18 @@ loc_E382:
 		btst	#0,d0
 		beq.s	loc_E3C2
 		move.w	#1,obInertia(a1)
-		move.b	#1,$27(a1)
+		move.b	#1,objoff_27(a1)
 		move.b	#0,obAnim(a1)
-		move.b	#0,$2C(a1)
-		move.b	#4,$2D(a1)
+		move.b	#0,objoff_2C(a1)
+		move.b	#4,objoff_2D(a1)
 		btst	#1,d0
 		bne.s	loc_E3B2
-		move.b	#1,$2C(a1)
+		move.b	#1,objoff_2C(a1)
 
 loc_E3B2:
 		btst	#0,obStatus(a1)
 		beq.s	loc_E3C2
-		neg.b	$27(a1)
+		neg.b	objoff_27(a1)
 		neg.w	obInertia(a1)
 
 loc_E3C2:
@@ -241,7 +241,7 @@ loc_E464:
 
 sub_E474:
 		move.w	#$300,obAnim(a0)
-		move.w	$30(a0),obVelX(a1)
+		move.w	objoff_30(a0),obVelX(a1)
 		addq.w	#8,obX(a1)
 		bset	#0,obStatus(a1)
 		btst	#0,obStatus(a0)
@@ -251,7 +251,7 @@ sub_E474:
 		neg.w	obVelX(a1)
 
 loc_E4A2:
-		move.w	#$F,$2E(a1)
+		move.w	#$F,objoff_2E(a1)
 		move.w	obVelX(a1),obInertia(a1)
 		btst	#2,obStatus(a1)
 		bne.s	loc_E4BC
@@ -266,18 +266,18 @@ loc_E4C8:
 		btst	#0,d0
 		beq.s	loc_E508
 		move.w	#1,obInertia(a1)
-		move.b	#1,$27(a1)
+		move.b	#1,objoff_27(a1)
 		move.b	#0,obAnim(a1)
-		move.b	#1,$2C(a1)
-		move.b	#8,$2D(a1)
+		move.b	#1,objoff_2C(a1)
+		move.b	#8,objoff_2D(a1)
 		btst	#1,d0
 		bne.s	loc_E4F8
-		move.b	#3,$2C(a1)
+		move.b	#3,objoff_2C(a1)
 
 loc_E4F8:
 		btst	#0,obStatus(a1)
 		beq.s	loc_E508
-		neg.b	$27(a1)
+		neg.b	objoff_27(a1)
 		neg.w	obInertia(a1)
 
 loc_E508:
@@ -410,7 +410,7 @@ loc_E642:
 sub_E64E:
 		move.w	#$100,obAnim(a0)
 		subq.w	#8,obY(a1)
-		move.w	$30(a0),obVelY(a1)
+		move.w	objoff_30(a0),obVelY(a1)
 		neg.w	obVelY(a1)
 		move.b	obSubtype(a0),d0
 		bpl.s	loc_E66E
@@ -420,18 +420,18 @@ loc_E66E:
 		btst	#0,d0
 		beq.s	loc_E6AE
 		move.w	#1,obInertia(a1)
-		move.b	#1,$27(a1)
+		move.b	#1,objoff_27(a1)
 		move.b	#0,obAnim(a1)
-		move.b	#0,$2C(a1)
-		move.b	#4,$2D(a1)
+		move.b	#0,objoff_2C(a1)
+		move.b	#4,objoff_2D(a1)
 		btst	#1,d0
 		bne.s	loc_E69E
-		move.b	#1,$2C(a1)
+		move.b	#1,objoff_2C(a1)
 
 loc_E69E:
 		btst	#0,obStatus(a1)
 		beq.s	loc_E6AE
-		neg.b	$27(a1)
+		neg.b	objoff_27(a1)
 		neg.w	obInertia(a1)
 
 loc_E6AE:
@@ -508,8 +508,8 @@ loc_E754:
 
 loc_E762:
 		move.w	#$500,obAnim(a0)
-		move.w	$30(a0),obVelY(a1)
-		move.w	$30(a0),obVelX(a1)
+		move.w	objoff_30(a0),obVelY(a1)
+		move.w	objoff_30(a0),obVelX(a1)
 		addq.w	#6,obY(a1)
 		addq.w	#6,obX(a1)
 		bset	#0,obStatus(a1)
@@ -528,18 +528,18 @@ loc_E79A:
 		btst	#0,d0
 		beq.s	loc_E7F6
 		move.w	#1,obInertia(a1)
-		move.b	#1,$27(a1)
+		move.b	#1,objoff_27(a1)
 		move.b	#0,obAnim(a1)
-		move.b	#1,$2C(a1)
-		move.b	#8,$2D(a1)
+		move.b	#1,objoff_2C(a1)
+		move.b	#8,objoff_2D(a1)
 		btst	#1,d0
 		bne.s	loc_E7E6
-		move.b	#3,$2C(a1)
+		move.b	#3,objoff_2C(a1)
 
 loc_E7E6:
 		btst	#0,obStatus(a1)
 		beq.s	loc_E7F6
-		neg.b	$27(a1)
+		neg.b	objoff_27(a1)
 		neg.w	obInertia(a1)
 
 loc_E7F6:
@@ -595,9 +595,9 @@ loc_E864:
 
 sub_E870:
 		move.w	#$500,obAnim(a0)
-		move.w	$30(a0),obVelY(a1)
+		move.w	objoff_30(a0),obVelY(a1)
 		neg.w	obVelY(a1)
-		move.w	$30(a0),obVelX(a1)
+		move.w	objoff_30(a0),obVelX(a1)
 		subq.w	#6,obY(a1)
 		addq.w	#6,obX(a1)
 		bset	#0,obStatus(a1)
@@ -615,18 +615,18 @@ loc_E8AC:
 		btst	#0,d0
 		beq.s	loc_E902
 		move.w	#1,obInertia(a1)
-		move.b	#1,$27(a1)
+		move.b	#1,objoff_27(a1)
 		move.b	#0,obAnim(a1)
-		move.b	#1,$2C(a1)
-		move.b	#8,$2D(a1)
+		move.b	#1,objoff_2C(a1)
+		move.b	#8,objoff_2D(a1)
 		btst	#1,d0
 		bne.s	loc_E8F2
-		move.b	#3,$2C(a1)
+		move.b	#3,objoff_2C(a1)
 
 loc_E8F2:
 		btst	#0,obStatus(a1)
 		beq.s	loc_E902
-		neg.b	$27(a1)
+		neg.b	objoff_27(a1)
 		neg.w	obInertia(a1)
 
 loc_E902:
