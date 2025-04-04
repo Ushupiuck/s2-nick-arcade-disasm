@@ -16,20 +16,20 @@
                     ],
                     "format": "Sonic 2.js",
                     "art": {
-                        "path": "art/uncompressed/Sonic's art.bin",
+                        "path": "art\\uncompressed\\Sonic's art.bin",
                         "compression": "Uncompressed",
                         "offset": 0
                     },
                     "mappings": {
-                        "path": "mappings/sprite/Sonic.asm",
+                        "path": "mappings\\sprite\\Sonic.asm",
                         "label": ""
                     },
                     "dplcs": {
                         "enabled": true,
-                        "path": "mappings/spriteDPLC/Sonic.asm",
+                        "path": "mappings\\spriteDPLC\\Sonic.asm",
                         "label": ""
                     },
-                    "uuid": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c"
+                    "uuid": "5fb1ac1a-8426-4474-9f3e-823315616291"
                 },
                 {
                     "name": "Tails",
@@ -41,17 +41,17 @@
                     ],
                     "format": "Sonic 2.js",
                     "art": {
-                        "path": "art/uncompressed/Tails' art.bin",
+                        "path": "art\\uncompressed\\Tails' art.bin",
                         "compression": "Uncompressed",
                         "offset": 0
                     },
                     "mappings": {
-                        "path": "mappings/sprite/Tails.asm",
+                        "path": "mappings\\sprite\\Tails.asm",
                         "label": ""
                     },
                     "dplcs": {
                         "enabled": true,
-                        "path": "mappings/spriteDPLC/Tails.asm",
+                        "path": "mappings\\spriteDPLC\\Tails.asm",
                         "label": ""
                     },
                     "uuid": "da472ab9-f363-45e6-8ee3-a83fd70d6d9c"

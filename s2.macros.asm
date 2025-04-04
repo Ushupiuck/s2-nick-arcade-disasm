@@ -140,7 +140,7 @@ stopZ80:	macro
 ; ---------------------------------------------------------------------------
 
 waitZ80:	macro
-.wait:		btst	#0,(z80_bus_request).l
+.wait:	btst	#0,(z80_bus_request).l
 		bne.s	.wait
 		endm
 
@@ -225,8 +225,8 @@ out_of_range:	macro exit,specpos
 copyTilemap:	macro source,destination,width,height
 		lea	(source).l,a1
 		locVRAM	destination,d0
-		moveq	#width,d1
-		moveq	#height,d2
+		moveq	#width-1,d1
+		moveq	#height-1,d2
 		bsr.w	PlaneMapToVRAM_H40
 		endm
 
