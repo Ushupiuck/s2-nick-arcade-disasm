@@ -2255,7 +2255,7 @@ loc_32C4:
 		lea	(Eni_TitleBg2).l,a0
 		move.w	#make_art_tile(ArtTile_Title_Foreground,0,0),d0
 		bsr.w	EniDec
-		copyTilemap	v_start,vram_bg+$40,32,28
+		copyTilemap	v_start,vram_bg+64,32,28
 		moveq	#palid_Title,d0
 		bsr.w	PalLoad1
 		move.b	#bgm_Title,d0
