@@ -2712,6 +2712,7 @@ LevelSelect_Text:
 ; address for chunk RAM.
 UnknownSub_1:
 		lea	(v_start).l,a1
+		; This contains a size of block data that is 0x5D8 in size.
 		move.w	#bytesToWcnt($5D8),d2
 
 loc_3A3A:
@@ -6887,6 +6888,7 @@ loc_72EE:
 
 loc_72F4:
 		movea.l	(a2)+,a0
+		; What follows is a very C style check for zones that aren't GHZ, LZ, or 06.
 		cmpi.b	#id_CPZ,(Current_Zone).w
 		beq.s	loc_7338
 		cmpi.b	#id_EHZ,(Current_Zone).w
@@ -27536,8 +27538,8 @@ Debug_ExitDebugMode:
 
 loc_1BC98:
 		move.b	d0,(v_player+obAnim).w
-		move.w	d0,$A(a0)
-		move.w	d0,$E(a0)
+		move.w	d0,obX+2(a0)
+		move.w	d0,obY+2(a0)
 		move.w	(v_limittopdb).w,(Camera_Min_Y_pos).w
 		move.w	(v_limitbtmdb).w,(Camera_Max_Y_pos_target).w
 		cmpi.b	#GameModeID_SpecialStage,(v_gamemode).w ; is this the Special Stage?
