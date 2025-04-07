@@ -31,7 +31,7 @@ ptr_PLC_GameOver:	dc.w PLC_GameOver-ArtLoadCues
 PLC_Levels:
 ptr_PLC_GHZ:		dc.w PLC_GHZ-ArtLoadCues
 ptr_PLC_GHZ2:		dc.w PLC_GHZ2-ArtLoadCues
-ptr_PLC_LZ:		dc.w PLC_CPZ-ArtLoadCues
+ptr_PLC_LZ:			dc.w PLC_CPZ-ArtLoadCues
 ptr_PLC_LZ2:		dc.w PLC_CPZ2-ArtLoadCues
 ptr_PLC_CPZ:		dc.w PLC_CPZ-ArtLoadCues
 ptr_PLC_CPZ2:		dc.w PLC_CPZ2-ArtLoadCues
@@ -245,9 +245,9 @@ PLC_S1TitleCard_End:
 ; End of zone bosses
 ; --------------------------------------------------------------------------------------
 PLC_Boss:	dc.w ((PLC_Boss_End-PLC_Boss)/6)-1
-		plcm	Nem_BossShip, $460
-		plcm	Nem_EHZ_Boss, $4C0
-		plcm	Nem_EHZ_Boss_Blades, $540
+		plcm	Nem_BossShip, ArtTile_ArtNem_Eggpod_1
+		plcm	Nem_EHZ_Boss, ArtTile_ArtNem_EHZBoss
+		plcm	Nem_EHZ_Boss_Blades, ArtTile_ArtNem_EggChoppers
 PLC_Boss_End:
 		; unused PLR entries
 		plcm	Nem_BossShip, ArtTile_Eggman

@@ -14,7 +14,7 @@ dbug:	macro map,object,subtype,frame,vram
 
 Debug_GHZ:	dc.w (Debug_GHZ_End-Debug_GHZ-2)/8
 ;		mappings	object		subtype	frame	VRAM setting
-	dbug 	Map_Obj25,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
+	dbug 	Map_Ring,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
 	dbug 	Map_obj1F,	id_Obj1F,	0,	0,	make_art_tile(ArtTile_Crabmeat,0,0)
 	dbug 	Map_obj22,	id_Obj22,	0,	0,	make_art_tile(ArtTile_Buzz_Bomber,0,0)
@@ -37,7 +37,7 @@ Debug_GHZ_End:
 
 Debug_CPZ:	dc.w (Debug_CPZ_End-Debug_CPZ-2)/8
 ;		mappings	object		subtype	frame	VRAM setting
-	dbug 	Map_Obj25,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
+	dbug 	Map_Ring,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
 	dbug 	Map_obj41_GHZ,	id_Obj41,	0,	0,	make_art_tile(ArtTile_S1_Spring_Horizontal,0,0)
 	if FixBugs
@@ -62,7 +62,7 @@ Debug_CPZ_End:
 
 Debug_EHZ:	dc.w (Debug_EHZ_End-Debug_EHZ-2)/8
 ;		mappings	object		subtype	frame	VRAM setting
-	dbug 	Map_Obj25,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
+	dbug 	Map_Ring,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
 	dbug 	Map_Obj79,	id_Obj79,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
 	dbug 	Map_Obj03,	id_Obj03,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
@@ -96,7 +96,7 @@ Debug_EHZ_End:
 
 Debug_HTZ:	dc.w (Debug_HTZ_End-Debug_HTZ-2)/8
 ;		mappings	object		subtype	frame	VRAM setting
-	dbug 	Map_Obj25,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
+	dbug 	Map_Ring,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
 	dbug 	Map_Obj79,	id_Obj79,	1,	0,	make_art_tile(ArtTile_Lamppost,0,0)
 	dbug 	Map_Obj03,	id_Obj03,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
@@ -119,7 +119,7 @@ Debug_HTZ_End:
 
 Debug_HPZ:	dc.w (Debug_HPZ_End-Debug_HPZ-2)/8
 ;		mappings	object		subtype	frame	VRAM setting
-	dbug 	Map_Obj25,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
+	dbug 	Map_Ring,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
 	if FixBugs
 	dbug 	Map_Obj1C_01,	id_Obj1C,	$21,	3,	make_art_tile($35A,3,1)

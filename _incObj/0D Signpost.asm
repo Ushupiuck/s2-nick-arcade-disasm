@@ -74,8 +74,8 @@ Obj0D_Sparkle:
 		ext.w	d0
 		add.w	obY(a0),d0
 		move.w	d0,obY(a1)
-		move.l	#Map_Obj25,obMap(a1)
-		move.w	#make_art_tile(ArtTile_Ring+$F6,1,0),obGfx(a1)
+		move.l	#Map_Ring,obMap(a1)
+		move.w	#make_art_tile(ArtTile_S1_Ring,1,0),obGfx(a1)
 		bsr.w	Adjust2PArtPointer2
 		move.b	#4,obRender(a1)
 		move.b	#2,obPriority(a1)

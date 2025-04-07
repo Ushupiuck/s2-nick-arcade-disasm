@@ -41,7 +41,7 @@ obLRBSolidBit:	equ $3F					; bit to check for left/right/bottom solidity (either
 flashtime:	equ $30					; time between flashes after getting hit
 invtime:	equ $32					; time left for invincibility
 shoetime:	equ $34					; time left for speed shoes
-stick_to_convex:equ objoff_38
+stick_to_convex:	equ objoff_38
 spindash_flag:	equ $39					; 0 for normal, 1 for charging a spindash or forced rolling
 standonobject:	equ $3D					; object Sonic stands on
 
@@ -77,85 +77,83 @@ object_size:	equ 1<<object_size_bits
 
 ; ---------------------------------------------------------------------------
 ; when childsprites are activated (i.e. bit #6 of render_flags set)
-next_subspr		= 6
+next_subspr	= 6
 mainspr_mapframe	= $B
-mainspr_width		= $E
-mainspr_childsprites 	= $F	; amount of child sprites
-mainspr_height		= $14
-subspr_data		= $10
-sub2_x_pos		= subspr_data+next_subspr*0+0	;x_vel
-sub2_y_pos		= subspr_data+next_subspr*0+2	;y_vel
-sub2_mapframe		= subspr_data+next_subspr*0+5
-sub3_x_pos		= subspr_data+next_subspr*1+0	;y_radius
-sub3_y_pos		= subspr_data+next_subspr*1+2	;priority
-sub3_mapframe		= subspr_data+next_subspr*1+5	;anim_frame
-sub4_x_pos		= subspr_data+next_subspr*2+0	;anim
-sub4_y_pos		= subspr_data+next_subspr*2+2	;anim_frame_duration
-sub4_mapframe		= subspr_data+next_subspr*2+5	;collision_property
-sub5_x_pos		= subspr_data+next_subspr*3+0	;status
-sub5_y_pos		= subspr_data+next_subspr*3+2	;routine
-sub5_mapframe		= subspr_data+next_subspr*3+5
-sub6_x_pos		= subspr_data+next_subspr*4+0	;subtype
-sub6_y_pos		= subspr_data+next_subspr*4+2
-sub6_mapframe		= subspr_data+next_subspr*4+5
-sub7_x_pos		= subspr_data+next_subspr*5+0
-sub7_y_pos		= subspr_data+next_subspr*5+2
-sub7_mapframe		= subspr_data+next_subspr*5+5
-sub8_x_pos		= subspr_data+next_subspr*6+0
-sub8_y_pos		= subspr_data+next_subspr*6+2
-sub8_mapframe		= subspr_data+next_subspr*6+5
-sub9_x_pos		= subspr_data+next_subspr*7+0
-sub9_y_pos		= subspr_data+next_subspr*7+2
-sub9_mapframe		= subspr_data+next_subspr*7+5
+mainspr_width	= $E
+mainspr_childsprites = $F	; amount of child sprites
+mainspr_height	= $14
+subspr_data	= $10
+sub2_x_pos	= subspr_data+next_subspr*0+0	;x_vel
+sub2_y_pos	= subspr_data+next_subspr*0+2	;y_vel
+sub2_mapframe	= subspr_data+next_subspr*0+5
+sub3_x_pos	= subspr_data+next_subspr*1+0	;y_radius
+sub3_y_pos	= subspr_data+next_subspr*1+2	;priority
+sub3_mapframe	= subspr_data+next_subspr*1+5	;anim_frame
+sub4_x_pos	= subspr_data+next_subspr*2+0	;anim
+sub4_y_pos	= subspr_data+next_subspr*2+2	;anim_frame_duration
+sub4_mapframe	= subspr_data+next_subspr*2+5	;collision_property
+sub5_x_pos	= subspr_data+next_subspr*3+0	;status
+sub5_y_pos	= subspr_data+next_subspr*3+2	;routine
+sub5_mapframe	= subspr_data+next_subspr*3+5
+sub6_x_pos	= subspr_data+next_subspr*4+0	;subtype
+sub6_y_pos	= subspr_data+next_subspr*4+2
+sub6_mapframe	= subspr_data+next_subspr*4+5
+sub7_x_pos	= subspr_data+next_subspr*5+0
+sub7_y_pos	= subspr_data+next_subspr*5+2
+sub7_mapframe	= subspr_data+next_subspr*5+5
+sub8_x_pos	= subspr_data+next_subspr*6+0
+sub8_y_pos	= subspr_data+next_subspr*6+2
+sub8_mapframe	= subspr_data+next_subspr*6+5
+sub9_x_pos	= subspr_data+next_subspr*7+0
+sub9_y_pos	= subspr_data+next_subspr*7+2
+sub9_mapframe	= subspr_data+next_subspr*7+5
 
 ; Levels
-id_GHZ:		equ 0
-id_LZ:		equ 1
-id_CPZ:		equ 2
-id_MZ:		equ 2
-id_EHZ:		equ 3
-id_SLZ:		equ 3
-id_HPZ:		equ 4
-id_SYZ:		equ 4
-id_HTZ:		equ 5
-id_SBZ:		equ 5
+id_GHZ:	equ 0
+id_LZ:	equ 1
+id_CPZ:	equ 2
+id_MZ:	equ 2
+id_EHZ:	equ 3
+id_SLZ:	equ 3
+id_HPZ:	equ 4
+id_SYZ:	equ 4
+id_HTZ:	equ 5
+id_SBZ:	equ 5
 id_EndZ:	equ 6
-id_SS:		equ 7
+id_SS:	equ 7
 
 ; Colours
-cBlack:		equ $000				; colour black
-cWhite:		equ $EEE				; colour white
-cBlue:		equ $E00				; colour blue
-cGreen:		equ $0E0				; colour green
-cRed:		equ $00E				; colour red
+cBlack:	equ $000				; colour black
+cWhite:	equ $EEE				; colour white
+cBlue:	equ $E00				; colour blue
+cGreen:	equ $0E0				; colour green
+cRed:	equ $00E				; colour red
 cYellow:	equ cGreen+cRed				; colour yellow
-cAqua:		equ cGreen+cBlue			; colour aqua
+cAqua:	equ cGreen+cBlue			; colour aqua
 cMagenta:	equ cBlue+cRed				; colour magenta
-cCyan:		equ $880				; colour cyan
-
+cCyan:	equ $880				; colour cyan
 ; ---------------------------------------------------------------------------
 ; Controller Buttons
 
 ; Buttons bit numbers
-bitUp:			EQU	0
-bitDn:			EQU	1
-bitL:			EQU	2
-bitR:			EQU	3
-bitB:			EQU	4
-bitC:			EQU	5
-bitA:			EQU	6
-bitStart:		EQU	7
+bitUp:	EQU	0
+bitDn:	EQU	1
+bitL:	EQU	2
+bitR:	EQU	3
+bitB:	EQU	4
+bitC:	EQU	5
+bitA:	EQU	6
+bitStart:	EQU	7
 ; Buttons masks (1 << x == pow(2, x))
-btnUp:			EQU	1<<bitUp		; $01
-btnDn:			EQU	1<<bitDn		; $02
-btnL:			EQU	1<<bitL			; $04
-btnR:			EQU	1<<bitR			; $08
-btnB:			EQU	1<<bitB			; $10
-btnC:			EQU	1<<bitC			; $20
-btnA:			EQU	1<<bitA			; $40
-btnABC:			EQU	btnA|btnB|btnC		; $70
-btnStart:		EQU	1<<bitStart		; $80
-
+btnUp:	EQU	1<<bitUp		; $01
+btnDn:	EQU	1<<bitDn		; $02
+btnL:	EQU	1<<bitL			; $04
+btnR:	EQU	1<<bitR			; $08
+btnB:	EQU	1<<bitB			; $10
+btnC:	EQU	1<<bitC			; $20
+btnA:	EQU	1<<bitA			; $40
+btnABC:	EQU	btnA|btnB|btnC		; $70
+btnStart:	EQU	1<<bitStart		; $80
 ; ---------------------------------------------------------------------------
 ; Art tile stuff
 flip_x              =      (1<<11)
@@ -215,29 +213,29 @@ Size_of_DAC_driver_guess:	equ $1760
 ; VDP addressses
 vdp_data_port:		equ $C00000
 vdp_control_port:	equ $C00004
-vdp_counter:		equ $C00008
+vdp_counter:	equ $C00008
 
 psg_input:		equ $C00011
 
 ; Z80 addresses
-z80_ram:		equ $A00000			; start of Z80 RAM
+z80_ram:	equ $A00000			; start of Z80 RAM
 z80_dac_timpani_pitch:	equ z80_ram+zTimpani_Pitch
-z80_dac_status:		equ z80_ram+zDAC_Status
-z80_dac_sample:		equ z80_ram+zDAC_Sample
-z80_ram_end:		equ $A02000			; end of non-reserved Z80 RAM
-z80_version:		equ $A10001
+z80_dac_status:	equ z80_ram+zDAC_Status
+z80_dac_sample:	equ z80_ram+zDAC_Sample
+z80_ram_end:	equ $A02000			; end of non-reserved Z80 RAM
+z80_version:	equ $A10001
 z80_port_1_data:	equ $A10002
 z80_port_1_control:	equ $A10008
 z80_port_2_control:	equ $A1000A
 z80_expansion_control:	equ $A1000C
 z80_bus_request:	equ $A11100
-z80_reset:		equ $A11200
-ym2612_a0:		equ $A04000
-ym2612_d0:		equ $A04001
-ym2612_a1:		equ $A04002
-ym2612_d1:		equ $A04003
+z80_reset:	equ $A11200
+ym2612_a0:	equ $A04000
+ym2612_d0:	equ $A04001
+ym2612_a1:	equ $A04002
+ym2612_d1:	equ $A04003
 
-security_addr:		equ $A14000
+security_addr:	equ $A14000
 
 ; VRAM data
 vram_window:	equ $A000				; window namespace
@@ -257,19 +255,19 @@ offset :=	Vint_SwitchTbl
 ptrsize :=	1
 idstart :=	0
 
-VintID_Lag =			id(Vint_Lag_ptr)	; 0
-VintID_SEGA =			id(Vint_SEGA_ptr)	; 2
-VintID_Title =			id(Vint_Title_ptr)	; 4
-VintID_Unused6 =		id(Vint_Unused6_ptr)	; 6
-VintID_Level =			id(Vint_Level_ptr)	; 8
-VintID_S1SS =			id(Vint_S1SS_ptr)	; $A
-VintID_TitleCard =		id(Vint_TitleCard_ptr)	; $C
-VintID_UnusedE =		id(Vint_UnusedE_ptr)	; $E
-VintID_Pause =			id(Vint_Pause_ptr)	; $10
-VintID_Fade =			id(Vint_Fade_ptr)	; $12
-VintID_PCM =			id(Vint_PCM_ptr)	; $14
-VintID_SSResults =		id(Vint_SSResults_ptr)	; $16
-VintID_TitleCard2 =		id(Vint_TitleCard2_ptr)	; $18
+VintID_Lag =	id(Vint_Lag_ptr)	; 0
+VintID_SEGA =	id(Vint_SEGA_ptr)	; 2
+VintID_Title =	id(Vint_Title_ptr)	; 4
+VintID_Unused6 =	id(Vint_Unused6_ptr)	; 6
+VintID_Level =	id(Vint_Level_ptr)	; 8
+VintID_S1SS =	id(Vint_S1SS_ptr)	; $A
+VintID_TitleCard =	id(Vint_TitleCard_ptr)	; $C
+VintID_UnusedE =	id(Vint_UnusedE_ptr)	; $E
+VintID_Pause =	id(Vint_Pause_ptr)	; $10
+VintID_Fade =	id(Vint_Fade_ptr)	; $12
+VintID_PCM =	id(Vint_PCM_ptr)	; $14
+VintID_SSResults =	id(Vint_SSResults_ptr)	; $16
+VintID_TitleCard2 =	id(Vint_TitleCard2_ptr)	; $18
 
 ; Game modes
 offset :=	GameModeArray
@@ -283,8 +281,8 @@ GameModeID_SpecialStage =	id(GameMode_SpecialStage) ; $10
 GameModeID_ContinueScreen:	equ $14			; $14 ; referenced despite it not existing
 GameModeID_S1Ending:		equ $18			; $18 ; referenced despite it not existing
 GameModeID_S1Credits:		equ $1C			; $1C ; referenced despite it not existing
-GameModeID_S1End =		GameModeID_S1Credits	; $1C ; referenced despite it not existing
-GameModeID_End =		GameModeID_SpecialStage	; $10
+GameModeID_S1End: 			equ	GameModeID_S1Credits	; $1C ; referenced despite it not existing
+GameModeID_End: 			equ	GameModeID_SpecialStage	; $10
 GameModeFlag_TitleCard:		equ 7			; flag bit
 GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 
@@ -292,41 +290,44 @@ GameModeID_TitleCard:		equ 1<<GameModeFlag_TitleCard ; $80 ; flag mask
 	include "s1.sounddriver.ram.asm"
 
 ; Main RAM
-	phase	ramaddr($FFFF0000)
+	phase	ramaddr($FFFE0000)
+RAM_debug_start:	ds.b	$10000
+RAM_debug_end:
+
 v_start:
 RAM_Start:
 
 Chunk_Table:		ds.w	64*$100			; 128x128 tile mappings ($8000 bytes)
 Chunk_Table_End:
 
-v_128x128:=		Chunk_Table
-v_128x128_end:=		Chunk_Table_End
+v_128x128:=	Chunk_Table
+v_128x128_end:=	Chunk_Table_End
 
 Level_Layout:		ds.b	$1000			; level layout buffer ($1000 bytes)
 Level_Layout_End:
 
-v_lvllayout:= 		Level_Layout
-v_lvllayout_end:= 	Level_Layout_End
-v_lvllayoutbg:= 	Level_Layout+$80
+v_lvllayout:=	Level_Layout
+v_lvllayout_end:=	Level_Layout_End
+v_lvllayoutbg:=	Level_Layout+$80
 
 Block_Table:		ds.w	4*$300			; 16x16 tile mappings ($1800 bytes)
 Block_Table_End:
 
-v_16x16:=		Block_Table
-v_16x16_end:=		Block_Table_End
+v_16x16:=	Block_Table
+v_16x16_end:=	Block_Table_End
 
 TempArray_LayerDef:	ds.b	$200			; background scroll buffer
 Decomp_Buffer:		ds.b	$200			; Nemesis graphics decompression buffer
 Decomp_Buffer_End:
 
 v_bgscroll_buffer:=	TempArray_LayerDef
-v_ngfx_buffer:=		Decomp_Buffer
+v_ngfx_buffer:=	Decomp_Buffer
 v_ngfx_buffer_end:=	Decomp_Buffer_End
 
 Object_Display_Lists:	ds.b	$400			; sprite display queue, in order of priority
 Object_Display_Lists_End:
 
-v_spritequeue:=		Object_Display_Lists
+v_spritequeue:=	Object_Display_Lists
 v_spritequeue_end:=	Object_Display_Lists_End
 
 v_objspace:		ds.b	object_size*$80		; object variable space ($40 bytes per object)
@@ -1221,6 +1222,8 @@ ArtTile_Spring_Horizontal:	equ $470
 ArtTile_Spring_Vertical:	equ $45C
 ArtTile_Spring_Diagonal:	equ $43C
 
+ArtTile_S1_Ring:		equ $7B2
+
 ; Eggman
 ArtTile_Eggman:			equ $400
 ArtTile_Eggman_Weapons:		equ $46C
@@ -1354,6 +1357,11 @@ ArtTile_Buzzer_Fireball:	equ $3BE	; Actually unused
 ArtTile_Snail:			equ $402
 ArtTile_Masher:			equ $41C
 ArtTile_Art_EHZMountains:	equ $500
+
+; EHZ boss
+ArtTile_ArtNem_Eggpod_1:	equ $460
+ArtTile_ArtNem_EHZBoss:	equ $4C0
+ArtTile_ArtNem_EggChoppers:	equ $540
 
 ; CPZ
 ArtTile_CPZ_Platform:		equ $400

@@ -274,11 +274,7 @@ GameClrRAM:
 
 MainGameLoop:
 		move.b	(v_gamemode).w,d0
-	if FixBugs
-		andi.w	#GameModeID_End,d0	; limit to special stage game mode
-	else
 		andi.w	#GameModeID_S1End,d0	; limit to credits game mode (even though it doesn't exist)
-	endif
 		jsr	GameModeArray(pc,d0.w)
 		bra.s	MainGameLoop
 ; ===========================================================================
@@ -505,7 +501,7 @@ V_Int:
 		move.l	(v_scrposy_vdp).w,(vdp_data_port).l
 		btst	#6,(v_megadrive).w
 		beq.s	.notPAL
-		move.w	#$700,d0
+		move.w	#$701-1,d0
 		dbf	d0,*
 
 .notPAL:
@@ -2199,15 +2195,15 @@ TitleScreen:
 		move	#$2700,sr
 		bsr.w	SoundDriverLoad
 		lea	(vdp_control_port).l,a6
-		move.w	#$8004,(a6)
-		move.w	#$8230,(a6)
-		move.w	#$8407,(a6)
+		move.w	#$8000+%00000100,(a6)
+		move.w	#$8200+(vram_fg>>10),(a6)
+		move.w	#$8400+(vram_bg>>13),(a6)
 		move.w	#$9001,(a6)
 		move.w	#$9200,(a6)
 		move.w	#$8B03,(a6)
 		move.w	#$8720,(a6)
 		clr.b	(f_wtr_state).w
-		move.w	#$8C81,(a6)
+		move.w	#$8C00+%10000001,(a6)
 		bsr.w	ClearScreen
 		clearRAM v_spritequeue,v_spritequeue_end
 		clearRAM v_objspace,v_objend
@@ -2225,7 +2221,7 @@ TitleScreen:
 		lea	(Nem_TitleSonicTails).l,a0
 		bsr.w	NemDec
 		lea	(vdp_data_port).l,a6
-		move.l	#$50000003,4(a6)
+		locVRAM	ArtTile_Level_Select_Font*tile_size,4(a6)
 		lea	(Art_Text).l,a5
 		move.w	#bytesToWcnt(Art_Text_End-Art_Text),d1
 
@@ -2237,7 +2233,7 @@ loc_32C4:
 		move.w	#0,(Debug_placement_mode).w
 		move.w	#0,(f_demo).w
 		move.w	#0,(word_FFEA).w
-		move.w	#(id_GHZ<<8),(Current_ZoneAndAct).w
+		move.w	#id_GHZ<<8,(Current_ZoneAndAct).w
 		move.w	#0,(v_pcyc_time).w
 		bsr.w	Pal_FadeToBlack
 		move	#$2700,sr
@@ -2273,7 +2269,7 @@ loc_32C4:
 		bsr.w	NewPLC
 		move.w	#0,(v_title_dcount).w
 		move.w	#0,(v_title_ccount).w
-		move.w	#(id_EHZ<<8),(Current_ZoneAndAct).w
+		move.w	#id_EHZ<<8,(Current_ZoneAndAct).w
 		move.w	#4,(Sonic_Pos_Record_Index).w
 		move.w	#0,(Sonic_Pos_Record_Buf).w
 		move.w	(v_vdp_buffer1).w,d0
@@ -2369,10 +2365,10 @@ LevelSelect_Loop:
 		bne.s	LevelSelect_Loop
 		andi.b	#btnABC+btnStart,(v_jpadpress1).w
 		beq.s	LevelSelect_Loop
-		move.w	#0,(Two_player_mode).w
-		btst	#bitB,(v_jpadhold1).w
-		beq.s	loc_3516
-		move.w	#1,(Two_player_mode).w
+		move.w	#0,(Two_player_mode).w	; disable 2P mode
+		btst	#bitB,(v_jpadhold1).w	; is button B held?
+		beq.s	loc_3516	; if not, branch
+		move.w	#1,(Two_player_mode).w	; enable 2P mode
 
 loc_3516:
 		move.w	(v_levselitem).w,d0
@@ -2402,7 +2398,7 @@ loc_3546:
 
 loc_354C:
 		move.b	#GameModeID_S1Ending,(v_gamemode).w
-		move.w	#(id_EndZ<<8),(Current_ZoneAndAct).w
+		move.w	#id_EndZ<<8,(Current_ZoneAndAct).w
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -2418,7 +2414,7 @@ loc_3570:
 		add.w	d0,d0
 		move.w	LevelSelect_LevelOrder(pc,d0.w),d0
 		bmi.w	LevelSelect_Loop
-		cmpi.w	#(id_SS<<8),d0
+		cmpi.w	#id_SS<<8,d0
 		bne.s	LevelSelect_Level
 		move.b	#GameModeID_SpecialStage,(v_gamemode).w
 		clr.w	(Current_ZoneAndAct).w
@@ -2437,20 +2433,20 @@ LevelSelect_LevelOrder:
 		dc.b id_MZ,0
 		dc.b id_MZ,1
 		dc.b id_MZ,2
-		dc.w $400
-		dc.w $401
-		dc.w $402
-		dc.w $100
-		dc.w $101
-		dc.w $102
-		dc.w $300
-		dc.w $301
-		dc.w $302
-		dc.w $500
-		dc.w $501
-		dc.w $103
-		dc.w $502
-		dc.w $700
+		dc.b id_HPZ,0
+		dc.b id_HPZ,1
+		dc.b id_HPZ,2
+		dc.b id_LZ,0
+		dc.b id_LZ,1
+		dc.b id_LZ,2
+		dc.b id_EHZ,0
+		dc.b id_EHZ,1
+		dc.b id_EHZ,2
+		dc.b id_HTZ,0
+		dc.b id_HTZ,1
+		dc.b id_LZ,3
+		dc.b id_HTZ,2
+		dc.b id_SS,0
 		dc.w $8000
 ; ---------------------------------------------------------------------------
 
@@ -2475,8 +2471,8 @@ PlayLevel:
 		bsr.w	PlaySound_Special
 		rts
 ; ---------------------------------------------------------------------------
-LvlSelCode_J:	dc.b   1,  2,  2,  2,  2,  1,  0,$FF	; up, down, down, down, down, up
-LvlSelCode_US:	dc.b   1,  2,  2,  2,  2,  1,  0,$FF	; up, down, down, down, down, up
+LvlSelCode_J:	dc.b btnUp, btnDn, btnDn, btnDn, btnDn, btnUp, 0, $FF	; up, down, down, down, down, up
+LvlSelCode_US:	dc.b btnUp, btnDn, btnDn, btnDn, btnDn, btnUp, 0, $FF	; up, down, down, down, down, up
 ; ---------------------------------------------------------------------------
 
 Demo:
@@ -2515,12 +2511,12 @@ RunDemo:
 loc_3694:
 		move.w	#1,(f_demo).w
 		move.b	#GameModeID_Demo,(v_gamemode).w
-		cmpi.w	#(id_EHZ)<<8,d0
+		cmpi.w	#id_EHZ<<8,d0
 		bne.s	loc_36AC
 		move.w	#1,(Two_player_mode).w
 
 loc_36AC:
-		cmpi.w	#(id_EndZ)<<8,d0
+		cmpi.w	#id_EndZ<<8,d0
 		bne.s	loc_36C0
 		move.b	#GameModeID_SpecialStage,(v_gamemode).w
 		clr.w	(Current_ZoneAndAct).w
@@ -2535,33 +2531,34 @@ loc_36C0:
 		move.l	#5000,(v_scorelife).w
 		rts
 ; ---------------------------------------------------------------------------
-Demo_Levels:	dc.b id_CPZ,0
-		dc.b id_EHZ,0
-		dc.b id_HPZ,0
-		dc.b id_HTZ,0
-		dc.b id_HTZ,0
-		dc.b id_HTZ,0
-		dc.b id_HTZ,0
-		dc.b id_HTZ,0
-		dc.b id_HPZ,0
-		dc.b id_HPZ,0
-		dc.b id_HPZ,0
-		dc.b id_HPZ,0
+Demo_Levels:
+		dc.w id_CPZ<<8
+		dc.w id_EHZ<<8
+		dc.w id_HPZ<<8
+		dc.w id_HTZ<<8
+		dc.w id_HTZ<<8
+		dc.w id_HTZ<<8
+		dc.w id_HTZ<<8
+		dc.w id_HTZ<<8
+		dc.w id_HPZ<<8
+		dc.w id_HPZ<<8
+		dc.w id_HPZ<<8
+		dc.w id_HPZ<<8
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
 LevelSelect_Controls:
 		move.b	(v_jpadpress1).w,d1
-		andi.b	#btnUp|btnDn,d1
+		andi.b	#btnUp+btnDn,d1
 		bne.s	loc_3706
 		subq.w	#1,(v_levseldelay).w
 		bpl.s	loc_3740
 
 loc_3706:
-		move.w	#$B,(v_levseldelay).w
+		move.w	#12-1,(v_levseldelay).w
 		move.b	(v_jpadhold1).w,d1
-		andi.b	#btnUp|btnDn,d1
+		andi.b	#btnUp+btnDn,d1
 		beq.s	loc_3740
 		move.w	(v_levselitem).w,d0
 		btst	#bitUp,d1
@@ -2588,7 +2585,7 @@ loc_3740:
 		cmpi.w	#$14,(v_levselitem).w
 		bne.s	locret_377A
 		move.b	(v_jpadpress1).w,d1
-		andi.b	#btnL|btnR,d1
+		andi.b	#btnL+btnR,d1
 		beq.s	locret_377A
 		move.w	(v_levselsound).w,d0
 		btst	#bitL,d1
@@ -2618,21 +2615,25 @@ locret_377A:
 
 
 LevelSelect_TextLoad:
+
+textpos:	= ($40000000+(($E210&$3FFF)<<16)+(($E210&$C000)>>14))
+					; $E210 is a VRAM address
+
 		lea	(LevelSelect_Text).l,a1
 		lea	(vdp_data_port).l,a6
-		move.l	#$62100003,d4
+		move.l	#textpos,d4
 		move.w	#$8680,d3
 		moveq	#$15-1,d1
 
 loc_3794:
 		move.l	d4,4(a6)
-		bsr.w	sub_381C
+		bsr.w	LevSel_ChgLine
 		addi.l	#$800000,d4
 		dbf	d1,loc_3794
 		moveq	#0,d0
 		move.w	(v_levselitem).w,d0
 		move.w	d0,d1
-		move.l	#$62100003,d4
+		move.l	#textpos,d4
 		lsl.w	#7,d0
 		swap	d0
 		add.l	d0,d4
@@ -2644,62 +2645,62 @@ loc_3794:
 		adda.w	d1,a1
 		move.w	#$C680,d3
 		move.l	d4,4(a6)
-		bsr.w	sub_381C
+		bsr.w	LevSel_ChgLine
 		move.w	#$8680,d3
 		cmpi.w	#$14,(v_levselitem).w
-		bne.s	loc_37E6
+		bne.s	LevSel_DrawSnd
 		move.w	#$C680,d3
 
-loc_37E6:
-		move.l	#$6C300003,(vdp_control_port).l
+LevSel_DrawSnd:
+		locVRAM	vram_bg+$C30		; sound test position on screen
 		move.w	(v_levselsound).w,d0
 		addi.w	#$80,d0
 		move.b	d0,d2
 		lsr.b	#4,d0
-		bsr.w	sub_3808
+		bsr.w	LevSel_ChgSnd
 		move.b	d2,d0
-		bsr.w	sub_3808
+		bsr.w	LevSel_ChgSnd
 		rts
 ; End of function LevelSelect_TextLoad
 
 
-; =============== S U B	R O U T	I N E =======================================
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_3808:
+LevSel_ChgSnd:
 		andi.w	#$F,d0
-		cmpi.b	#$A,d0
-		blo.s	loc_3816
-		addi.b	#7,d0
+		cmpi.b	#$A,d0		; is digit $A-$F?
+		blo.s	LevSel_Numb	; if not, branch
+		addi.b	#7,d0		; use alpha characters
 
-loc_3816:
+LevSel_Numb:
 		add.w	d3,d0
 		move.w	d0,(a6)
-		rts
-; End of function sub_3808
+		rts	
+; End of function LevSel_ChgSnd
 
 
-; =============== S U B	R O U T	I N E =======================================
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
-sub_381C:
-		moveq	#$18-1,d2
+LevSel_ChgLine:
+		moveq	#$18-1,d2		; number of characters per line
 
-loc_381E:
+LevSel_LineLoop:
 		moveq	#0,d0
-		move.b	(a1)+,d0
-		bpl.s	loc_382E
-		move.w	#0,(a6)
-		dbf	d2,loc_381E
-		rts
-; ---------------------------------------------------------------------------
+		move.b	(a1)+,d0	; get character
+		bpl.s	LevSel_CharOk	; branch if valid
+		move.w	#0,(a6)		; use blank character
+		dbf	d2,LevSel_LineLoop
+		rts	
 
-loc_382E:
-		add.w	d3,d0
-		move.w	d0,(a6)
-		dbf	d2,loc_381E
-		rts
-; End of function sub_381C
+
+LevSel_CharOk:
+		add.w	d3,d0		; combine char with VRAM setting
+		move.w	d0,(a6)		; send to VRAM
+		dbf	d2,LevSel_LineLoop
+		rts	
+; End of function LevSel_ChgLine
 
 ; ---------------------------------------------------------------------------
 LevelSelect_Text:
@@ -2726,8 +2727,8 @@ loc_3A3A:
 ; ---------------------------------------------------------------------------
 
 UnknownSub_2:
-		lea	($FE0000).l,a1
-		lea	($FE0000+$80).l,a2
+		lea	(RAM_debug_start&$FFFFFF).l,a1
+		lea	(RAM_debug_start&$FFFFFF+$80).l,a2
 		lea	(v_start).l,a3
 		move.w	#bytesToWcnt($80),d1
 
@@ -2735,7 +2736,7 @@ loc_3A68:
 		bsr.w	UnknownSub_4
 		bsr.w	UnknownSub_4
 		dbf	d1,loc_3A68
-		lea	($FE0000).l,a1
+		lea	(RAM_debug_start&$FFFFFF).l,a1
 		lea	(v_start&$FFFFFF).l,a2
 		move.w	#bytesToWcnt($80),d1
 
@@ -2751,7 +2752,7 @@ loc_3A90:
 ; ---------------------------------------------------------------------------
 
 UnknownSub_3:
-		lea	($FE0000).l,a1
+		lea	(RAM_debug_start&$FFFFFF).l,a1
 		lea	(v_start).l,a3
 		moveq	#bytesToLcnt($80),d0
 
@@ -2759,7 +2760,7 @@ loc_3AA6:
 		move.l	(a1)+,(a3)+
 		dbf	d0,loc_3AA6
 		moveq	#0,d7
-		lea	($FE0000).l,a1
+		lea	(RAM_debug_start&$FFFFFF).l,a1
 		move.w	#$100-1,d5
 
 loc_3AB8:
@@ -2835,16 +2836,16 @@ MusicList:	dc.b bgm_GHZ
 
 Level:
 		bset	#GameModeFlag_TitleCard,(v_gamemode).w
-		tst.w	(f_demo).w
-		bmi.s	Level_NoMusicFade
+		tst.w	(f_demo).w	; are we on an ending demo?
+		bmi.s	Level_NoMusicFade	; if so, branch
 		move.b	#bgm_Fade,d0
 		bsr.w	PlaySound_Special
 
 Level_NoMusicFade:
 		bsr.w	ClearPLC
 		bsr.w	Pal_FadeToBlack
-		tst.w	(f_demo).w
-		bmi.s	loc_3BB6
+		tst.w	(f_demo).w	; are we on an ending demo?
+		bmi.s	loc_3BB6	; if so, branch
 		move	#$2700,sr
 		locVRAM	ArtTile_Title_Card*tile_size
 		lea	(Nem_TitleCard).l,a0
@@ -2929,8 +2930,8 @@ Level_WaterPal:
 		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
 
 Level_GetBgm:
-		tst.w	(f_demo).w
-		bmi.s	Level_SkipTtlCard
+		tst.w	(f_demo).w	; are we on an ending demo?
+		bmi.s	Level_SkipTtlCard	; if so, branch
 		moveq	#0,d0
 		move.b	(Current_Zone).w,d0
 		cmpi.w	#(id_LZ<<8)+3,(Current_ZoneAndAct).w
@@ -2974,22 +2975,22 @@ Level_SkipTtlCard:
 		jsr	(ApplySonic1Collision).l
 		bsr.w	LoadCollisionIndexes
 		bsr.w	WaterEffects
-		move.b	#id_Obj01,(v_player).w
+		move.b	#id_Obj01,(v_player).w	; load Sonic object
 		tst.w	(f_demo).w	; are we on an ending demo?
 		bmi.s	Level_ChkDebug	; if not, branch
-		move.b	#id_Obj21,(v_hud).w
+		move.b	#id_Obj21,(v_hud).w	; load HUD object
 
 Level_ChkDebug:
 		tst.w	(Two_player_mode).w
 		bne.s	LevelInit_LoadTails
-		cmpi.b	#id_EHZ,(Current_Zone).w
-		beq.s	LevelInit_SkipTails	; funny how they skipped Tails in EHZ for the Nick Arcade show
+		cmpi.b	#id_EHZ,(Current_Zone).w	; is this EHZ?
+		beq.s	LevelInit_SkipTails	; if so, skip loading Tails object
 
 LevelInit_LoadTails:
-		move.b	#id_Obj02,(v_player2).w
-		move.w	(v_player+obX).w,(v_player2+obX).w
-		move.w	(v_player+obY).w,(v_player2+obY).w
-		subi.w	#$20,(v_player2+obX).w
+		move.b	#id_Obj02,(v_player2).w	; load Tails object
+		move.w	(v_player+obX).w,(v_player2+obX).w	; copy player 1's x position to player 2
+		move.w	(v_player+obY).w,(v_player2+obY).w	; copy player 1's y position to player 2
+		subi.w	#32,(v_player2+obX).w	; set player 2's x position 32 pixels behind player 1's
 
 LevelInit_SkipTails:
 		tst.b	(f_debugcheat).w
@@ -3043,8 +3044,8 @@ Level_SkipClr:
 		move.b	(Current_Zone).w,d0
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
-		tst.w	(f_demo).w
-		bpl.s	Level_Demo
+		tst.w	(f_demo).w	; is this an ending demo?
+		bpl.s	Level_Demo	; if not, branch
 		lea	(Demo_S1EndIndex).l,a1		; garbage, leftover from Sonic 1's ending sequence demos
 		move.w	(v_creditsnum).w,d0
 		subq.w	#1,d0
@@ -3058,8 +3059,8 @@ Level_Demo:
 		move.b	1(a1),(Demo_press_counter_2P).w
 		subq.b	#1,(Demo_press_counter_2P).w
 		move.w	#1640,(v_demolength).w
-		tst.w	(f_demo).w
-		bpl.s	Level_ChkWaterPal
+		tst.w	(f_demo).w	; is this an ending demo?
+		bpl.s	Level_ChkWaterPal	; if not, branch
 		move.w	#60*9,(v_demolength).w
 		cmpi.w	#4,(v_creditsnum).w
 		bne.s	Level_ChkWaterPal
@@ -3085,8 +3086,8 @@ Level_DelayLoop:
 		dbf	d1,Level_DelayLoop
 		move.w	#$202F,(v_pfade_start).w
 		bsr.w	Pal_FadeFromBlack2
-		tst.w	(f_demo).w
-		bmi.s	Level_ClrTitleCard
+		tst.w	(f_demo).w	; is this an ending demo?
+		bmi.s	Level_ClrTitleCard	; if so, branch
 		addq.b	#2,(v_ttlcardname+obRoutine).w
 		addq.b	#4,(v_ttlcardzone+obRoutine).w
 		addq.b	#4,(v_ttlcardact+obRoutine).w
@@ -3352,7 +3353,7 @@ SpecialStage:
 		lea	(vdp_control_port).l,a6
 		move.w	#$8B00+%00000011,(a6)	; set horizontal scrolling single pixel rows mode
 		move.w	#$8000+%00000100,(a6)
-		move.w	#$8A00+224-49,(v_hbla_hreg).w
+		move.w	#$8A00+175,(v_hbla_hreg).w
 		move.w	#$9011,(a6)
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
@@ -3667,11 +3668,71 @@ loc_546C:
 ; End of function PalCycle_S1SS
 
 ; ---------------------------------------------------------------------------
-word_547A:	dc.w  $300, $792, $300,	$790, $300, $78E, $300,	$78C, $300, $78B, $300,	$780, $300, $782, $300,	$784
-		dc.w  $300, $786, $300,	$788, $708, $700, $70A,	$70C,$FF0C, $718,$FF0C,	$718, $70A, $70C, $708,	$700
-		dc.w  $300, $688, $300,	$686, $300, $684, $300,	$682, $300, $681, $300,	$68A, $300, $68C, $300,	$68E
-		dc.w  $300, $690, $300,	$692, $702, $624, $704,	$630,$FF06, $63C,$FF06,	$63C, $704, $630, $702,	$624
-word_54FA:	dc.w $1001,$1800,$1801,$2000,$2001,$2800,$2801
+SSBGData:	macro time,anim,vram,index,flag1,flag2
+		dc.b	(time), (anim), ((vram)*tile_size)>>13
+	if flag1
+		dc.b	(index)|$80|(flag2)
+	else
+		dc.b	(index)*12
+	endif
+		endm
+
+word_547A:
+		; Time, anim, BG VRAM, palette cycle index & flags
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 18, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 16, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 14, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 12, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6, 10, TRUE , TRUE
+
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  0, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  2, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  4, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  6, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_6,  8, TRUE , FALSE
+
+
+		SSBGData  7,  8, ArtTile_SS_Plane_6,  0, FALSE, FALSE
+		SSBGData  7, 10, ArtTile_SS_Plane_6,  1, FALSE, FALSE
+		SSBGData -1, 12, ArtTile_SS_Plane_6,  2, FALSE, FALSE
+		SSBGData -1, 12, ArtTile_SS_Plane_6,  2, FALSE, FALSE
+		SSBGData  7, 10, ArtTile_SS_Plane_6,  1, FALSE, FALSE
+		SSBGData  7,  8, ArtTile_SS_Plane_6,  0, FALSE, FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  8, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  6, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  4, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  2, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5,  0, TRUE , TRUE
+
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 10, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 12, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 14, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 16, TRUE , FALSE
+		SSBGData  3,  0, ArtTile_SS_Plane_5, 18, TRUE , FALSE
+
+		SSBGData  7,  2, ArtTile_SS_Plane_5,  3, FALSE, FALSE
+		SSBGData  7,  4, ArtTile_SS_Plane_5,  4, FALSE, FALSE
+		SSBGData -1,  6, ArtTile_SS_Plane_5,  5, FALSE, FALSE
+		SSBGData -1,  6, ArtTile_SS_Plane_5,  5, FALSE, FALSE
+		SSBGData  7,  4, ArtTile_SS_Plane_5,  4, FALSE, FALSE
+		SSBGData  7,  2, ArtTile_SS_Plane_5,  3, FALSE, FALSE
+		even
+
+SSFGData:	macro vram,y
+		dc.b ((vram)*tile_size)>>10, (y)>>8
+		endm
+
+word_54FA:
+		; FG VRAM, Y coordinate
+		SSFGData ArtTile_SS_Plane_1, $100
+		SSFGData ArtTile_SS_Plane_2,    0
+		SSFGData ArtTile_SS_Plane_2, $100
+		SSFGData ArtTile_SS_Plane_3,    0
+		SSFGData ArtTile_SS_Plane_3, $100
+		SSFGData ArtTile_SS_Plane_4,    0
+		SSFGData ArtTile_SS_Plane_4, $100
+		even
+
 Pal_S1SSCyc1:	binclude	"palette/S1/Cycle - Special Stage 1.bin"
 		even
 Pal_S1SSCyc2:	binclude	"palette/S1/Cycle - Special Stage 2.bin"
@@ -3772,7 +3833,8 @@ loc_56E2:
 byte_56F6:	dc.b   9,$28,$18,$10,$28,$18,$10,$30,$18,  8,$10
 byte_5701:	dc.b   6,$30,$30,$30,$28,$18,$18,$18
 byte_5709:	dc.b   8,  2,  4,$FF,  2,  3,  8,$FF,  4,  2,  2,  3,  8,$FD,  4,  2
-		dc.b   2,  3,  2,$FF,  0
+		dc.b   2,  3,  2,$FF
+		even
 ; ---------------------------------------------------------------------------
 		nop
 
@@ -5560,10 +5622,10 @@ locret_681E:
 		lea	(Camera_BG_X_pos).w,a3
 		lea	(v_lvllayoutbg).w,a4
 		move.w	#$6000,d2
-		bsr.w	sub_69B2
+		bsr.w	DrawBGScrollBlock1
 		lea	(Scroll_flags_BG2).w,a2
 		lea	(Camera_BG2_X_pos).w,a3
-		bra.w	sub_6A82
+		bra.w	DrawBGScrollBlock2
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -5575,13 +5637,13 @@ LoadTilesAsYouMove:
 		lea	(Camera_BG_copy).w,a3
 		lea	(v_lvllayoutbg).w,a4
 		move.w	#$6000,d2
-		bsr.w	sub_69B2
+		bsr.w	DrawBGScrollBlock1
 		lea	(Scroll_flags_BG2_copy).w,a2
 		lea	(Camera_BG2_copy).w,a3
-		bsr.w	sub_6A82
+		bsr.w	DrawBGScrollBlock2
 		lea	(Scroll_flags_BG3_copy).w,a2
 		lea	(Camera_BG3_copy).w,a3
-		bsr.w	sub_6B7C
+		bsr.w	DrawBGScrollBlock3
 		tst.w	(Two_player_mode).w
 		beq.s	loc_689E
 		lea	(Scroll_flags_copy_P2).w,a2
@@ -5599,16 +5661,16 @@ loc_689E:
 		beq.s	loc_68E6
 		move.b	#0,(byte_F720).w
 		moveq	#-16,d4
-		moveq	#16-1,d6
+		moveq	#((224+16+16)/16)-1,d6
 
 loc_68BE:
 		movem.l	d4-d6,-(sp)
 		moveq	#-16,d5
 		move.w	d4,d1
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		move.w	d1,d4
 		moveq	#-16,d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 		movem.l	(sp)+,d4-d6
 		addi.w	#16,d4
 		dbf	d6,loc_68BE
@@ -5623,27 +5685,27 @@ loc_68E6:
 		beq.s	loc_6900
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 
 loc_6900:
 		bclr	#1,(a2)
 		beq.s	loc_691A
 		move.w	#224,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		move.w	#224,d4
 		moveq	#-16,d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 
 loc_691A:
 		bclr	#2,(a2)
 		beq.s	loc_6930
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		moveq	#-16,d5
 		bsr.w	sub_6CFE
@@ -5653,7 +5715,7 @@ loc_6930:
 		beq.s	locret_694A
 		moveq	#-16,d4
 		move.w	#320,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		move.w	#320,d5
 		bsr.w	sub_6CFE
@@ -5676,7 +5738,7 @@ sub_694C:
 		bsr.w	sub_70C0
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 
 loc_6966:
 		bclr	#1,(a2)
@@ -5686,7 +5748,7 @@ loc_6966:
 		bsr.w	sub_70C0
 		move.w	#224,d4
 		moveq	#-16,d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 
 loc_6980:
 		bclr	#2,(a2)
@@ -5715,35 +5777,34 @@ locret_69B0:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_69B2:
+DrawBGScrollBlock1:
 		tst.b	(a2)
 		beq.w	locret_6A80
 		bclr	#0,(a2)
 		beq.s	loc_69CE
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 
 loc_69CE:
 		bclr	#1,(a2)
 		beq.s	loc_69E8
 		move.w	#224,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		move.w	#224,d4
 		moveq	#-16,d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 
 loc_69E8:
 		bclr	#2,(a2)
 		beq.s	loc_69FE
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		moveq	#-16,d5
 		bsr.w	sub_6CFE
@@ -5753,7 +5814,7 @@ loc_69FE:
 		beq.s	loc_6A18
 		moveq	#-16,d4
 		move.w	#320,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		move.w	#320,d5
 		bsr.w	sub_6CFE
@@ -5763,78 +5824,78 @@ loc_6A18:
 		beq.s	loc_6A30
 		moveq	#-16,d4
 		moveq	#0,d5
-		bsr.w	sub_7086
+		bsr.w	Calc_VRAM_Pos_2
 		moveq	#-16,d4
 		moveq	#0,d5
-		moveq	#$1F,d6
-		bsr.w	sub_6D90
+		moveq	#(512/16)-1,d6
+		bsr.w	DrawBlocks_LR_3
 
 loc_6A30:
 		bclr	#5,(a2)
 		beq.s	loc_6A4C
 		move.w	#224,d4
 		moveq	#0,d5
-		bsr.w	sub_7086
+		bsr.w	Calc_VRAM_Pos_2
 		move.w	#224,d4
 		moveq	#0,d5
-		moveq	#$1F,d6
-		bsr.w	sub_6D90
+		moveq	#(512/16)-1,d6
+		bsr.w	DrawBlocks_LR_3
 
 loc_6A4C:
 		bclr	#6,(a2)
 		beq.s	loc_6A64
 		moveq	#-16,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		moveq	#-16,d4
 		moveq	#-16,d5
-		moveq	#$1F,d6
-		bsr.w	sub_6D84
+		moveq	#(512/16)-1,d6
+		bsr.w	DrawBlocks_LR_2
 
 loc_6A64:
 		bclr	#7,(a2)
 		beq.s	locret_6A80
 		move.w	#224,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		move.w	#224,d4
 		moveq	#-16,d5
-		moveq	#$1F,d6
-		bsr.w	sub_6D84
+		moveq	#(512/16)-1,d6
+		bsr.w	DrawBlocks_LR_2
 
 locret_6A80:
 		rts
-; End of function sub_69B2
+; End of function DrawBGScrollBlock1
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6A82:
+DrawBGScrollBlock2:
 		tst.b	(a2)
 		beq.w	locret_6ACE
-		cmpi.b	#id_SBZ,(Current_Zone).w	; is this SBZ?
-		beq.w	loc_6AF2		; if so, branch
+		cmpi.b	#id_SBZ,(Current_Zone).w
+		beq.w	Draw_SBz
 		bclr	#0,(a2)
 		beq.s	loc_6AAE
-		move.w	#$70,d4
+		move.w	#224/2,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
-		move.w	#$70,d4
+		bsr.w	Calc_VRAM_Pos
+		move.w	#224/2,d4
 		moveq	#-16,d5
-		moveq	#2,d6
-		bsr.w	sub_6D00
+		moveq	#3-1,d6
+		bsr.w	DrawBlocks_TB_2
 
 loc_6AAE:
 		bclr	#1,(a2)
 		beq.s	locret_6ACE
-		move.w	#$70,d4
+		move.w	#224/2,d4
 		move.w	#320,d5
-		bsr.w	sub_7084
-		move.w	#$70,d4
+		bsr.w	Calc_VRAM_Pos
+		move.w	#224/2,d4
 		move.w	#320,d5
-		moveq	#2,d6
-		bsr.w	sub_6D00
+		moveq	#3-1,d6
+		bsr.w	DrawBlocks_TB_2
 
 locret_6ACE:
 		rts
@@ -5845,7 +5906,7 @@ byte_6AD0:	dc.b 0
 		even
 ; ---------------------------------------------------------------------------
 
-loc_6AF2:
+Draw_SBz:
 		moveq	#-16,d4
 		bclr	#0,(a2)
 		bne.s	loc_6B04
@@ -5865,19 +5926,19 @@ loc_6B04:
 		beq.s	loc_6B38
 		moveq	#-16,d5
 		movem.l	d4-d5,-(sp)
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		movem.l	(sp)+,d4-d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 		bra.s	loc_6B4C
 ; ---------------------------------------------------------------------------
 
 loc_6B38:
 		moveq	#0,d5
 		movem.l	d4-d5,-(sp)
-		bsr.w	sub_7086
+		bsr.w	Calc_VRAM_Pos_2
 		movem.l	(sp)+,d4-d5
-		moveq	#$1F,d6
-		bsr.w	sub_6D90
+		moveq	#(512/16)-1,d6
+		bsr.w	DrawBlocks_LR_3
 
 loc_6B4C:
 		tst.b	(a2)
@@ -5902,37 +5963,37 @@ loc_6B66:
 		lsr.w	#4,d0
 		lea	(a0,d0.w),a0
 		bra.w	loc_6C80
-; End of function sub_6A82
+; End of function DrawBGScrollBlock2
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6B7C:
+DrawBGScrollBlock3:
 		tst.b	(a2)
 		beq.w	locret_6BC8
 		cmpi.b	#id_MZ,(Current_Zone).w
-		beq.w	loc_6C0C
+		beq.w	Draw_Mz
 		bclr	#0,(a2)
 		beq.s	loc_6BA8
-		move.w	#$40,d4
+		move.w	#64,d4
 		moveq	#-16,d5
-		bsr.w	sub_7084
-		move.w	#$40,d4
+		bsr.w	Calc_VRAM_Pos
+		move.w	#64,d4
 		moveq	#-16,d5
-		moveq	#2,d6
-		bsr.w	sub_6D00
+		moveq	#3-1,d6
+		bsr.w	DrawBlocks_TB_2
 
 loc_6BA8:
 		bclr	#1,(a2)
 		beq.s	locret_6BC8
-		move.w	#$40,d4
+		move.w	#64,d4
 		move.w	#320,d5
-		bsr.w	sub_7084
-		move.w	#$40,d4
+		bsr.w	Calc_VRAM_Pos
+		move.w	#64,d4
 		move.w	#320,d5
-		moveq	#2,d6
-		bsr.w	sub_6D00
+		moveq	#3-1,d6
+		bsr.w	DrawBlocks_TB_2
 
 locret_6BC8:
 		rts
@@ -5945,7 +6006,7 @@ byte_6BCA:	dc.b 0
 		even
 ; ---------------------------------------------------------------------------
 
-loc_6C0C:
+Draw_Mz:
 		moveq	#-16,d4
 		bclr	#0,(a2)
 		bne.s	loc_6C1E
@@ -5963,9 +6024,9 @@ loc_6C1E:
 		movea.w	word_6C78(pc,d0.w),a3
 		moveq	#-16,d5
 		movem.l	d4-d5,-(sp)
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		movem.l	(sp)+,d4-d5
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 
 loc_6C48:
 		tst.b	(a2)
@@ -6011,9 +6072,9 @@ loc_6C8E:
 		movea.w	word_6C78(pc,d0.w),a3
 		movem.l	d4-d5/a0,-(sp)
 		movem.l	d4-d5,-(sp)
-		bsr.w	sub_7040
+		bsr.w	GetBlockData
 		movem.l	(sp)+,d4-d5
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		bsr.w	sub_6F70
 		movem.l	(sp)+,d4-d5/a0
 
@@ -6025,7 +6086,7 @@ loc_6CB6:
 ; ---------------------------------------------------------------------------
 
 loc_6CC2:
-		moveq	#16-1,d6
+		moveq	#((224+16+16)/16)-1,d6
 		move.l	#$800000,d7
 
 loc_6CCA:
@@ -6036,10 +6097,10 @@ loc_6CCA:
 		movea.w	word_6C78(pc,d0.w),a3
 		movem.l	d4-d5/a0,-(sp)
 		movem.l	d4-d5,-(sp)
-		bsr.w	sub_7040
+		bsr.w	GetBlockData
 		movem.l	(sp)+,d4-d5
-		bsr.w	sub_7084
-		bsr.w	sub_6FF6
+		bsr.w	Calc_VRAM_Pos
+		bsr.w	DrawBlock
 		movem.l	(sp)+,d4-d5/a0
 
 loc_6CF2:
@@ -6047,7 +6108,7 @@ loc_6CF2:
 		dbf	d6,loc_6CCA
 		clr.b	(a2)
 		rts
-; End of function sub_6B7C
+; End of function DrawBGScrollBlock3
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -6061,7 +6122,7 @@ sub_6CFE:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6D00:
+DrawBlocks_TB_2:
 		add.w	(a3),d5
 		add.w	4(a3),d4
 		move.l	#$800000,d7
@@ -6099,7 +6160,7 @@ loc_6D4E:
 		lea	(v_16x16).w,a1
 		adda.w	d3,a1
 		move.l	d1,d0
-		bsr.w	sub_6FF6
+		bsr.w	DrawBlock
 		adda.w	#16,a0
 		addi.w	#$80,d1
 		andi.w	#$FFF,d1
@@ -6112,32 +6173,32 @@ loc_6D4E:
 loc_6D7E:
 		dbf	d6,loc_6D4E
 		rts
-; End of function sub_6D00
+; End of function DrawBlocks_TB_2
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6D84:
+DrawBlocks_LR_2:
 		add.w	(a3),d5
 		add.w	4(a3),d4
 		bra.s	loc_6D94
-; End of function sub_6D84
+; End of function DrawBlocks_LR_2
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6D8C:
+DrawBlocks_LR:
 		moveq	#(1+320/16+1)-1,d6 ; Just enough blocks to cover the screen.
 		add.w	(a3),d5
-; End of function sub_6D8C
+; End of function DrawBlocks_LR
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6D90:
+DrawBlocks_LR_3:
 		add.w	4(a3),d4
 
 loc_6D94:
@@ -6265,7 +6326,7 @@ loc_6E82:
 loc_6E92:
 		dbf	d6,loc_6E60
 		rts
-; End of function sub_6D90
+; End of function DrawBlocks_LR_3
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -6454,19 +6515,19 @@ loc_6FD2:
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_6FF6:
+DrawBlock:
 		or.w	d2,d0
 		swap	d0
 		btst	#3,(a0)
-		bne.s	loc_701C
+		bne.s	DrawFlipY
 		btst	#2,(a0)
-		bne.s	loc_700C
+		bne.s	DrawFlipX
 		move.l	d0,(a5)
 		move.l	(a1)+,(a6)
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_700C:
+DrawFlipX:
 		move.l	d0,(a5)
 		move.l	(a1)+,d3
 		eori.l	#$8000800,d3
@@ -6475,9 +6536,9 @@ loc_700C:
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_701C:
+DrawFlipY:
 		btst	#2,(a0)
-		bne.s	loc_7030
+		bne.s	DrawFlipXY
 		move.l	d0,(a5)
 		move.l	(a1)+,d3
 		eori.l	#$10001000,d3
@@ -6485,20 +6546,20 @@ loc_701C:
 		rts
 ; ---------------------------------------------------------------------------
 
-loc_7030:
+DrawFlipXY:
 		move.l	d0,(a5)
 		move.l	(a1)+,d3
 		eori.l	#$18001800,d3
 		swap	d3
 		move.l	d3,(a6)
 		rts
-; End of function sub_6FF6
+; End of function DrawBlock
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-sub_7040:
+GetBlockData:
 		add.w	(a3),d5
 		add.w	4(a3),d4
 		lea	(v_16x16).w,a1
@@ -6524,21 +6585,15 @@ sub_7040:
 		lsl.w	#3,d3
 		adda.w	d3,a1
 		rts
-; End of function sub_7040
+; End of function GetBlockData
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
-sub_7084:
+Calc_VRAM_Pos:
 		add.w	(a3),d5
-; End of function sub_7084
 
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_7086:
+Calc_VRAM_Pos_2:
 		tst.w	(Two_player_mode).w
 		bne.s	loc_70A6
 		add.w	4(a3),d4
@@ -6564,7 +6619,7 @@ loc_70A6:
 		swap	d0
 		move.w	d4,d0
 		rts
-; End of function sub_7086
+; End of function Calc_VRAM_Pos_2
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -6612,52 +6667,52 @@ LoadTilesFromStart:
 		lea	(Camera_X_pos_P2).w,a3
 		lea	(v_lvllayout).w,a4
 		move.w	#$6000,d2
-		bsr.s	LoadTilesFromStart_2P
+		bsr.s	DrawChunks_2P
 
 loc_711E:
 		lea	(Camera_RAM).w,a3
 		lea	(v_lvllayout).w,a4
 		move.w	#$4000,d2
-		bsr.s	LoadTilesFromStart2
+		bsr.s	DrawChunks
 		lea	(Camera_BG_X_pos).w,a3
 		lea	(v_lvllayoutbg).w,a4
 		move.w	#$6000,d2
 		tst.b	(Current_Zone).w
-		beq.w	loc_71A0
+		beq.w	Draw_GHz_Bg
 ; End of function LoadTilesFromStart
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-LoadTilesFromStart2:
+DrawChunks:
 		moveq	#-16,d4
-		moveq	#16-1,d6
+		moveq	#((224+16+16)/16)-1,d6
 
 loc_7144:
 		movem.l	d4-d6,-(sp)
 		moveq	#0,d5
 		move.w	d4,d1
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		move.w	d1,d4
 		moveq	#0,d5
-		moveq	#$1F,d6
+		moveq	#(512/16)-1,d6
 		move	#$2700,sr
-		bsr.w	sub_6D84
+		bsr.w	DrawBlocks_LR_2
 		move	#$2300,sr
 		movem.l	(sp)+,d4-d6
 		addi.w	#16,d4
 		dbf	d6,loc_7144
 		rts
-; End of function LoadTilesFromStart2
+; End of function DrawChunks
 
 
 ; =============== S U B	R O U T	I N E =======================================
 
 
-LoadTilesFromStart_2P:
+DrawChunks_2P:
 		moveq	#-16,d4
-		moveq	#16-1,d6
+		moveq	#((224+16+16)/16)-1,d6
 
 loc_7174:
 		movem.l	d4-d6,-(sp)
@@ -6666,9 +6721,9 @@ loc_7174:
 		bsr.w	sub_70C0
 		move.w	d1,d4
 		moveq	#0,d5
-		moveq	#$1F,d6
+		moveq	#(512/16)-1,d6
 		move	#$2700,sr
-		bsr.w	sub_6D84
+		bsr.w	DrawBlocks_LR_2
 		move	#$2300,sr
 		movem.l	(sp)+,d4-d6
 		addi.w	#16,d4
@@ -6678,9 +6733,9 @@ loc_7174:
 
 ; ---------------------------------------------------------------------------
 
-loc_71A0:
+Draw_GHz_Bg:
 		moveq	#0,d4
-		moveq	#16-1,d6
+		moveq	#((224+16+16)/16)-1,d6
 
 loc_71A4:
 		movem.l	d4-d6,-(sp)
@@ -6696,8 +6751,9 @@ loc_71A4:
 ; ---------------------------------------------------------------------------
 byte_71CA:	dc.b   0,  0,  0,  0,  6,  6,  6,  4,  4,  4,  0,  0,  0,  0,  0,  0
 ; ---------------------------------------------------------------------------
+; Draw_Mz_Bg:
 		moveq	#-16,d4
-		moveq	#16-1,d6
+		moveq	#((224+16+16)/16)-1,d6
 
 loc_71DE:
 		movem.l	d4-d6,-(sp)
@@ -6711,8 +6767,9 @@ loc_71DE:
 		dbf	d6,loc_71DE
 		rts
 ; ---------------------------------------------------------------------------
+; Draw_SBz_Bg:
 		moveq	#-16,d4
-		moveq	#16-1,d6
+		moveq	#((224+16+16)/16)-1,d6
 
 loc_7206:
 		movem.l	d4-d6,-(sp)
@@ -6741,10 +6798,10 @@ sub_7232:
 		beq.s	loc_725A
 		moveq	#-16,d5
 		movem.l	d4-d5,-(sp)
-		bsr.w	sub_7084
+		bsr.w	Calc_VRAM_Pos
 		movem.l	(sp)+,d4-d5
 		move	#$2700,sr
-		bsr.w	sub_6D8C
+		bsr.w	DrawBlocks_LR
 		move	#$2300,sr
 		rts
 ; ---------------------------------------------------------------------------
@@ -6752,10 +6809,10 @@ sub_7232:
 loc_725A:
 		moveq	#0,d5
 		movem.l	d4-d5,-(sp)
-		bsr.w	sub_7086
+		bsr.w	Calc_VRAM_Pos_2
 		movem.l	(sp)+,d4-d5
-		moveq	#$1F,d6
-		bsr.w	sub_6D90
+		moveq	#(512/16)-1,d6
+		bsr.w	DrawBlocks_LR_3
 		rts
 ; End of function sub_7232
 
@@ -6867,14 +6924,14 @@ loc_7348:
 		move.w	(a2)+,d0
 		move.w	(a2),d0
 		andi.w	#$FF,d0
-		cmpi.w	#(id_LZ<<8)+3,(Current_ZoneAndAct).w
+		cmpi.w	#id_LZ<<8+3,(Current_ZoneAndAct).w
 		bne.s	loc_735E
 		moveq	#palid_SBZ3,d0
 
 loc_735E:
-		cmpi.w	#(id_SBZ<<8)+1,(Current_ZoneAndAct).w
+		cmpi.w	#id_SBZ<<8+1,(Current_ZoneAndAct).w
 		beq.s	loc_736E
-		cmpi.w	#(id_SBZ<<8)+2,(Current_ZoneAndAct).w
+		cmpi.w	#id_SBZ<<8+2,(Current_ZoneAndAct).w
 		bne.s	loc_7370
 
 loc_736E:
@@ -7015,8 +7072,8 @@ loc_7456:
 ; ---------------------------------------------------------------------------
 
 LevelLayout_Convert:					; leftover level layout	converting function (from raw to the way it's stored in the game)
-		lea	($FE0000).l,a1
-		lea	($FE0000+$80).l,a2
+		lea	(RAM_debug_start&$FFFFFF).l,a1
+		lea	(RAM_debug_start&$FFFFFF+$80).l,a2
 		lea	(v_start).l,a3
 		move.w	#$40-1,d1
 
@@ -7024,7 +7081,7 @@ loc_747A:
 		bsr.w	sub_750C
 		bsr.w	sub_750C
 		dbf	d1,loc_747A
-		lea	($FE0000).l,a1
+		lea	(RAM_debug_start&$FFFFFF).l,a1
 		lea	(v_start&$FFFFFF).l,a2
 		move.w	#bytesToWcnt($80),d1
 
@@ -7038,7 +7095,7 @@ loc_74A2:
 		dbf	d1,loc_74A2
 		rts
 ; ---------------------------------------------------------------------------
-		lea	($FE0000).l,a1
+		lea	(RAM_debug_start&$FFFFFF).l,a1
 		lea	(v_start).l,a3
 		moveq	#bytesToLcnt($80),d0
 
@@ -7046,7 +7103,7 @@ loc_74B8:
 		move.l	(a1)+,(a3)+
 		dbf	d0,loc_74B8
 		moveq	#0,d7
-		lea	($FE0000).l,a1
+		lea	(RAM_debug_start&$FFFFFF).l,a1
 		move.w	#bytesToWcnt($200),d5
 
 loc_74CA:
@@ -8246,20 +8303,7 @@ byte_9494:	dc.b   8,  3,  3,  4,  5,  5,  4,$FF
 byte_949C:	dc.b   5,  0,  0,  0,  1,  2,  3,  3
 		dc.b   2,  1,  2,  3,  3,  1,$FF
 		even
-Map_Obj1C_01:	dc.w word_94B4-Map_Obj1C_01
-		dc.w word_94BE-Map_Obj1C_01
-		dc.w word_94C8-Map_Obj1C_01
-		dc.w word_94DA-Map_Obj1C_01
-word_94B4:	dc.w 1
-		dc.w $F40A,    0,    0,$FFF4
-word_94BE:	dc.w 1
-		dc.w $F40A,    9,    4,$FFF4
-word_94C8:	dc.w 2
-		dc.w $F00D,  $12,    9,$FFF0
-		dc.w	$D,$1812,$1809,$FFF0
-word_94DA:	dc.w 2
-		dc.w $F00D,  $1A,   $D,$FFF0
-		dc.w	$D,$181A,$180D,$FFF0
+Map_Obj1C_01:	include	"mappings/sprite/obj1C.asm"
 ; ---------------------------------------------------------------------------
 
 		include	"_incObj/S1/2A SBZ Small Door.asm"
@@ -8508,7 +8552,7 @@ byte_ABEC:	dc.b   5,  4,  5,  6,  7,$FC
 ; ---------------------------------------------------------------------------
 ; sprite mappings
 ; ---------------------------------------------------------------------------
-Map_Obj25:	binclude	"mappings/sprite/obj37_a.bin"
+Map_Ring:	binclude	"mappings/sprite/obj37_a.bin"
 		even
 
 Map_S1Obj4B:	dc.w word_AC5E-Map_S1Obj4B
@@ -11948,7 +11992,7 @@ byte_E98A:	dc.b   0,  4,  3,  3,  5,  5,  5,  5
 		dc.b   5,  5,$FD,  2
 byte_E996:	dc.b  $F,  7,$FF
 byte_E999:	dc.b   0,  8,  7,  7,  9,  9,  9,  9
-		dc.b   9,  9,$FD,  4,  0
+		dc.b   9,  9,$FD,  4
 		even
 
 
@@ -13624,7 +13668,7 @@ loc_FF58:
 
 loc_FF64:
 		move.w	d0,obInertia(a0)
-		move.b	#0,obAnim(a0)
+		move.b	#AniIDSonAni_Walk,obAnim(a0)
 		rts
 ; ---------------------------------------------------------------------------
 ; loc_FF70:
@@ -13681,7 +13725,7 @@ loc_FFC2:
 
 loc_FFCA:
 		move.w	d0,obInertia(a0)
-		move.b	#0,obAnim(a0)
+		move.b	#AniIDSonAni_Walk,obAnim(a0)
 		rts
 ; ---------------------------------------------------------------------------
 ; loc_FFD6:
@@ -19086,7 +19130,7 @@ S1Obj47_Index:	dc.w S1Obj47_Init-S1Obj47_Index
 
 S1Obj47_Init:
 		addq.b	#2,obRoutine(a0)
-		move.l	#Map_S1Obj47,obMap(a0)
+		move.l	#Map_Bump,obMap(a0)
 		move.w	#make_art_tile(ArtTile_SYZ_Bumper,0,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
 		move.b	#4,obRender(a0)
@@ -19169,9 +19213,9 @@ Ani_S1Obj47:	dc.w byte_13988-Ani_S1Obj47
 byte_13988:	dc.b  $F,  0,$FF
 byte_1398B:	dc.b   3,  1,  2,  1,  2,$FD,  0
 		even
-Map_S1Obj47:	dc.w word_13998-Map_S1Obj47
-		dc.w word_139AA-Map_S1Obj47
-		dc.w word_139BC-Map_S1Obj47
+Map_Bump:	dc.w word_13998-Map_Bump
+		dc.w word_139AA-Map_Bump
+		dc.w word_139BC-Map_Bump
 word_13998:	dc.w 2
 		dc.w $F007,    0,    0,$FFF0
 		dc.w $F007, $800, $800,	   0
@@ -20451,7 +20495,12 @@ Obj16_Init:
 		move.l	#Map_Obj16,obMap(a0)
 		move.w	#make_art_tile(ArtTile_HtzZipline,2,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
+	if FixBugs
+		ori.b	#4,obRender(a0)
+	else
+		; Bug: This does not correctly flip the object
 		move.b	#4,obRender(a0)
+	endif
 		move.b	#$20,obActWid(a0)
 		move.b	#0,obFrame(a0)
 		move.b	#1,obPriority(a0)
@@ -20494,6 +20543,14 @@ Obj16_InitMove:
 		beq.s	locret_151BE
 		addq.b	#1,obSubtype(a0)
 		move.w	#$200,obVelX(a0)
+	if FixBugs
+		; This fixes issues with the object being flipped horizontally
+		btst	#0,obStatus(a0)
+		beq.s	.facingright
+		neg.w	obVelX(a0)
+		
+.facingright:
+	endif
 		move.w	#$100,obVelY(a0)
 		move.w	#$A0,objoff_34(a0)
 
@@ -20514,38 +20571,7 @@ locret_151CE:
 Obj16_NoMove:
 		rts
 ; ---------------------------------------------------------------------------
-Map_Obj16:	dc.w word_151DA-Map_Obj16
-		dc.w word_1522C-Map_Obj16
-		dc.w word_15246-Map_Obj16
-		dc.w word_15260-Map_Obj16
-word_151DA:	dc.w $A
-		dc.w $C105,    0,    0,$FFE4		; 0
-		dc.w $D003,    4,    2,$FFE6		; 4
-		dc.w $F003,    4,    2,$FFE6		; 8
-		dc.w $1001,    8,    4,$FFE7		; 12
-		dc.w $D505,   $A,    5,	  $C		; 16
-		dc.w $E003,   $E,    7,	 $11		; 20
-		dc.w $1001,  $12,    9,	 $11		; 24
-		dc.w	 3,   $E,    7,	 $11		; 28
-		dc.w $200D,  $14,   $A,$FFE0		; 32
-		dc.w $200D, $814, $80A,	   0		; 36
-word_1522C:	dc.w 3
-		dc.w $D805,  $1C,   $E,$FFF8		; 0
-		dc.w $E807,  $20,  $10,$FFF8		; 4
-		dc.w  $807,  $20,  $10,$FFF8		; 8
-word_15246:	dc.w 3
-		dc.w $D805,  $28,  $14,$FFF8		; 0
-		dc.w $E807, $820, $810,$FFF8		; 4
-		dc.w  $807, $820, $810,$FFF8		; 8
-word_15260:	dc.w 8
-		dc.w $C905,    0,    0,$FFE4		; 0
-		dc.w $D803,    4,    2,$FFE6		; 4
-		dc.w $F803,    4,    2,$FFE6		; 8
-		dc.w $1801,  $2C,  $16,$FFE6		; 12
-		dc.w $DD05,   $A,    5,	  $C		; 16
-		dc.w $E803,   $E,    7,	 $11		; 20
-		dc.w $2001,  $2E,  $17,	 $11		; 24
-		dc.w  $803,   $E,    7,	 $11		; 28
+Map_Obj16:	include	"mappings/sprite/obj16.asm"
 ; ---------------------------------------------------------------------------
 		nop
 
@@ -24607,7 +24633,12 @@ Obj8A_Init:
 		bne.s	Obj8A_Display			; if not, branch
 
 ; Obj8A_SonicTeam:
+	if FixBugs
+		move.w	#make_art_tile(ArtTile_Sonic_Team_Font,0,0),obGfx(a0)
+	else
+		; Bug: This is using the incorrect address of VRAM!
 		move.w	#make_art_tile(ArtTile_Title_Sonic,0,0),obGfx(a0)
+	endif
 		bsr.w	j_Adjust2PArtPointer_4
 		move.b	#$A,obFrame(a0)
 		tst.b	(f_creditscheat).w		; is the Sonic 1 hidden credits cheat activated?
@@ -25983,162 +26014,8 @@ loc_1A162:
 ; End of function S1SS_Load
 
 ; ---------------------------------------------------------------------------
-S1SS_MapIndex:	dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $2142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $4142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_SS_R
-		dc.w $6142
-		dc.l Map_S1Obj47
-		dc.w $23B
-		dc.l Map_SS_R
-		dc.w $570
-		dc.l Map_SS_R
-		dc.w $251
-		dc.l Map_SS_R
-		dc.w $370
-		dc.l Map_SS_Up
-		dc.w $263
-		dc.l Map_SS_Down
-		dc.w $263
-		dc.l Map_SS_R
-		dc.w $22F0
-		dc.l Map_SS_Glass
-		dc.w $470
-		dc.l Map_SS_Glass
-		dc.w $5F0
-		dc.l Map_SS_Glass
-		dc.w $65F0
-		dc.l Map_SS_Glass
-		dc.w $25F0
-		dc.l Map_SS_Glass
-		dc.w $45F0
-		dc.l Map_SS_R
-		dc.w $2F0
-		dc.l Map_S1Obj47+$1000000
-		dc.w $23B
-		dc.l Map_S1Obj47+$2000000
-		dc.w $23B
-		dc.l Map_SS_R
-		dc.w $797
-		dc.l Map_SS_R
-		dc.w $7A0
-		dc.l Map_SS_R
-		dc.w $7A9
-		dc.l Map_SS_R
-		dc.w $797
-		dc.l Map_SS_R
-		dc.w $7A0
-		dc.l Map_SS_R
-		dc.w $7A9
-		dc.l Map_Obj25
-		dc.w $27B2
-		dc.l Map_SS_Chaos3
-		dc.w $770
-		dc.l Map_SS_Chaos3
-		dc.w $2770
-		dc.l Map_SS_Chaos3
-		dc.w $4770
-		dc.l Map_SS_Chaos3
-		dc.w $6770
-		dc.l Map_SS_Chaos1
-		dc.w $770
-		dc.l Map_SS_Chaos2
-		dc.w $770
-		dc.l Map_SS_R
-		dc.w $4F0
-		dc.l Map_Obj25+$4000000
-		dc.w $27B2
-		dc.l Map_Obj25+$5000000
-		dc.w $27B2
-		dc.l Map_Obj25+$6000000
-		dc.w $27B2
-		dc.l Map_Obj25+$7000000
-		dc.w $27B2
-		dc.l Map_SS_Glass
-		dc.w $23F0
-		dc.l Map_SS_Glass+$1000000
-		dc.w $23F0
-		dc.l Map_SS_Glass+$2000000
-		dc.w $23F0
-		dc.l Map_SS_Glass+$3000000
-		dc.w $23F0
-		dc.l Map_SS_R+$2000000
-		dc.w $4F0
-		dc.l Map_SS_Glass
-		dc.w $5F0
-		dc.l Map_SS_Glass
-		dc.w $65F0
-		dc.l Map_SS_Glass
-		dc.w $25F0
-		dc.l Map_SS_Glass
-		dc.w $45F0
+S1SS_MapIndex:
+		include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
 S1SS_MapIndex_End:
 ; ===========================================================================
 ; Rather humourously, these sprite mappings are stored in the Sonic 1 format

@@ -55,7 +55,7 @@ loc_A832:
 		move.w	d2,obX(a1)
 		move.w	obX(a0),objoff_32(a1)
 		move.w	d3,obY(a1)
-		move.l	#Map_Obj25,obMap(a1)
+		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		bsr.w	Adjust2PArtPointer2
 		move.b	#4,obRender(a1)
@@ -165,7 +165,7 @@ loc_A956:
 		move.b	#8,obWidth(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-		move.l	#Map_Obj25,obMap(a1)
+		move.l	#Map_Ring,obMap(a1)
 		move.w	#make_art_tile(ArtTile_Ring,1,0),obGfx(a1)
 		bsr.w	Adjust2PArtPointer2
 		move.b	#4,obRender(a1)
