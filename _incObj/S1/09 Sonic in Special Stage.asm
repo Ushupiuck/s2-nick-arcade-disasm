@@ -210,7 +210,7 @@ locret_1A58C:
 
 Obj09_Jump:
 		move.b	(v_jpadpress2).w,d0
-		andi.b	#btnA+btnB+btnC,d0
+		andi.b	#btnABC,d0
 		beq.s	locret_1A5D0
 		move.b	(v_ssangle).w,d0
 		andi.b	#$FC,d0
@@ -244,7 +244,7 @@ nullsub_2:
 		cmp.w	obVelY(a0),d1
 		ble.s	locret_1A5EC
 		move.b	(v_jpadhold2).w,d0
-		andi.b	#btnA+btnB+btnC,d0
+		andi.b	#btnABC,d0
 		bne.s	locret_1A5EC
 		move.w	d1,obVelY(a0)
 

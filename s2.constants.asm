@@ -1320,6 +1320,7 @@ ArtTile_Art_Flowers2:		equ $396
 ArtTile_Art_Flowers3:		equ $398
 ArtTile_Art_Flowers4:		equ $39A
 ArtTile_HTZ:			equ ArtTile_Level+$1FC
+ArtTile_EHZ_Shield:			equ $560
 
 ; Unknown
 ArtTile_Art_UnkZone_1:		equ $480
@@ -1378,8 +1379,7 @@ ArtTile_HTZ_Seesaw:		equ $3CE
 ArtTile_Sol:			equ $3DE
 ArtTile_HtzZipline:		equ $3E6
 ArtTile_HtzValveBarrier:	equ $426
-ArtTile_ArtUnc_HTZMountains:	equ $500
-ArtTile_ArtUnc_HTZClouds:	equ ArtTile_ArtUnc_HTZMountains+$18
+ArtTile_HTZMountains:	equ $500
 ArtTile_Spiker:			equ $520
 
 ; Unused

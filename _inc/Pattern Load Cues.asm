@@ -168,7 +168,7 @@ PLC_EHZ_End:
 ; Emerald Hill Zone secondary
 ; --------------------------------------------------------------------------------------
 PLC_EHZ2:	dc.w ((PLC_EHZ2_End-PLC_EHZ2)/6)-1
-		plcm	Nem_Shield, $560
+		plcm	Nem_Shield, ArtTile_EHZ_Shield
 		plcm	Nem_Points, $4AC
 		plcm	Nem_Buzzer, ArtTile_Buzzer
 		plcm	Nem_Snail, ArtTile_Snail
@@ -210,7 +210,7 @@ PLC_HPZ2_End:
 PLC_HTZ:	dc.w ((PLC_HTZ_End-PLC_HTZ)/6)-1
 		plcm	Nem_EHZ, ArtTile_Level
 		plcm	Nem_HTZ, ArtTile_HTZ
-		plcm	Nem_HTZ_AniPlaceholders, $500
+		plcm	Nem_HTZ_AniPlaceholders, ArtTile_HTZMountains
 		plcm	Nem_EHZ_Fireball, ArtTile_Fireball
 		plcm	Nem_HTZ_Fireball, ArtTile_HTZ_Fireball
 		plcm	Nem_HTZ_AutomaticDoor, ArtTile_HTZ_AutomaticDoor
