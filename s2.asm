@@ -18175,171 +18175,8 @@ locret_134C4:
 		rts
 ; ---------------------------------------------------------------------------
 		nop
-;----------------------------------------------------
-; Object 79 - lamppost
-;----------------------------------------------------
 
-Obj79:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj79_Index(pc,d0.w),d1
-		jsr	Obj79_Index(pc,d1.w)
-		jmp	(MarkObjGone).l
-; ---------------------------------------------------------------------------
-Obj79_Index:	dc.w Obj79_Init-Obj79_Index
-		dc.w Obj79_Main-Obj79_Index
-		dc.w Obj79_AfterHit-Obj79_Index
-; ---------------------------------------------------------------------------
-
-Obj79_Init:
-		addq.b	#2,obRoutine(a0)
-		move.l	#Map_Obj79,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Lamppost,0,0),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-		move.b	#4,obRender(a0)
-		move.b	#8,obActWid(a0)
-		move.b	#5,obPriority(a0)
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		bclr	#7,2(a2,d0.w)
-		btst	#0,2(a2,d0.w)
-		bne.s	loc_13536
-		move.b	(v_lastlamp).w,d1
-		andi.b	#$7F,d1
-		move.b	obSubtype(a0),d2
-		andi.b	#$7F,d2
-		cmp.b	d2,d1
-		blo.s	Obj79_Main
-
-loc_13536:
-		bset	#0,2(a2,d0.w)
-		move.b	#4,obRoutine(a0)
-		rts
-; ---------------------------------------------------------------------------
-
-Obj79_Main:
-		tst.w	(Debug_placement_mode).w
-		bne.w	locret_135CA
-		tst.b	(f_playerctrl).w
-		bmi.w	locret_135CA
-		move.b	(v_lastlamp).w,d1
-		andi.b	#$7F,d1
-		move.b	obSubtype(a0),d2
-		andi.b	#$7F,d2
-		cmp.b	d2,d1
-		blo.s	Obj79_HitLamp
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		bset	#0,2(a2,d0.w)
-		move.b	#4,obRoutine(a0)
-		bra.w	locret_135CA
-; ---------------------------------------------------------------------------
-
-Obj79_HitLamp:
-		move.w	(v_player+obX).w,d0
-		sub.w	obX(a0),d0
-		addi.w	#8,d0
-		cmpi.w	#$10,d0
-		bhs.w	locret_135CA
-		move.w	(v_player+obY).w,d0
-		sub.w	obY(a0),d0
-		addi.w	#$40,d0
-		cmpi.w	#$68,d0
-		bhs.s	locret_135CA
-		move.w	#sfx_Lamppost,d0
-		jsr	(PlaySound_Special).l
-		addq.b	#2,obRoutine(a0)
-		bsr.w	Lamppost_StoreInfo
-		lea	(v_objstate).w,a2
-		moveq	#0,d0
-		move.b	obRespawnNo(a0),d0
-		bset	#0,2(a2,d0.w)
-
-locret_135CA:
-		rts
-; ---------------------------------------------------------------------------
-
-Obj79_AfterHit:
-		move.b	(Vint_runcount+3).w,d0
-		andi.b	#2,d0
-		lsr.b	#1,d0
-		addq.b	#1,d0
-		move.b	d0,obFrame(a0)
-		rts
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-Lamppost_StoreInfo:
-		move.b	obSubtype(a0),(v_lastlamp).w
-		move.b	(v_lastlamp).w,(v_lastlamp+1).w
-		move.w	obX(a0),(v_lamp_xpos).w
-		move.w	obY(a0),(v_lamp_ypos).w
-		move.w	(v_rings).w,(v_lamp_rings).w
-		move.b	(v_lifecount).w,(v_lamp_lives).w
-		move.l	(v_time).w,(v_lamp_time).w
-		move.b	(Dynamic_Resize_Routine).w,(v_lamp_dle).w
-		move.w	(Camera_Max_Y_pos).w,(v_lamp_limitbtm).w
-		move.w	(Camera_RAM).w,(v_lamp_scrx).w
-		move.w	(Camera_Y_pos).w,(v_lamp_scry).w
-		move.w	(Camera_BG_X_pos).w,(v_lamp_bgscrx).w
-		move.w	(Camera_BG_Y_pos).w,(v_lamp_bgscry).w
-		move.w	(Camera_BG2_X_pos).w,(v_lamp_bg2scrx).w
-		move.w	(Camera_BG2_Y_pos).w,(v_lamp_bg2scry).w
-		move.w	(Camera_BG3_X_pos).w,(v_lamp_bg3scrx).w
-		move.w	(Camera_BG3_Y_pos).w,(v_lamp_bg3scry).w
-		move.w	(v_waterpos2).w,(v_lamp_wtrpos).w
-		move.b	(v_wtr_routine).w,(v_lamp_wtrrout).w
-		move.b	(f_wtr_state).w,(v_lamp_wtrstat).w
-		rts
-; End of function Lamppost_StoreInfo
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-Lamppost_LoadInfo:
-		move.b	(v_lastlamp+1).w,(v_lastlamp).w
-		move.w	(v_lamp_xpos).w,(v_player+obX).w
-		move.w	(v_lamp_ypos).w,(v_player+obY).w
-		move.w	(v_lamp_rings).w,(v_rings).w
-		move.b	(v_lamp_lives).w,(v_lifecount).w
-		clr.w	(v_rings).w
-		clr.b	(v_lifecount).w
-		move.l	(v_lamp_time).w,(v_time).w
-		move.b	#60-1,(v_timecent).w
-		subq.b	#1,(v_timesec).w
-		move.b	(v_lamp_dle).w,(Dynamic_Resize_Routine).w
-		move.b	(v_lamp_wtrrout).w,(v_wtr_routine).w
-		move.w	(v_lamp_limitbtm).w,(Camera_Max_Y_pos).w
-		move.w	(v_lamp_limitbtm).w,(Camera_Max_Y_pos_target).w
-		move.w	(v_lamp_scrx).w,(Camera_RAM).w
-		move.w	(v_lamp_scry).w,(Camera_Y_pos).w
-		move.w	(v_lamp_bgscrx).w,(Camera_BG_X_pos).w
-		move.w	(v_lamp_bgscry).w,(Camera_BG_Y_pos).w
-		move.w	(v_lamp_bg2scrx).w,(Camera_BG2_X_pos).w
-		move.w	(v_lamp_bg2scry).w,(Camera_BG2_Y_pos).w
-		move.w	(v_lamp_bg3scrx).w,(Camera_BG3_X_pos).w
-		move.w	(v_lamp_bg3scry).w,(Camera_BG3_Y_pos).w
-		cmpi.b	#id_LZ,(Current_Zone).w
-		bne.s	loc_136F0
-		move.w	(v_lamp_wtrpos).w,(v_waterpos2).w
-		move.b	(v_lamp_wtrrout).w,(v_wtr_routine).w
-		move.b	(v_lamp_wtrstat).w,(f_wtr_state).w
-
-loc_136F0:
-		tst.b	(v_lastlamp).w
-		bpl.s	locret_13702
-		move.w	(v_lamp_xpos).w,d0
-		subi.w	#$A0,d0
-		move.w	d0,(Camera_Min_X_pos).w
-
-locret_13702:
-		rts
-; End of function Lamppost_LoadInfo
-
+		include	"_incObj/79 Lamppost.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj79:	dc.w word_1370A-Map_Obj79
 		dc.w word_1372C-Map_Obj79
@@ -18360,84 +18197,7 @@ word_1374E:	dc.w 4
 		dc.w $F803,    6,    3,$FFF8
 		dc.w $F803, $806, $803,	   0
 ; ---------------------------------------------------------------------------
-;----------------------------------------------------
-; Object 7D - hidden points at the end of a level
-;----------------------------------------------------
-
-Obj7D:
-		moveq	#0,d0
-		move.b	obRoutine(a0),d0
-		move.w	Obj7D_Index(pc,d0.w),d1
-		jmp	Obj7D_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-Obj7D_Index:	dc.w Obj7D_Main-Obj7D_Index
-		dc.w Obj7D_DelayDelete-Obj7D_Index
-; ---------------------------------------------------------------------------
-
-Obj7D_Main:
-		moveq	#$10,d2
-		move.w	d2,d3
-		add.w	d3,d3
-		lea	(v_player).w,a1
-		move.w	obX(a1),d0
-		sub.w	obX(a0),d0
-		add.w	d2,d0
-		cmp.w	d3,d0
-		bhs.s	loc_13804
-		move.w	obY(a1),d1
-		sub.w	obY(a0),d1
-		add.w	d2,d1
-		cmp.w	d3,d1
-		bhs.s	loc_13804
-		tst.w	(Debug_placement_mode).w
-		bne.s	loc_13804
-		tst.b	(f_bigring).w
-		bne.s	loc_13804
-		addq.b	#2,obRoutine(a0)
-		move.l	#Map_Obj7D,obMap(a0)
-		move.w	#make_art_tile(ArtTile_Hidden_Points,0,1),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
-		ori.b	#4,obRender(a0)
-		move.b	#0,obPriority(a0)
-		move.b	#$10,obActWid(a0)
-		move.b	obSubtype(a0),obFrame(a0)
-		move.w	#(60*2)-1,objoff_30(a0)
-		move.w	#sfx_Bonus,d0
-		jsr	(PlaySound_Special).l
-		moveq	#0,d0
-		move.b	obSubtype(a0),d0
-		add.w	d0,d0
-		move.w	Obj7D_Points(pc,d0.w),d0
-		jsr	(AddPoints).l
-
-loc_13804:
-		out_of_range.s	loc_13818
-		rts
-; ---------------------------------------------------------------------------
-
-loc_13818:
-		jmp	(DeleteObject).l
-; ---------------------------------------------------------------------------
-Obj7D_Points:	dc.w 0
-		dc.w 1000
-		dc.w 100
-	if FixBugs	
-		dc.w 10
-	else
-		; this is a digit too short!
-		dc.w 1
-	endif
-; ---------------------------------------------------------------------------
-
-Obj7D_DelayDelete:
-		subq.w	#1,objoff_30(a0)
-		bmi.s	loc_13844
-		out_of_range.s	loc_13844
-		jmp	(DisplaySprite).l
-; ---------------------------------------------------------------------------
-
-loc_13844:
-		jmp	(DeleteObject).l
+		include	"_incObj/S1/7D Hidden Bonuses.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj7D:	dc.w word_13852-Map_Obj7D
 		dc.w word_13854-Map_Obj7D
@@ -25815,16 +25575,16 @@ AnimPatMaps:
 		dc.w APM_EHZ-AnimPatMaps	; EHZ
 		dc.w APM_HPZ-AnimPatMaps	; HPZ
 		dc.w APM_EHZ-AnimPatMaps	; HTZ
-		dc.w APM_None-AnimPatMaps
-		dc.w APM_None-AnimPatMaps
-		dc.w APM_HPZ-AnimPatMaps
-		dc.w APM_None-AnimPatMaps
-		dc.w APM_None-AnimPatMaps
-		dc.w APM_None-AnimPatMaps
-		dc.w APM_None-AnimPatMaps
-		dc.w APM_CPZ-AnimPatMaps
-		dc.w APM_None-AnimPatMaps
-		dc.w APM_None-AnimPatMaps
+		dc.w APM_None-AnimPatMaps	; 06
+		dc.w APM_None-AnimPatMaps	; 07
+		dc.w APM_HPZ-AnimPatMaps	; 08
+		dc.w APM_None-AnimPatMaps	; 09
+		dc.w APM_None-AnimPatMaps	; 0A
+		dc.w APM_None-AnimPatMaps	; 0B
+		dc.w APM_None-AnimPatMaps	; 0C
+		dc.w APM_CPZ-AnimPatMaps	; 0D
+		dc.w APM_None-AnimPatMaps	; 0E
+		dc.w APM_None-AnimPatMaps	; 0F
 
 begin_animpat macro {INTLABEL}
 __LABEL__ label *
@@ -25835,14 +25595,14 @@ __LABEL___Blocks:
     endm
 
 APM_EHZ:	begin_animpat
-		dc.w make_block_tile(ArtTile_Art_EHZMountains+$2 ,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$4 ,0,0,2,0)
-		dc.w make_block_tile(ArtTile_Art_EHZMountains+$3 ,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$5 ,0,0,2,0)
+		dc.w make_block_tile(ArtTile_Art_EHZMountains+$2,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$4,0,0,2,0)
+		dc.w make_block_tile(ArtTile_Art_EHZMountains+$3,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$5,0,0,2,0)
 
-		dc.w make_block_tile(ArtTile_Art_EHZMountains+$6 ,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$8 ,0,0,2,0)
-		dc.w make_block_tile(ArtTile_Art_EHZMountains+$7 ,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$9 ,0,0,2,0)
+		dc.w make_block_tile(ArtTile_Art_EHZMountains+$6,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$8,0,0,2,0)
+		dc.w make_block_tile(ArtTile_Art_EHZMountains+$7,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$9,0,0,2,0)
 
-		dc.w make_block_tile(ArtTile_Art_EHZMountains+$A ,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$C ,0,0,2,0)
-		dc.w make_block_tile(ArtTile_Art_EHZMountains+$B ,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$D ,0,0,2,0)
+		dc.w make_block_tile(ArtTile_Art_EHZMountains+$A,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$C,0,0,2,0)
+		dc.w make_block_tile(ArtTile_Art_EHZMountains+$B,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$D,0,0,2,0)
 
 		dc.w make_block_tile(ArtTile_Art_EHZMountains+$E,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$10,0,0,2,0)
 		dc.w make_block_tile(ArtTile_Art_EHZMountains+$F,0,0,2,0),make_block_tile(ArtTile_Art_EHZMountains+$11,0,0,2,0)
@@ -25881,10 +25641,11 @@ APM_EHZ:	begin_animpat
 		dc.w make_block_tile(ArtTile_Art_Flowers4+$1,0,0,3,1),make_block_tile(ArtTile_Art_Flowers4+$1,1,0,3,1)
 APM_EHZ_End:
 
-APM_None:	dc.w 0
+APM_None:
+		dc.w 0
 APM_None_End:
 
-APM_Unk:;	begin_animpat
+APM_Unk:	
 		dc.w $1800-$B80 ; Bug: This should be $1800-$138
 		dc.w bytesToWcnt($138)
 		dc.w make_block_tile($3A0+$1,0,0,2,0),make_block_tile($3A0+$2,0,0,2,0)
@@ -25919,53 +25680,53 @@ APM_Unk:;	begin_animpat
 		dc.w make_block_tile($340+$A,0,0,3,0),make_block_tile($340+$E,0,0,3,0)
 		dc.w make_block_tile($340+$3,0,0,3,0),make_block_tile($340+$7,0,0,3,0)
 		dc.w make_block_tile($340+$18,0,0,2,0),make_block_tile($340+$19,0,0,2,0)
-		dc.w $634B,$634F
-		dc.w $435A,$435B
-		dc.w $6380,$6384
-		dc.w $6381,$6385
-		dc.w $6388,$638C
-		dc.w $6389,$638D
-		dc.w $6382,$6386
-		dc.w $6383,$6387
-		dc.w $638A,$638E
-		dc.w $638B,$638F
-		dc.w $6390,$6394
-		dc.w $6391,$6395
-		dc.w $6398,$639C
-		dc.w $6399,$639D
-		dc.w $6392,$6396
-		dc.w $6393,$6397
-		dc.w $639A,$639E
-		dc.w $639B,$639F
-		dc.w $4378,$4379
-		dc.w $437A,$437B
-		dc.w $437C,$437D
-		dc.w $437E,$437F
-		dc.w $235C,$235D
-		dc.w $235E,$235F
-		dc.w $2360,$2361
-		dc.w $2362,$2363
-		dc.w $2364,$2365
-		dc.w $2366,$2367
-		dc.w $2368,$2369
-		dc.w $236A,$236B
+		dc.w make_block_tile($340+$B,0,0,3,0),make_block_tile($340+$F,0,0,3,0)
+		dc.w make_block_tile($340+$1A,0,0,2,0),make_block_tile($340+$1B,0,0,2,0)
+		dc.w make_block_tile($380+$0,0,0,3,0),make_block_tile($380+$4,0,0,3,0)
+		dc.w make_block_tile($380+$1,0,0,3,0),make_block_tile($380+$5,0,0,3,0)
+		dc.w make_block_tile($380+$8,0,0,3,0),make_block_tile($380+$C,0,0,3,0)
+		dc.w make_block_tile($380+$9,0,0,3,0),make_block_tile($380+$D,0,0,3,0)
+		dc.w make_block_tile($380+$2,0,0,3,0),make_block_tile($380+$6,0,0,3,0)
+		dc.w make_block_tile($380+$3,0,0,3,0),make_block_tile($380+$7,0,0,3,0)
+		dc.w make_block_tile($380+$A,0,0,3,0),make_block_tile($380+$E,0,0,3,0)
+		dc.w make_block_tile($380+$B,0,0,3,0),make_block_tile($380+$F,0,0,3,0)
+		dc.w make_block_tile($390+$0,0,0,3,0),make_block_tile($390+$4,0,0,3,0)
+		dc.w make_block_tile($390+$1,0,0,3,0),make_block_tile($390+$5,0,0,3,0)
+		dc.w make_block_tile($390+$8,0,0,3,0),make_block_tile($390+$C,0,0,3,0)
+		dc.w make_block_tile($390+$9,0,0,3,0),make_block_tile($390+$D,0,0,3,0)
+		dc.w make_block_tile($390+$2,0,0,3,0),make_block_tile($390+$6,0,0,3,0)
+		dc.w make_block_tile($390+$3,0,0,3,0),make_block_tile($390+$7,0,0,3,0)
+		dc.w make_block_tile($390+$A,0,0,3,0),make_block_tile($390+$E,0,0,3,0)
+		dc.w make_block_tile($390+$B,0,0,3,0),make_block_tile($390+$F,0,0,3,0)
+		dc.w make_block_tile($370+$8,0,0,2,0),make_block_tile($370+$9,0,0,2,0)
+		dc.w make_block_tile($370+$A,0,0,2,0),make_block_tile($370+$B,0,0,2,0)
+		dc.w make_block_tile($370+$C,0,0,2,0),make_block_tile($370+$D,0,0,2,0)
+		dc.w make_block_tile($370+$E,0,0,2,0),make_block_tile($370+$F,0,0,2,0)
+		dc.w make_block_tile($350+$C,0,0,1,0),make_block_tile($350+$D,0,0,1,0)
+		dc.w make_block_tile($350+$E,0,0,1,0),make_block_tile($350+$F,0,0,1,0)
+		dc.w make_block_tile($350+$10,0,0,1,0),make_block_tile($350+$11,0,0,1,0)
+		dc.w make_block_tile($350+$12,0,0,1,0),make_block_tile($350+$13,0,0,1,0)
+		dc.w make_block_tile($350+$14,0,0,1,0),make_block_tile($350+$15,0,0,1,0)
+		dc.w make_block_tile($350+$16,0,0,1,0),make_block_tile($350+$17,0,0,1,0)
+		dc.w make_block_tile($350+$18,0,0,1,0),make_block_tile($350+$19,0,0,1,0)
+		dc.w make_block_tile($350+$1A,0,0,1,0),make_block_tile($350+$1B,0,0,1,0)
 		dc.w make_block_tile(0+$0,0,0,0,0),make_block_tile(0+$0,0,0,0,0)
-		dc.w $636C,$636D
+		dc.w make_block_tile($360+$C,0,0,3,0),make_block_tile($360+$D,0,0,3,0)
 		dc.w make_block_tile(0+$0,0,0,0,0),make_block_tile(0+$0,0,0,0,0)
-		dc.w $636E,make_block_tile(0+$0,0,0,0,0)
-		dc.w $636F,$6370
-		dc.w $6371,$6372
-		dc.w $6373,make_block_tile(0+$0,0,0,0,0)
-		dc.w $6374,make_block_tile(0+$0,0,0,0,0)
-		dc.w $6375,$6376
-		dc.w $4358,$4359
-		dc.w $6377,make_block_tile(0+$0,0,0,0,0)
-		dc.w $435A,$435B
-		dc.w $C378,$C379
-		dc.w $C37A,$C37B
-		dc.w $C37C,$C37D
-		dc.w $C37E,$C37F
-APM_LZ_End:
+		dc.w make_block_tile($360+$E,0,0,3,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w make_block_tile($360+$F,0,0,3,0),make_block_tile($360+$10,0,0,3,0)
+		dc.w make_block_tile($360+$11,0,0,3,0),make_block_tile($360+$12,0,0,3,0)
+		dc.w make_block_tile($360+$13,0,0,3,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w make_block_tile($360+$14,0,0,3,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w make_block_tile($360+$15,0,0,3,0),make_block_tile($360+$16,0,0,3,0)
+		dc.w make_block_tile($350+$8,0,0,2,0),make_block_tile($350+$9,0,0,2,0)
+		dc.w make_block_tile($360+$17,0,0,3,0),make_block_tile(0+$0,0,0,0,0)
+		dc.w make_block_tile($350+$A,0,0,2,0),make_block_tile($350+$B,0,0,2,0)
+		dc.w make_block_tile($370+$8,0,0,2,1),make_block_tile($370+$9,0,0,2,1)
+		dc.w make_block_tile($370+$A,0,0,2,1),make_block_tile($370+$B,0,0,2,1)
+		dc.w make_block_tile($370+$C,0,0,2,1),make_block_tile($370+$D,0,0,2,1)
+		dc.w make_block_tile($370+$E,0,0,2,1),make_block_tile($370+$F,0,0,2,1)
+APM_Unk_End:
 
 APM_CPZ:	begin_animpat
 		dc.w make_block_tile(ArtTile_CPZ_Buildings+$1,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$1,0,0,2,0)
