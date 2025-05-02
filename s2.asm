@@ -727,7 +727,7 @@ loc_F08:
 Vint_UnusedE:
 		bsr.w	Do_ControllerPal
 		addq.b	#1,(v_vbla_0e_counter).w
-		move.b	#$E,(v_vbla_routine).w
+		move.b	#VintID_UnusedE,(v_vbla_routine).w
 		rts
 ; ===========================================================================
 ; loc_F98: VintSub12:
