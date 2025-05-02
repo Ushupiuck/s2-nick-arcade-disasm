@@ -59,12 +59,8 @@ loc_13818:
 Obj7D_Points:	dc.w 0
 		dc.w 1000
 		dc.w 100
-	if FixBugs	
-		dc.w 10
-	else
 		; this is a digit too short!
 		dc.w 1
-	endif
 ; ---------------------------------------------------------------------------
 
 Obj7D_DelayDelete:

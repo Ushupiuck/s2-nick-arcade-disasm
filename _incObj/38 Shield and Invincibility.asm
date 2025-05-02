@@ -71,11 +71,9 @@ Obj38_Stars:
 		lsl.b	#2,d1
 		addi.b	#4,d1
 		sub.b	d1,d0
-	if FixBugs
-		lea	(Sonic_Pos_Record_Buf).w,a1
-	else
-		lea	(Tails_Pos_Record_Buf).w,a1	; should actually be using Sonic's...
-	endif
+		; Bug: This is using Tails position.
+		; To fix this, make it uses Sonic's buffer.
+		lea	(Tails_Pos_Record_Buf).w,a1
 		lea	(a1,d0.w),a1
 		move.w	(a1)+,d0
 		andi.w	#$3FFF,d0

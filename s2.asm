@@ -9,8 +9,6 @@ EnableSRAM	  = 0	; change to 1 to enable SRAM
 BackupSRAM	  = 1
 AddressSRAM	  = 3	; 0 = odd+even; 2 = even only; 3 = odd only
 
-FixBugs		  = 0	; change to 1 to enable bugfixes
-
 zeroOffsetOptimization = 0	; if 1, makes a handful of zero-offset instructions smaller
 
 	include	"s2.macrosetup.asm"
@@ -234,7 +232,7 @@ GameProgram:
 
 ChecksumTest:
 		movea.l	#ErrorTrap,a0			; start checking bytes after header ($200)
-		movea.l	#ROMEndLoc,a1			; stop at end of ROM (but not really since it's half the ROM, leftover from Sonic 1)
+		movea.l	#ROMEndLoc,a1			; stop at end of ROM (but not really since it's half of the ROM, leftover from Sonic 1)
 		move.l	(a1),d0
 		move.l	#$7FFFF,d0
 		moveq	#0,d1
@@ -244,8 +242,8 @@ ChecksumLoop:
 		cmp.l	a0,d0
 		bcc.s	ChecksumLoop
 		movea.l	#Checksum,a1			; read the checksum
-		cmp.w	(a1),d1				; compare correct checksum to one in ROM...
-		nop					; ...and do nothing since this has been noped out...
+		cmp.w	(a1),d1					; compare correct checksum to one in ROM
+		nop								; and do absolutely nothing with it
 		nop
 		lea	(v_crossresetram).w,a6
 		moveq	#0,d7
@@ -495,13 +493,13 @@ V_Int:
 
 .waitforvint:
 		move.w	(vdp_control_port).l,d0
-		andi.w	#8,d0
+		andi.w	#%1000,d0
 		beq.s	.waitforvint
 		move.l	#$40000010,(vdp_control_port).l
 		move.l	(v_scrposy_vdp).w,(vdp_data_port).l
 		btst	#6,(v_megadrive).w
 		beq.s	.notPAL
-		move.w	#$701-1,d0
+		move.w	#14344/8-1,d0
 		dbf	d0,*
 
 .notPAL:
@@ -551,7 +549,7 @@ loc_BA0:
 		move.w	(vdp_control_port).l,d0
 		btst	#6,(v_megadrive).w
 		beq.s	loc_BBE
-		move.w	#$701-1,d0
+		move.w	#14344/8-1,d0
 		dbf	d0,*
 
 loc_BBE:
@@ -580,7 +578,7 @@ Vint0_noWater:
 		move.l	(v_scrposy_vdp).w,(vdp_data_port).l
 		btst	#6,(v_megadrive).w
 		beq.s	loc_C66
-		move.w	#$701-1,d0
+		move.w	#14344/8-1,d0
 		dbf	d0,*
 
 loc_C66:
@@ -792,7 +790,7 @@ H_Int:
 
 loc_110E:
 		move.w	(vdp_control_port).l,d0
-		andi.w	#4,d0
+		andi.w	#%0100,d0
 		beq.s	loc_110E
 		move.w	(v_vdp_buffer1).w,d0
 		andi.b	#$BF,d0
@@ -804,7 +802,7 @@ loc_110E:
 
 loc_1166:
 		move.w	(vdp_control_port).l,d0
-		andi.w	#4,d0
+		andi.w	#%0100,d0
 		beq.s	loc_1166
 		move.w	(v_vdp_buffer1).w,d0
 		ori.b	#$40,d0
@@ -949,7 +947,7 @@ VDPSetupArray:
 		dc.w $8D00+(vram_hscroll>>10)
 		dc.w $8E00
 		dc.w $8F02				; VRAM pointer increment: $0002
-		dc.w $9000+%00000001	; Scroll table size: 64x32
+		dc.w $9000+%0001		; Scroll table size: 64x32
 		dc.w $9100				; Disable window
 		dc.w $9200				; Disable window
 VDPSetupArray_End:
@@ -963,13 +961,8 @@ ClearScreen:
 
 		clr.l	(v_scrposy_vdp).w
 		clr.l	(v_scrposx_vdp).w
-	if FixBugs
-		clearRAM Sprite_Table,Sprite_Table_end
-		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded
-	else
 		clearRAM Sprite_Table,Sprite_Table_end+4 ; Clears too much RAM, clearing the first 4 bytes of v_palette_water.
 		clearRAM v_hscrolltablebuffer,v_hscrolltablebuffer_end_padded+4 ; Clears too much RAM, clearing the first 4 bytes of v_objspace.
-	endif
 		rts
 ; End of function ClearScreen
 
@@ -1194,9 +1187,9 @@ RunPLC_RAM:
 
 loc_16FE:
 		andi.w	#$7FFF,d2
-	if ~~FixBugs
+		; There is a bug here where the game can crash if a race condition occurs with pattern load cues.
+		; To fix this, move this line after 'move.l	d6,(v_plc_shiftvalue).w'.
 		move.w	d2,(v_plc_patternsleft).w
-	endif
 		bsr.w	NemDec_BuildCodeTable
 		move.b	(a0)+,d5
 		asl.w	#8,d5
@@ -1210,9 +1203,6 @@ loc_16FE:
 		move.l	d0,(v_plc_previousrow).w
 		move.l	d5,(v_plc_dataword).w
 		move.l	d6,(v_plc_shiftvalue).w
-	if FixBugs
-		move.w	d2,(v_plc_patternsleft).w
-	endif
 
 locret_1730:
 		rts
@@ -1289,7 +1279,6 @@ loc_17D2:
 		move.l	6(a0),(a0)+
 		dbf	d0,loc_17D2
 
-	if FixBugs
 		; The above code does not properly 'pop' the 16th PLC entry.
 		; Because of this, occupying the 16th slot will cause it to
 		; be repeatedly decompressed infinitely.
@@ -1297,12 +1286,12 @@ loc_17D2:
 		; than a bug: treating the 16th entry as a dummy that
 		; should never be occupied makes this code unnecessary.
 		; Still, the overhead of this code is minimal.
-	if (v_plc_buffer_only_end-v_plc_buffer-6)&2
-		move.w	6(a0),(a0)
-	endif
+		; Uncomment the lines below to fix the bug.
+;	if (v_plc_buffer_only_end-v_plc_buffer-6)&2
+;		move.w	6(a0),(a0)
+;	endif
 
-		clr.l	(v_plc_buffer_only_end-6).w
-	endif
+;		clr.l	(v_plc_buffer_only_end-6).w
 
 		rts
 ; End of function ProcessDPLC
@@ -2195,7 +2184,7 @@ TitleScreen:
 		move	#$2700,sr
 		bsr.w	SoundDriverLoad
 		lea	(vdp_control_port).l,a6
-		move.w	#$8000+%00000100,(a6)
+		move.w	#$8000+%0100,(a6)
 		move.w	#$8200+(vram_fg>>10),(a6)
 		move.w	#$8400+(vram_bg>>13),(a6)
 		move.w	#$9001,(a6)
@@ -2384,12 +2373,11 @@ loc_3516:
 		beq.s	loc_355A
 
 loc_353A:
-	if ~~FixBugs
+		; Bug fix here
 		cmpi.w	#bgm__Last+1,d0
 		blo.s	loc_3546
 		cmpi.w	#sfx__First,d0
 		blo.s	LevelSelect_Loop
-	endif
 
 loc_3546:
 		bsr.w	PlaySound_Special
@@ -2881,12 +2869,12 @@ loc_3BB6:
 
 .skipwater:
 		lea	(vdp_control_port).l,a6
-		move.w	#$8B00+%00000011,(a6)	; set horizontal scrolling single pixel rows mode
+		move.w	#$8B00+%0011,(a6)	; set horizontal scrolling single pixel rows mode
 		move.w	#$8200+(vram_fg>>10),(a6)
 		move.w	#$8400+(vram_bg>>13),(a6)
 		move.w	#$8500+(vram_sprites>>9),(a6)
 		move.w	#$9001,(a6)
-		move.w	#$8000+%00000100,(a6)
+		move.w	#$8000+%0100,(a6)
 		move.w	#$8700+(2<<4)+0,(a6)	; set background color to first slot of line 2
 		move.w	#$8A00+224-1,(v_hbla_hreg).w
 		tst.w	(Two_player_mode).w	; is two player mode enabled?
@@ -3352,8 +3340,8 @@ SpecialStage:
 		bsr.w	Pal_MakeFlash
 		move	#$2700,sr
 		lea	(vdp_control_port).l,a6
-		move.w	#$8B00+%00000011,(a6)	; set horizontal scrolling single pixel rows mode
-		move.w	#$8000+%00000100,(a6)
+		move.w	#$8B00+%0011,(a6)	; set horizontal scrolling single pixel rows mode
+		move.w	#$8000+%0100,(a6)
 		move.w	#$8A00+175,(v_hbla_hreg).w
 		move.w	#$9011,(a6)
 		move.w	(v_vdp_buffer1).w,d0
@@ -3365,13 +3353,9 @@ SpecialStage:
 		bsr.w	S1_SSBGLoad
 		moveq	#plcid_SpecialStage,d0
 		bsr.w	QuickPLC
-	if FixBugs
-		clearRAM v_objspace,v_objend
-	else
-		; DANGER!
-		; This does not actually clear the object space!
-		; this actually clears some of the collision
-		; addresses instead!
+		; This does not clear the object space!
+		; this actually clears some of the collision addresses instead!
+		; Replace this with 'clearRAM v_objspace,v_objend' to fix this bug.
 		lea	(v_objspace+$2000).w,a1
 		moveq	#0,d0
 		move.w	#bytesToLcnt(v_objend-v_objspace),d1
@@ -3379,7 +3363,6 @@ SpecialStage:
 loc_509C:
 		move.l	d0,(a1)+
 		dbf	d1,loc_509C
-	endif
 		clearRAM v_levelvariables,v_levelvariables_end
 		clearRAM v_timingvariables,v_timingvariables_end-$80
 		clearRAM v_ngfx_buffer,v_ngfx_buffer_end
@@ -4776,12 +4759,12 @@ loc_61B2:
 		swap	d3
 		dbf	d1,loc_61B2
 
-	if FixBugs
-		rept 2
-		move.w	d4,(a1)+
-		move.w	d3,(a1)+
-		endm
-	endif
+		; Bug: The last 2 pixels of the screen are not covered, resulting in very weird artifacting at the bottom of the screen.
+		; Uncomment the lines below to fix this bug.
+;		rept 2
+;		move.w	d4,(a1)+
+;		move.w	d3,(a1)+
+;		endm
 		rts
 ; End of function Deform_TitleScreen
 
@@ -5177,22 +5160,6 @@ locret_6512:
 
 ;sub_6514:
 ScrollHoriz:
-	if FixBugs
-		; To prevent the bug that is described below, this caps the position
-		; array index offset so that it does not access position data from
-		; before the spin dash was performed. Note that this required
-		; modifications to 'Sonic_UpdateSpindash' and 'Tails_UpdateSpindash'.
-		move.b	Horiz_scroll_delay_val-Camera_Delay(a5),d1	; should scrolling be delayed?
-		beq.s	.scrollNotDelayed				; if not, branch
-		lsl.b	#2,d1		; multiply by 4, the size of a position buffer entry
-		subq.b	#1,Horiz_scroll_delay_val-Camera_Delay(a5)	; reduce delay value
-		move.b	Sonic_Pos_Record_Index+1-Camera_Delay(a5),d0
-		sub.b	Horiz_scroll_delay_val+1-Camera_Delay(a5),d0
-		cmp.b	d0,d1
-		blo.s	.doNotCap
-		move.b	d0,d1
-.doNotCap:
-	else
 		; The intent of this code is to make the camera briefly lag behind the
 		; player right after releasing a spin dash, however it does this by
 		; simply making the camera use position data from previous frames. This
@@ -5211,7 +5178,23 @@ ScrollHoriz:
 		move.b	Horiz_scroll_delay_val-Camera_Delay(a5),d1	; get delay value
 		lsl.b	#2,d1		; multiply by 4, the size of a position buffer entry
 		addq.b	#4,d1
-	endif
+
+		; To prevent the bug that is described above, this caps the position
+		; array index offset so that it does not access position data from
+		; before the spin dash was performed. Note that this required
+		; modifications to 'Sonic_UpdateSpindash' and 'Tails_UpdateSpindash'.
+		; Uncomment the lines below and delete the lines above to fix the bug.
+;		move.b	Horiz_scroll_delay_val-Camera_Delay(a5),d1	; should scrolling be delayed?
+;		beq.s	.scrollNotDelayed				; if not, branch
+;		lsl.b	#2,d1		; multiply by 4, the size of a position buffer entry
+;		subq.b	#1,Horiz_scroll_delay_val-Camera_Delay(a5)	; reduce delay value
+;		move.b	Sonic_Pos_Record_Index+1-Camera_Delay(a5),d0
+;		sub.b	Horiz_scroll_delay_val+1-Camera_Delay(a5),d0
+;		cmp.b	d0,d1
+;		blo.s	.doNotCap
+;		move.b	d0,d1
+;.doNotCap:
+
 		move.w	Sonic_Pos_Record_Index-Camera_Delay(a5),d0
 		sub.b	d1,d0
 		move.w	(a6,d0.w),d0
@@ -6865,12 +6848,8 @@ loc_72C2:
 		bne.s	loc_72F4
 		lea	(v_16x16+$980).w,a1
 		lea	(Map16_HTZ).l,a0
-	if FixBugs
-		move.w	#bytesToWcnt(Map16_HTZ_End-Map16_HTZ),d2
-	else
-		; there is a slight bug here in which 50 bytes are copied from the start of Nem_HTZ.
+		; There is a slight bug here in which 50 bytes are copied from the start of Nem_HTZ, remove the '+$50' to fix this.
 		move.w	#bytesToWcnt(Map16_HTZ_End+$50-Map16_HTZ),d2
-	endif
 
 loc_72D8:
 		move.w	(a0)+,d0
@@ -10727,12 +10706,9 @@ loc_D8AE:
 ; RPL_Next:
 RingsManager_Main:
 		lea	(Ring_Positions).w,a1
-	if FixBugs
-		move.w	#255-1,d1			; do 255 rings
-        else
-        	; Minor bug: This does 256 rings, when it should be 255.
+		; There is a slight bug here.
+		; This does 256 rings, when it should be 255 to keep it consistent with RingsMgr_SortRings.
 		move.w	#256-1,d1			; do 256 rings
-	endif
 
 loc_D8CC:
 		move.b	(a1),d0				; is there a ring in this slot?
@@ -10881,14 +10857,11 @@ loc_D9AE:
 		move.b	obHeight(a0),d5
 		subq.b	#3,d5
 		sub.w	d5,d3
-	if FixBugs
-		cmpi.b	#AniIDSonAni_Duck,obAnim(a0)
-	else
 		; Bug: This does not check either player's ducking frame!
 		; Sonic's ducking frame is $80, and Tails's frame is $5B.
 		; However, this does work for Sonic 1's mapping frames.
+		; To fix this, replace this line with 'cmpi.b	#AniIDSonAni_Duck,obAnim(a0)'.
 		cmpi.b	#$39,obFrame(a0)
-	endif
 		bne.s	loc_D9E0
 		addi.w	#$C,d3
 		moveq	#$A,d5
@@ -11214,24 +11187,20 @@ ObjectsManager_Init:
 		move.l	a0,(Obj_load_addr_left_P2).w
 		lea	(v_objstate).w,a2
 		move.w	#$101,(a2)+
-	if FixBugs
-		move.w	#bytesToLcnt(v_objstate_end-v_objstate-2),d0
-	else
 		; This clears longwords, but the loop counter is measured in words!
 		; This causes $17C bytes to be cleared instead of $BE.
+		; To fix this bug, change 'bytesToWcnt' to 'bytesToLcnt'.
 		move.w	#bytesToWcnt(v_objstate_end-v_objstate-2),d0
-	endif
 
 loc_DC9C:
 		clr.l	(a2)+
 		dbf	d0,loc_DC9C
 
-	if FixBugs
 		; Clear the last word, since the above loop only does longwords.
-	if (v_objstate_end-v_objstate-2)&2
-		clr.w	(a2)+
-	endif
-	endif
+		; Uncomment the lines below to fix this bug.
+;	if (v_objstate_end-v_objstate-2)&2
+;		clr.w	(a2)+
+;	endif
 
 		lea	(v_objstate).w,a2
 		moveq	#0,d2
@@ -13027,12 +12996,11 @@ Obj01_ChkInvin:						; Checks if invincibility has expired and (should) disables
 		beq.s	Obj01_ChkShoes
 		tst.w	invtime(a0)
 		beq.s	Obj01_ChkShoes
-	if ~~FixBugs
 		; This branch causes the invincibility timer to be disabled.
 		; Strangely, Tails' version doesn't have this.
+		; Uncomment the line below to fix this bug.
 		bra.s	Obj01_ChkShoes
 ; ===========================================================================
-	endif
 		subq.w	#1,invtime(a0)
 		bne.s	Obj01_ChkShoes
 		tst.b	(f_lockscreen).w
@@ -13515,11 +13483,6 @@ Sonic_TurnLeft:
 
 loc_FF78:
 		move.w	d0,obInertia(a0)
-	if FixBugs
-		move.b	obAngle(a0),d1
-		addi.b	#$20,d1
-		andi.b	#$C0,d1
-	else
 		; These three instructions partially overwrite the inertia value in
 		; 'd0'! This causes the character to trigger their skidding
 		; animation at different speeds depending on whether they're going
@@ -13528,7 +13491,6 @@ loc_FF78:
 		move.b	obAngle(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
-	endif
 		bne.s	locret_FFA6
 		cmpi.w	#$400,d0
 		blt.s	locret_FFA6
@@ -13572,11 +13534,6 @@ Sonic_TurnRight:
 
 loc_FFDE:
 		move.w	d0,obInertia(a0)
-	if FixBugs
-		move.b	obAngle(a0),d1
-		addi.b	#$20,d1
-		andi.b	#$C0,d1
-	else
 		; These three instructions partially overwrite the inertia value in
 		; 'd0'! This causes the character to trigger their skidding
 		; animation at different speeds depending on whether they're going
@@ -13585,7 +13542,6 @@ loc_FFDE:
 		move.b	obAngle(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
-	endif
 		bne.s	locret_1000C
 		cmpi.w	#-$400,d0
 		bgt.s	locret_1000C
@@ -14015,16 +13971,14 @@ Sonic_UpdateSpindash:
 		move.b	#AniIDSonAni_Roll,obAnim(a0)
 		addq.w	#5,obY(a0)			; add the difference between Sonic's rolling and standing heights
 		move.b	#0,spindash_flag(a0)
-	if FixBugs
 		; To fix a bug in 'ScrollHoriz', we need an extra variable, so this
 		; code has been modified to make the delay value only a single byte.
 		; This is used by the fixed 'ScrollHoriz'.
-		move.b	#$20,(Horiz_scroll_delay_val).w
+		; Uncomment these lines and delete 'move.w	#$2000,(Horiz_scroll_delay_val).w' to fix the bug in 'ScrollHoriz'.
+;		move.b	#$20,(Horiz_scroll_delay_val).w
 		; Back up the position array index for later.
-		move.b	(Sonic_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
-	else
+;		move.b	(Sonic_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
 		move.w	#$2000,(Horiz_scroll_delay_val).w
-	endif
 		move.w	#$800,obInertia(a0)
 		btst	#0,obStatus(a0)
 		beq.s	loc_103D4
@@ -14916,11 +14870,11 @@ Obj02:
 		move.w	Obj02_Index(pc,d0.w),d1
 		jmp	Obj02_Index(pc,d1.w)
 ; ===========================================================================
-Obj02_Index:	dc.w Obj02_Init-Obj02_Index		; 0
-		dc.w Obj02_Control-Obj02_Index		; 2
-		dc.w Obj02_Hurt-Obj02_Index		; 4
-		dc.w Obj02_Dead-Obj02_Index		; 6
-		dc.w Obj02_ResetLevel-Obj02_Index	; 8
+Obj02_Index:	dc.w Obj02_Init-Obj02_Index
+		dc.w Obj02_Control-Obj02_Index
+		dc.w Obj02_Hurt-Obj02_Index
+		dc.w Obj02_Dead-Obj02_Index
+		dc.w Obj02_ResetLevel-Obj02_Index
 ; ===========================================================================
 ; Obj02_Main:
 Obj02_Init:
@@ -15410,11 +15364,6 @@ loc_110EA:
 
 loc_110F2:
 		move.w	d0,obInertia(a0)
-	if FixBugs
-		move.b	obAngle(a0),d1
-		addi.b	#$20,d1
-		andi.b	#$C0,d1
-	else
 		; These three instructions partially overwrite the inertia value in
 		; 'd0'! This causes the character to trigger their skidding
 		; animation at different speeds depending on whether they're going
@@ -15423,7 +15372,6 @@ loc_110F2:
 		move.b	obAngle(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
-	endif
 		bne.s	locret_11120
 		cmpi.w	#$400,d0
 		blt.s	locret_11120
@@ -15467,11 +15415,6 @@ loc_11150:
 
 loc_11158:
 		move.w	d0,obInertia(a0)
-	if FixBugs
-		move.b	obAngle(a0),d1
-		addi.b	#$20,d1
-		andi.b	#$C0,d1
-	else
 		; These three instructions partially overwrite the inertia value in
 		; 'd0'! This causes the character to trigger their skidding
 		; animation at different speeds depending on whether they're going
@@ -15480,7 +15423,6 @@ loc_11158:
 		move.b	obAngle(a0),d0
 		addi.b	#$20,d0
 		andi.b	#$C0,d0
-	endif
 		bne.s	locret_11186
 		cmpi.w	#-$400,d0
 		bgt.s	locret_11186
@@ -15754,7 +15696,7 @@ loc_1139A:
 		cmpi.w	#$80,d0
 		blo.s	locret_113B2
 		move.b	(v_2Pjpadhold1).w,d0
-		andi.b	#btnL|btnR,d0
+		andi.b	#btnL+btnR,d0
 		bne.s	locret_113B2
 		btst	#bitDn,(v_2Pjpadhold1).w
 		bne.s	loc_113B4
@@ -15870,9 +15812,9 @@ locret_114CA:
 ; ---------------------------------------------------------------------------
 
 loc_114CC:
-		cmpi.w	#$F040,obVelY(a0)
+		cmpi.w	#-$FC0,obVelY(a0)
 		bge.s	locret_114DA
-		move.w	#$F040,obVelY(a0)
+		move.w	#-$FC0,obVelY(a0)
 
 locret_114DA:
 		rts
@@ -15909,16 +15851,14 @@ loc_11510:
 		move.b	#AniIDSonAni_Roll,obAnim(a0)
 		addq.w	#5,obY(a0)
 		move.b	#0,spindash_flag(a0)
-	if FixBugs
 		; To fix a bug in 'ScrollHoriz', we need an extra variable, so this
 		; code has been modified to make the delay value only a single byte.
 		; This is used by the fixed 'ScrollHoriz'.
-		move.b	#$20,(Horiz_scroll_delay_val).w
+		; Uncomment these lines and delete 'move.w	#$2000,(Horiz_scroll_delay_val).w' to fix the bug in 'ScrollHoriz'.
+;		move.b	#$20,(Horiz_scroll_delay_val).w
 		; Back up the position array index for later.
-		move.b	(Tails_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
-	else
+;		move.b	(Tails_Pos_Record_Index+1).w,(Horiz_scroll_delay_val+1).w
 		move.w	#$2000,(Horiz_scroll_delay_val).w
-	endif
 		move.w	#$800,obInertia(a0)
 		btst	#0,obStatus(a0)
 		beq.s	loc_1154E
@@ -16837,7 +16777,8 @@ loc_11DE6:
 		jsr	(DisplaySprite).l
 		rts
 ; ---------------------------------------------------------------------------
-Obj05_Animations:dc.b	0,  0
+Obj05_Animations:
+		dc.b   0,  0
 		dc.b   3,  3
 		dc.b   0,  1
 		dc.b   0,  2
@@ -19590,12 +19531,9 @@ Obj16_Init:
 		move.l	#Map_Obj16,obMap(a0)
 		move.w	#make_art_tile(ArtTile_HtzZipline,2,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
-	if FixBugs
-		ori.b	#4,obRender(a0)
-	else
-		; Bug: This does not correctly flip the object
+		; Bug: This does not correctly flip the object.
+		; Change 'move' to 'ori' to fix this bug.
 		move.b	#4,obRender(a0)
-	endif
 		move.b	#$20,obActWid(a0)
 		move.b	#0,obFrame(a0)
 		move.b	#1,obPriority(a0)
@@ -19611,7 +19549,7 @@ Obj16_Main:
 		move.w	(sp)+,d4
 		bsr.w	sub_F78A
 		move.w	objoff_30(a0),d0
-		out_of_range.w	loc_152AA
+		out_of_range.w	j_DeleteObject
 		bra.w	loc_152A4
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -19638,14 +19576,13 @@ Obj16_InitMove:
 		beq.s	locret_151BE
 		addq.b	#1,obSubtype(a0)
 		move.w	#$200,obVelX(a0)
-	if FixBugs
-		; This fixes issues with the object being flipped horizontally
-		btst	#0,obStatus(a0)
-		beq.s	.facingright
-		neg.w	obVelX(a0)
+		; This object does not work when being flipped horizontally.
+		; Uncomment the lines below to fix this issue.
+;		btst	#0,obStatus(a0)
+;		beq.s	.facingright
+;		neg.w	obVelX(a0)
 		
-.facingright:
-	endif
+;.facingright:
 		move.w	#$100,obVelY(a0)
 		move.w	#$A0,objoff_34(a0)
 
@@ -19674,7 +19611,7 @@ loc_152A4:
 		jmp	(DisplaySprite).l
 ; ---------------------------------------------------------------------------
 
-loc_152AA:
+j_DeleteObject:
 		jmp	(DeleteObject).l
 ; ---------------------------------------------------------------------------
 
@@ -19728,7 +19665,7 @@ Obj19_Main:
 		move.w	#$10,d3
 		move.w	(sp)+,d4
 		bsr.w	sub_F78A
-		out_of_range.w	loc_154C6,objoff_30(a0)
+		out_of_range.w	j_DeleteObject_1,objoff_30(a0)
 		bra.w	loc_154C0
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -19839,7 +19776,7 @@ loc_1540E:
 
 loc_15418:
 		addq.l	#6,sp
-		out_of_range.w	loc_154C6,objoff_30(a0)
+		out_of_range.w	j_DeleteObject_1,objoff_30(a0)
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -19912,7 +19849,7 @@ loc_154C0:
 		jmp	(DisplaySprite).l
 ; ---------------------------------------------------------------------------
 
-loc_154C6:
+j_DeleteObject_1:
 		jmp	(DeleteObject).l
 ; ---------------------------------------------------------------------------
 
@@ -19996,7 +19933,7 @@ Obj49_Init:
 Obj49_Main:
 		tst.w	(Two_player_mode).w
 		bne.s	loc_156F6
-		out_of_range.w	loc_1586E
+		out_of_range.w	j_DeleteObject_2
 
 loc_156F6:
 		move.w	obX(a0),d1
@@ -20078,7 +20015,7 @@ loc_15868:
 		jmp	(DisplaySprite).l
 ; ---------------------------------------------------------------------------
 
-loc_1586E:
+j_DeleteObject_2:
 		jmp	(DeleteObject).l
 ; ---------------------------------------------------------------------------
 
@@ -21580,22 +21517,18 @@ Obj4B_ShootProjectile:
 		move.b	#2,obAnim(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-	if FixBugs
-		move.w	#13,d0				; absolute horizontal offset for stinger
-	endif
+		; Bug: This object is missing an absolute horizontal offset for the stinger.
+		; Uncomment the lines below to fix this bug.
+;		move.w	#13,d0				; absolute horizontal offset for stinger
 		move.w	#$180,obVelY(a1)
 		move.w	#-$180,obVelX(a1)
 		btst	#0,obRender(a1)			; is object facing left?
 		beq.s	locret_169D8			; if not, branch
 		neg.w	obVelX(a1)			; move in other direction
-	if FixBugs
-		neg.w	d0				; make offset negative
-	endif
+;		neg.w	d0				; make offset negative
 
 locret_169D8:
-	if FixBugs
-		add.w	d0,obX(a1)			; align horizontally with stinger
-	endif
+;		add.w	d0,obX(a1)			; align horizontally with stinger
 		rts
 ; ===========================================================================
 ; animation script
@@ -21873,12 +21806,9 @@ Obj4C_Index:	dc.w Obj4C_Init-Obj4C_Index
 
 Obj4C_Init:
 		move.l	#Map_Obj4C,obMap(a0)
-	if FixBugs
-		move.w	#make_art_tile(ArtTile_BBat,0,0),obGfx(a0)
-	else
-		; This uses a very awkward palette line which makes the flames look very yellow.
+		; Bug: This uses a very awkward palette line which makes the flames look very yellow.
+		; Change 'make_art_tile(ArtTile_BBat,1,0)' to 'make_art_tile(ArtTile_BBat,0,0)' to fix this bug.
 		move.w	#make_art_tile(ArtTile_BBat,1,0),obGfx(a0)
-	endif
 		ori.b	#4,obRender(a0)
 		move.b	#$A,obColType(a0)
 		move.b	#4,obPriority(a0)
@@ -22696,12 +22626,12 @@ Obj57:
 		move.w	off_17892(pc,d0.w),d1
 		jmp	off_17892(pc,d1.w)
 ; ---------------------------------------------------------------------------
-off_17892:	dc.w loc_1789E-off_17892		; 0
-		dc.w loc_178C4-off_17892		; 1
-		dc.w loc_17920-off_17892		; 2
-		dc.w loc_17952-off_17892		; 3
-		dc.w loc_1797C-off_17892		; 4
-		dc.w loc_17996-off_17892		; 5
+off_17892:	dc.w loc_1789E-off_17892
+		dc.w loc_178C4-off_17892
+		dc.w loc_17920-off_17892
+		dc.w loc_17952-off_17892
+		dc.w loc_1797C-off_17892
+		dc.w loc_17996-off_17892
 ; ---------------------------------------------------------------------------
 
 loc_1789E:
@@ -23728,12 +23658,9 @@ Obj8A_Init:
 		bne.s	Obj8A_Display			; if not, branch
 
 ; Obj8A_SonicTeam:
-	if FixBugs
-		move.w	#make_art_tile(ArtTile_Sonic_Team_Font,0,0),obGfx(a0)
-	else
 		; Bug: This is using the incorrect address of VRAM!
+		; Change 'ArtTile_Title_Sonic' to 'ArtTile_Sonic_Team_Font' to fix this bug.
 		move.w	#make_art_tile(ArtTile_Title_Sonic,0,0),obGfx(a0)
-	endif
 		bsr.w	j_Adjust2PArtPointer_4
 		move.b	#$A,obFrame(a0)
 		tst.b	(f_creditscheat).w		; is the Sonic 1 hidden credits cheat activated?
@@ -24185,7 +24112,7 @@ j_Adjust2PArtPointer_6:
 
 TouchResponse:
 		nop
-		bsr.w	loc_19B7A
+		bsr.w	j_Touch_Rings
 		move.w	obX(a0),d2
 		move.w	obY(a0),d3
 		subi.w	#8,d2
@@ -24193,14 +24120,11 @@ TouchResponse:
 		move.b	obHeight(a0),d5
 		subq.b	#3,d5
 		sub.w	d5,d3
-	if FixBugs
-		cmpi.b	#AniIDSonAni_Duck,obAnim(a0)
-	else
 		; Bug: This does not check either player's ducking frame!
 		; Sonic's ducking frame is $80, and Tails's frame is $5B.
 		; However, this does work for Sonic 1's mapping frames.
+		; To fix this, replace this line with 'cmpi.b	#AniIDSonAni_Duck,obAnim(a0)'.
 		cmpi.b	#$39,obFrame(a0)
-	endif
 		bne.s	loc_19812
 		addi.w	#$C,d3
 		moveq	#$A,d5
@@ -24590,7 +24514,7 @@ j_Sonic_ResetOnFloor:
 
 ; ---------------------------------------------------------------------------
 
-loc_19B7A:
+j_Touch_Rings:
 		jmp	(Touch_Rings).l
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -25184,38 +25108,38 @@ AniArt_Load:
 ; can be found, alongside HPZ's art listed from $08 (its ID in the final).
 ; ---------------------------------------------------------------------------
 DynArtCue_Index:
-		dc.w Dynamic_NullGHZ-DynArtCue_Index
-		dc.w AnimCue_EHZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Normal-DynArtCue_Index
-		dc.w AnimCue_EHZ-DynArtCue_Index
-		dc.w Dynamic_Normal-DynArtCue_Index
-		dc.w AnimCue_HPZ-DynArtCue_Index
-		dc.w Dynamic_Normal-DynArtCue_Index
-		dc.w AnimCue_EHZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Normal-DynArtCue_Index
-		dc.w AnimCue_HPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
-		dc.w Dynamic_Null-DynArtCue_Index
-		dc.w AnimCue_CPZ-DynArtCue_Index
+		dc.w Dynamic_NullGHZ-DynArtCue_Index	; GHZ
+		dc.w AnimCue_EHZ-DynArtCue_Index	; GHZ
+		dc.w Dynamic_Null-DynArtCue_Index	; LZ
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; LZ
+		dc.w Dynamic_Null-DynArtCue_Index	; CPZ
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; CPZ
+		dc.w Dynamic_Normal-DynArtCue_Index	; EHZ
+		dc.w AnimCue_EHZ-DynArtCue_Index	; EHZ
+		dc.w Dynamic_Normal-DynArtCue_Index	; HPZ
+		dc.w AnimCue_HPZ-DynArtCue_Index	; HPZ
+		dc.w Dynamic_Normal-DynArtCue_Index	; HTZ
+		dc.w AnimCue_EHZ-DynArtCue_Index	; HTZ
+		dc.w Dynamic_Null-DynArtCue_Index	; 06
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 06
+		dc.w Dynamic_Null-DynArtCue_Index	; 07
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 07
+		dc.w Dynamic_Normal-DynArtCue_Index	; 08
+		dc.w AnimCue_HPZ-DynArtCue_Index	; 08
+		dc.w Dynamic_Null-DynArtCue_Index	; 09
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 09
+		dc.w Dynamic_Null-DynArtCue_Index	; 0A
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 0A
+		dc.w Dynamic_Null-DynArtCue_Index	; 0B
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 0B
+		dc.w Dynamic_Null-DynArtCue_Index	; 0C
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 0C
+		dc.w Dynamic_Null-DynArtCue_Index	; 0D
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 0D
+		dc.w Dynamic_Null-DynArtCue_Index	; 0E
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 0E
+		dc.w Dynamic_Null-DynArtCue_Index	; 0F
+		dc.w AnimCue_CPZ_Boss-DynArtCue_Index	; 0F
 ; ===========================================================================
 
 Dynamic_Null:
@@ -25360,7 +25284,7 @@ AnimCue_HPZ:	zoneanimstart
 
 ; According to leftover resizing code, this was meant for the
 ; Chemical Plant Zone boss, which symbol tables refer to as "vaccume".
-AnimCue_CPZ:	zoneanimstart
+AnimCue_CPZ_Boss:	zoneanimstart
 		; ?
 		zoneanimdecl 7, Art_UnkZone_1, ArtTile_Art_UnkZone_1, 2, 4
 		dc.b   0
@@ -25544,20 +25468,13 @@ locret_1AD1A:
 ; loc_1AD1C:
 LoadLevelBlocks_2P:
 		move.w	(a0)+,d0
-	if FixBugs
-		move.w	d0,d2
-		andi.w	#nontile_mask,d0	; d0 holds the preserved non-tile data
-		andi.w	#tile_mask,d2		; d2 holds the tile index
-		lsr.w	#1,d2			; half tile index
-		or.w	d2,d0			; put them back together
-	else
-		; 'd1', the loop counter, is overwritten with VRAM data.
+		; Bug: 'd1', the loop counter, is overwritten with VRAM data.
+		; To fix this, change 'd1' to 'd2'.
 		move.w	d0,d1
 		andi.w	#nontile_mask,d0	; d0 holds the preserved non-tile data
 		andi.w	#tile_mask,d1		; d1 holds the tile index (overwrites loop counter!)
 		lsr.w	#1,d1			; half tile index
 		or.w	d1,d0			; put them back together
-	endif
 		move.w	d0,(a1)+
 		dbf	d1,LoadLevelBlocks_2P
 		rts
@@ -25888,7 +25805,7 @@ HudUpdate:
 		tst.b	(f_scorecount).w
 		beq.s	loc_1B266
 		clr.b	(f_scorecount).w
-		move.l	#$5C800003,d0
+		locVRAM	(ArtTile_HUD+$1A)*tile_size,d0	; set VRAM address
 		move.l	(v_score).w,d1
 		bsr.w	HUD_Score
 
@@ -25900,7 +25817,7 @@ loc_1B266:
 
 loc_1B272:
 		clr.b	(f_ringcount).w
-		move.l	#$5F400003,d0
+		locVRAM	(ArtTile_HUD+$30)*tile_size,d0	; set VRAM address
 		moveq	#0,d1
 		move.w	(v_rings).w,d1
 		bsr.w	HUD_Rings
@@ -25927,11 +25844,11 @@ loc_1B286:
 		move.b	#9,(a1)
 
 loc_1B2C2:
-		move.l	#$5E400003,d0
+		locVRAM	(ArtTile_HUD+$28)*tile_size,d0
 		moveq	#0,d1
 		move.b	(v_timemin).w,d1
 		bsr.w	HUD_Mins
-		move.l	#$5EC00003,d0
+		locVRAM	(ArtTile_HUD+$2C)*tile_size,d0
 		moveq	#0,d1
 		move.b	(v_timesec).w,d1
 		bsr.w	HUD_Secs
@@ -25946,7 +25863,7 @@ loc_1B2F0:
 		tst.b	(f_endactbonus).w
 		beq.s	locret_1B318
 		clr.b	(f_endactbonus).w
-		move.l	#$6E000002,(vdp_control_port).l
+		locVRAM	ArtTile_Bonuses*tile_size
 		moveq	#0,d1
 		move.w	(v_timebonus).w,d1
 		bsr.w	HUD_TimeRingBonus
@@ -25977,13 +25894,13 @@ loc_1B330:
 
 loc_1B340:
 		clr.b	(f_ringcount).w
-		move.l	#$5F400003,d0
+		locVRAM	(ArtTile_HUD+$30)*tile_size,d0	; set VRAM address
 		moveq	#0,d1
 		move.w	(v_rings).w,d1
 		bsr.w	HUD_Rings
 
 loc_1B354:
-		move.l	#$5EC00003,d0
+		locVRAM	(ArtTile_HUD+$2C)*tile_size,d0	; set VRAM address
 		moveq	#0,d1
 		move.b	(v_spritecount).w,d1
 		bsr.w	HUD_Secs
@@ -25996,7 +25913,7 @@ loc_1B372:
 		tst.b	(f_endactbonus).w
 		beq.s	locret_1B39A
 		clr.b	(f_endactbonus).w
-		move.l	#$6E000002,(vdp_control_port).l
+		locVRAM	ArtTile_Bonuses*tile_size		; set VRAM address
 		moveq	#0,d1
 		move.w	(v_timebonus).w,d1
 		bsr.w	HUD_TimeRingBonus
@@ -26013,7 +25930,7 @@ locret_1B39A:
 
 
 HUD_LoadZero:
-		move.l	#$5F400003,(vdp_control_port).l
+		locVRAM	(ArtTile_HUD+$30)*tile_size
 		lea	HUD_TilesZero(pc),a2
 		move.w	#3-1,d2
 		bra.s	loc_1B3CC
@@ -26026,7 +25943,7 @@ HUD_LoadZero:
 HUD_Base:
 		lea	(vdp_data_port).l,a6
 		bsr.w	HUD_Lives
-		move.l	#$5C400003,(vdp_control_port).l
+		locVRAM	(ArtTile_HUD+$18)*tile_size
 		lea	HUD_TilesBase(pc),a2
 		move.w	#$F-1,d2
 
@@ -26064,7 +25981,7 @@ HUD_TilesZero:	dc.b $FF,$FF,  0,  0
 
 
 HUDDebug_XY:
-		move.l	#$5C400003,(vdp_control_port).l
+		locVRAM	(ArtTile_HUD+$18)*tile_size		; set VRAM address
 		move.w	(Camera_RAM).w,d1
 		swap	d1
 		move.w	(v_player+obX).w,d1
@@ -26175,27 +26092,32 @@ loc_1B4BC:
 ; End of function HUD_Score
 
 ; ---------------------------------------------------------------------------
+; Subroutine to	load countdown numbers on the continue screen
+; ---------------------------------------------------------------------------
 
-HUD_Unk:
-		move.l	#$5F800003,(vdp_control_port).l
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+ContScrCounter:
+		locVRAM	ArtTile_Continue_Number*tile_size
 		lea	(vdp_data_port).l,a6
 		lea	(HUD_10).l,a2
 		moveq	#2-1,d6
 		moveq	#0,d4
-		lea	Art_HUD(pc),a1
+		lea	Art_HUD(pc),a1 ; load numbers patterns
 
-loc_1B4E6:
+ContScr_Loop:
 		moveq	#0,d2
 		move.l	(a2)+,d3
 
-loc_1B4EA:
+loc_1C95A:
 		sub.l	d3,d1
-		blo.s	loc_1B4F2
+		blo.s	loc_1C962
 		addq.w	#1,d2
-		bra.s	loc_1B4EA
-; ---------------------------------------------------------------------------
+		bra.s	loc_1C95A
+; ===========================================================================
 
-loc_1B4F2:
+loc_1C962:
 		add.l	d3,d1
 		lsl.w	#6,d2
 		lea	(a1,d2.w),a3
@@ -26215,8 +26137,10 @@ loc_1B4F2:
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
 		move.l	(a3)+,(a6)
-		dbf	d6,loc_1B4E6
-		rts
+		dbf	d6,ContScr_Loop	; repeat 1 more	time
+
+		rts	
+; End of function ContScrCounter
 ; ---------------------------------------------------------------------------
 HUD_100000:	dc.l 100000
 HUD_10000:	dc.l 10000
@@ -26358,7 +26282,7 @@ loc_1B5EC:
 
 
 HUD_Lives:
-		move.l	#$7BA00003,d0
+		locVRAM	(ArtTile_Lives_Counter+9)*tile_size,d0	; set VRAM address
 		moveq	#0,d1
 		move.b	(v_lives).w,d1
 		lea	HUD_10(pc),a2
@@ -27079,7 +27003,8 @@ RingPos_CPZ1:	binclude	"level/rings/CPZ_1.bin"
 ; It also contains the raw source code for debug mode.
 ; ---------------------------------------------------------------------------
 
-Leftover_50A9C:	binclude	"misc/leftovers/50A9C.bin"
+; 0x50A9C
+		binclude	"misc/leftovers/50A9C.bin"
 		binclude	"misc/leftovers/symbols/symbol3.bin"
 		binclude	"misc/leftovers/code/code_5410c.bin"
 		binclude	"misc/leftovers/symbols/symbol4.bin"

@@ -55,19 +55,13 @@ ptr_PLC_EHZAnimals:	dc.w PLC_EHZAnimals-ArtLoadCues
 ptr_PLC_HPZAnimals:	dc.w PLC_HPZAnimals-ArtLoadCues
 ptr_PLC_HTZAnimals:	dc.w PLC_HTZAnimals-ArtLoadCues
 
-	if FixBugs
-ptr_PLC_SSResult:	dc.w PLC_S1SpecialStage-ArtLoadCues
-ptr_PLC_Ending:		dc.w PLC_S1SpecialStage-ArtLoadCues
-ptr_PLC_TryAgain:	dc.w PLC_S1SpecialStage-ArtLoadCues
-ptr_PLC_EggmanSBZ2:	dc.w PLC_S1SpecialStage-ArtLoadCues
-ptr_PLC_FZBoss:		dc.w PLC_S1SpecialStage-ArtLoadCues
-	else
+; Bug: These are pointing to an invalid location.
+; To fix this, either restore the original PLC or make these use PLC_S1SpecialStage.
 ptr_PLC_SSResult:	dc.w $1C318-ArtLoadCues
 ptr_PLC_Ending:		dc.w $1C31A-ArtLoadCues
 ptr_PLC_TryAgain:	dc.w $1C31C-ArtLoadCues
 ptr_PLC_EggmanSBZ2:	dc.w $1C31E-ArtLoadCues
 ptr_PLC_FZBoss:		dc.w $1C320-ArtLoadCues
-	endif
 
 plcm:	macro gfx,vram
 	dc.l gfx
@@ -268,15 +262,12 @@ PLC_Signpost_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
 ; Sonic 1 Special Stage, although since it's blank, using it will crash the game
-; unless you replace the +$10 with a -1
 ; --------------------------------------------------------------------------------------
 ; PLC_Invalid:
 PLC_S1SpecialStage:
-	if FixBugs
-		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)-1
-	else
+		; Bug: This crashes the game due to trying to decompress invalid entries.
+		; To fix this, change the '+$10' to '-1'.
 		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)+$10
-	endif
 PLC_S1SpecialStage_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST

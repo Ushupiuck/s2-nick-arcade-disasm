@@ -19,6 +19,7 @@ off_DAC8:	equ $DAC8
 off_FDCC:	equ $FDCC
 off_18A82:	equ $18A82
 off_19A3C:	equ $19A3C
+dirsprset:	equ	?
 
 ; object variables
 actno:	equ obID
