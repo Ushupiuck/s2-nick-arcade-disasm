@@ -3,18 +3,13 @@ SonLVL INI Files/SonLVL.log
 *~
 
 # Misc. compiler output.
-s2.h
-s2.p
-s2.lst
-s2.log
-s2.map
+main.p
+main.lst
+main.log
 
 # Built ROMs.
 s2built.bin
 s2built.prev.bin
-
-# Typical CMake build directory.
-build_tools/source_code/build
 
 # Hivebrains comment utility
 Comment.bat
