@@ -4053,7 +4053,7 @@ BgScroll_S1Ending:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+DeformLayers:
 DeformBGLayer:
 		tst.b	(Deform_lock).w
 		beq.s	loc_5AA4
@@ -6464,6 +6464,7 @@ sub_7040:
 		andi.w	#$E,d5
 		add.w	d4,d3
 		add.w	d5,d3
+
 		movea.l	d3,a0
 		move.w	(a0),d3
 		andi.w	#$3FF,d3
@@ -6475,7 +6476,7 @@ sub_7040:
 
 ; =============== S U B	R O U T	I N E =======================================
 
-
+Calc_VRAM_Pos:
 sub_7084:
 		add.w	(a3),d5
 ; End of function sub_7084
@@ -6551,9 +6552,6 @@ loc_70E2:
 
 
 LoadTilesFromStart:
-
-; FUNCTION CHUNK AT 000071A0 SIZE 0000002A BYTES
-
 		lea	(vdp_control_port).l,a5
 		lea	(vdp_data_port).l,a6
 		tst.w	(Two_player_mode).w
@@ -6723,33 +6721,11 @@ MainLevelLoadBlock:
 		move.l	a2,-(sp)
 		addq.l	#4,a2
 		movea.l	(a2)+,a0
-		tst.b	(Current_Zone).w
-		beq.s	MainLevelLoadBlock_Convert16
-		bra.s	MainLevelLoadBlock_Convert16
-; ---------------------------------------------------------------------------
-
-MainLevelLoadBlock_Skip16Convert:			; leftover from a previous build
-		lea	(v_16x16).w,a1
-		move.w	#0,d0
-		bsr.w	EniDec
-		bra.s	loc_72C2
-; ---------------------------------------------------------------------------
-
-MainLevelLoadBlock_Convert16:
 		lea	(v_16x16).w,a1
 		move.w	#bytesToWcnt(v_16x16_end-v_16x16),d2
 
 MainLevelLoadBlock_ConvertLoop:
 		move.w	(a0)+,d0
-		tst.w	(Two_player_mode).w
-		beq.s	MainLevelLoadBlock_Not2p
-		move.w	d0,d1
-		andi.w	#$F800,d0
-		andi.w	#$7FF,d1
-		lsr.w	#1,d1
-		or.w	d1,d0
-
-MainLevelLoadBlock_Not2p:
 		move.w	d0,(a1)+
 		dbf	d2,MainLevelLoadBlock_ConvertLoop
 
@@ -6762,51 +6738,17 @@ loc_72C2:
 
 loc_72D8:
 		move.w	(a0)+,d0
-		tst.w	(Two_player_mode).w
-		beq.s	loc_72EE
-		move.w	d0,d1
-		andi.w	#$F800,d0
-		andi.w	#$7FF,d1
-		lsr.w	#1,d1
-		or.w	d1,d0
-
-loc_72EE:
 		move.w	d0,(a1)+
 		dbf	d2,loc_72D8
 
 loc_72F4:
 		movea.l	(a2)+,a0
-		cmpi.b	#2,(Current_Zone).w
-		beq.s	loc_7338
-		cmpi.b	#3,(Current_Zone).w
-		beq.s	loc_7338
-		cmpi.b	#4,(Current_Zone).w
-		beq.s	loc_7338
-		cmpi.b	#5,(Current_Zone).w
-		beq.s	loc_7338
-		move.l	a2,-(sp)
-		moveq	#0,d1
-		moveq	#0,d2
-		move.w	(a0)+,d0
-		lea	(a0,d0.w),a1
-		lea	(v_128x128).l,a2
-		lea	(v_128x128_end).w,a3
+;		lea	(v_128x128).l,a1
+;		move.w	#bytesToWcnt(v_128x128_end-v_128x128),d0
 
-loc_732C:
-		bsr.w	KC_Dec
-		tst.w	d0
-		bmi.s	loc_732C
-		movea.l	(sp)+,a2
-		bra.s	loc_7348
-; ---------------------------------------------------------------------------
-
-loc_7338:
-		lea	(v_128x128).l,a1
-		move.w	#bytesToWcnt(v_128x128_end-v_128x128),d0
-
-loc_7342:
-		move.w	(a0)+,(a1)+
-		dbf	d0,loc_7342
+;loc_7342:
+;		move.w	(a0)+,(a1)+
+;		dbf	d0,loc_7342
 
 loc_7348:
 		bsr.w	LevelLayoutLoad
@@ -6833,7 +6775,7 @@ loc_7370:
 		moveq	#0,d0
 		move.b	(a2),d0
 		beq.s	locret_7382
-		bsr.w	LoadPLC
+		bra.w	LoadPLC
 
 locret_7382:
 		rts
@@ -6959,97 +6901,10 @@ loc_7456:
 ; End of function LevelLayoutLoad_GHZ
 
 ; ---------------------------------------------------------------------------
-
-LevelLayout_Convert:					; leftover level layout	converting function (from raw to the way it's stored in the game)
-		lea	($FE0000).l,a1
-		lea	($FE0000+$80).l,a2
-		lea	(v_startofram).l,a3
-		move.w	#$3F,d1
-
-loc_747A:
-		bsr.w	sub_750C
-		bsr.w	sub_750C
-		dbf	d1,loc_747A
-		lea	($FE0000).l,a1
-		lea	(v_startofram&$FFFFFF).l,a2
-		move.w	#$3F,d1
-
-loc_7496:
-		move.w	#0,(a2)+
-		dbf	d1,loc_7496
-		move.w	#$3FBF,d1
-
-loc_74A2:
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_74A2
-		rts
+; restored unused function; should be functional
+; (ironically, still unused, tho)
 ; ---------------------------------------------------------------------------
-		lea	($FE0000).l,a1
-		lea	(v_startofram).l,a3
-		moveq	#$1F,d0
-
-loc_74B8:
-		move.l	(a1)+,(a3)+
-		dbf	d0,loc_74B8
-		moveq	#0,d7
-		lea	($FE0000).l,a1
-		move.w	#$FF,d5
-
-loc_74CA:
-		lea	(v_startofram).l,a3
-		move.w	d7,d6
-
-loc_74D2:
-		movem.l	a1-a3,-(sp)
-		move.w	#$3F,d0
-
-loc_74DA:
-		cmpm.w	(a1)+,(a3)+
-		bne.s	loc_74F0
-		dbf	d0,loc_74DA
-		movem.l	(sp)+,a1-a3
-		adda.w	#$80,a1
-		dbf	d5,loc_74CA
-		bra.s	loc_750A
-; ---------------------------------------------------------------------------
-
-loc_74F0:
-		movem.l	(sp)+,a1-a3
-		adda.w	#$80,a3
-		dbf	d6,loc_74D2
-		moveq	#$1F,d0
-
-loc_74FE:
-		move.l	(a1)+,(a3)+
-		dbf	d0,loc_74FE
-		addq.l	#1,d7
-		dbf	d5,loc_74CA
-
-loc_750A:
-		bra.s	loc_750A
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-sub_750C:
-		moveq	#7,d0
-
-loc_750E:
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a2)+
-		move.l	(a3)+,(a2)+
-		move.l	(a3)+,(a2)+
-		move.l	(a3)+,(a2)+
-		dbf	d0,loc_750E
-		adda.w	#$80,a1
-		adda.w	#$80,a2
-		rts
-; End of function sub_750C
-
-
+		include	"_inc/LevelLayout_Convert.asm"
 ; =============== S U B	R O U T	I N E =======================================
 
 
