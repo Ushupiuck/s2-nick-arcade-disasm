@@ -153,7 +153,7 @@ loc_F140:
 		mulu.w	#10,d0
 		move.w	d0,(v_ringbonus).w
 		move.w	#bgm_GotThrough,d0
-		jsr	(PlaySound_Special).l
+		jmp	(PlaySound_Special).l
 
 locret_F15E:
 		rts
