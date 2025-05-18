@@ -153,8 +153,13 @@ loc_BEF2:
 loc_BF02:
 		bra.w	DisplaySprite
 ; ---------------------------------------------------------------------------
-S1Obj7E_Conf:	dc.w   $20, $120,  $C4,	$200
-		dc.w  $320, $120, $118,	$201
-		dc.w  $360, $120, $128,	$202
-		dc.w  $1EC, $11C,  $C4,	$203
-		dc.w  $3A0, $120, $138,	$206
+S1Obj7E_Conf:	dc.w $20, $120,	$C4	; start	x-pos, main x-pos, y-pos
+		dc.b 2,	0		; rountine number, frame number
+		dc.w $320, $120, $118
+		dc.b 2,	1
+		dc.w $360, $120, $128
+		dc.b 2,	2
+		dc.w $1EC, $11C, $C4
+		dc.b 2,	3
+		dc.w $3A0, $120, $138
+		dc.b 2,	6
