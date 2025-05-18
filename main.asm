@@ -2665,7 +2665,7 @@ LevSel_ChgSnd:
 LevSel_Numb:
 		add.w	d3,d0
 		move.w	d0,(a6)
-		rts	
+		rts
 ; End of function LevSel_ChgSnd
 
 
@@ -2681,14 +2681,14 @@ LevSel_LineLoop:
 		bpl.s	LevSel_CharOk	; branch if valid
 		move.w	#0,(a6)		; use blank character
 		dbf	d2,LevSel_LineLoop
-		rts	
+		rts
 
 
 LevSel_CharOk:
 		add.w	d3,d0		; combine char with VRAM setting
 		move.w	d0,(a6)		; send to VRAM
 		dbf	d2,LevSel_LineLoop
-		rts	
+		rts
 ; End of function LevSel_ChgLine
 
 ; ---------------------------------------------------------------------------
@@ -25575,7 +25575,7 @@ APM_None:
 		dc.w 0
 APM_None_End:
 
-APM_Unk:	
+APM_Unk:
 		dc.w $1800-$138
 		dc.w bytesToWcnt($138)
 		dc.w make_block_tile($3A0+$1,0,0,2,0),make_block_tile($3A0+$2,0,0,2,0)
@@ -26152,7 +26152,7 @@ loc_1C962:
 		move.l	(a3)+,(a6)
 		dbf	d6,ContScr_Loop	; repeat 1 more	time
 
-		rts	
+		rts
 ; End of function ContScrCounter
 ; ---------------------------------------------------------------------------
 HUD_100000:	dc.l 100000
@@ -26611,16 +26611,13 @@ LoadDebugObjectSprite:
 
 j_Adjust2PArtPointer_1:
 		jmp	(Adjust2PArtPointer).l
-; ---------------------------------------------------------------------------
 		align 4
 
+; ---------------------------------------------------------------------------
 		include	"_inc/LevelHeaders.asm"
 		include	"_inc/Pattern Load Cues.asm"
-; --------------------------------------------------------------------------------------
-; Leftover art from an unknown game, overwrites the other Sonic 1 PLC entries
-; --------------------------------------------------------------------------------------
-		binclude	"art/uncompressed/leftovers/1C318.bin"
-		even
+; ---------------------------------------------------------------------------
+
 AngleMap_GHZ:	binclude	"collision/S1/Angle Map.bin"
 AngleMap_GHZ_End:
 		even
@@ -26769,49 +26766,6 @@ Level_Null:	dc.l	0
 Art_BigRing:	binclude	"art/uncompressed/Giant Ring.bin"
 		even
 ; --------------------------------------------------------------------------------------
-; leftover level layouts from a	previous build
-; --------------------------------------------------------------------------------------
-		dc.w	0
-		binclude	"misc/leftovers/level/layout/HTZ_2.bin"
-		even
-		binclude	"level/layout/HTZ_BG.bin"
-		even
-		binclude	"level/layout/CPZ_1.bin"
-		even
-		binclude	"level/layout/HPZ_1.bin"
-		even
-		binclude	"level/layout/CPZ_BG.bin"
-		even
-		binclude	"level/layout/HPZ_BG.bin"
-		even
-		dc.l	0
-;----------------------------------------------------
-; A duplicate copy of the big ring art
-;----------------------------------------------------
-		binclude	"art/uncompressed/Giant Ring.bin"
-		even
-; --------------------------------------------------------------------------------------
-; level mappings	(16x16 and 256x256)
-; --------------------------------------------------------------------------------------
-		binclude	"misc/leftovers/2E292.bin"
-		even
-		binclude	"misc/leftovers/mappings/16x16/2EB00.unc"
-		even
-		binclude	"misc/leftovers/mappings/256x256/2EC00.unc"
-		even
-; --------------------------------------------------------------------------------------
-; leftover art - full 128 character ASCII table
-; --------------------------------------------------------------------------------------
-		binclude	"art/uncompressed/leftovers/128 char ASCII.bin"
-		even
-; --------------------------------------------------------------------------------------
-; Leftover level mappings and palettes from a previous build
-; --------------------------------------------------------------------------------------
-		binclude	"misc/leftovers/mappings/256x256/31000.unc"
-		even
-		binclude	"misc/leftovers/32000.bin"
-		even
-; --------------------------------------------------------------------------------------
 ; Object layouts
 ; --------------------------------------------------------------------------------------
 ObjPos_Index:	dc.w ObjPos_GHZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
@@ -26927,27 +26881,6 @@ ObjPos_S1Ending:
 		binclude	"level/objects/S1/ending.bin"
 		even
 ObjPos_Null:	dc.w $FFFF,    0,    0
-; ---------------------------------------------------------------------------
-; Leftover symbol tables due to compiler weirdness; these are formatted
-; with a Unix ($0A) line break instead of a DOS ($0D0A) line break and it's
-; also using big-endian integers, which suggest Sonic 2 wasn't developed in
-; DOS (or at least a little-endian environment.)
-; in addition, the locations that can be extracted don't even match up with
-; the prototype.
-;
-; Read more about it here:
-; https://clownacy.wordpress.com/2022/03/30/everything-that-i-know-about-sonic-the-hedgehogs-source-code/
-; https://tcrf.net/Proto:Sonic_the_Hedgehog_2_(Genesis)/Nick_Arcade_Prototype/Symbol_Tables
-; ---------------------------------------------------------------------------
-		binclude	"misc/leftovers/symbols/symbol1.bin"
-		even
-		binclude	"misc/leftovers/symbols/symbol1a.bin"
-		even
-		binclude	"misc/leftovers/4DB08.bin"
-		even
-		binclude	"misc/leftovers/symbols/symbol2.bin"
-		even
-		binclude	"misc/leftovers/4FB08.bin"
 		even
 ; ---------------------------------------------------------------------------
 ; Ring layouts; one entry per act, four entries per zone
@@ -27005,73 +26938,6 @@ RingPos_HTZ1:	binclude	"level/rings/HTZ_1.bin"
 RingPos_HTZ2:	binclude	"level/rings/HTZ_2.bin"
 		even
 RingPos_CPZ1:	binclude	"level/rings/CPZ_1.bin"
-		even
-; ===========================================================================
-; ---------------------------------------------------------------------------
-; Yet another symbol table that doesn't match up with the prototype
-; There's also code strewn in here which are related with an earlier prototype
-; than Nick Arcade.
-; It also contains the raw source code for debug mode.
-; ---------------------------------------------------------------------------
-
-Leftover_50A9C:
-		binclude	"misc/leftovers/50A9C.bin"
-		binclude	"misc/leftovers/symbols/symbol3.bin"
-		binclude	"misc/leftovers/code/code_5410c.bin"
-		binclude	"misc/leftovers/symbols/symbol4.bin"
-		binclude	"misc/leftovers/code/code_546f8.bin"
-		binclude	"misc/leftovers/symbols/symbol5.bin"
-		binclude	"misc/leftovers/code/code_557b8.bin"
-		binclude	"misc/leftovers/symbols/symbol6.bin"
-		binclude	"misc/leftovers/code/code_56424.bin"
-		binclude	"misc/leftovers/symbols/symbol7.bin"
-		binclude	"misc/leftovers/code/code_5669c.bin"
-		binclude	"misc/leftovers/symbols/symbol8.bin"
-		binclude	"misc/leftovers/code/code_56ccc.bin"
-		binclude	"misc/leftovers/symbols/symbol9.bin"
-		binclude	"misc/leftovers/code/code_57644.bin"
-		binclude	"misc/leftovers/symbols/symbol10.bin"
-		binclude	"misc/leftovers/code/code_57ff8.bin"
-		binclude	"misc/leftovers/symbols/symbol11.bin"
-		binclude	"misc/leftovers/code/code_59304.bin"
-		binclude	"misc/leftovers/symbols/symbol12.bin"
-		binclude	"misc/leftovers/code/code_5a12c.bin"
-		binclude	"misc/leftovers/symbols/symbol13.bin"
-		binclude	"misc/leftovers/code/code_5a718.bin"
-		binclude	"misc/leftovers/symbols/symbol14.bin"
-		binclude	"misc/leftovers/code/code_5b1fc.bin"
-		binclude	"misc/leftovers/symbols/symbol15.bin"
-		binclude	"misc/leftovers/code/code_5c0b0.bin"
-		binclude	"misc/leftovers/symbols/symbol16.bin"
-		binclude	"misc/leftovers/code/code_5c572.bin"
-		binclude	"misc/leftovers/symbols/symbol17.bin"
-		binclude	"misc/leftovers/code/code_5d000.bin"
-		binclude	"misc/leftovers/symbols/symbol18.bin"
-		binclude	"misc/leftovers/s2proto_code.txt"
-		binclude	"misc/leftovers/tilemaps/Title Emblem.eni"
-		binclude	"misc/leftovers/tilemaps/Title Background.eni"
-		binclude	"misc/leftovers/art/nemesis/8x8 - Title.nem"
-		binclude	"misc/leftovers/symbols/symbol19.bin"
-		binclude	"misc/leftovers/code/code_62230.bin"
-		binclude	"misc/leftovers/symbols/symbol20.bin"
-		binclude	"misc/leftovers/code/code_62c48.bin"
-		binclude	"misc/leftovers/symbols/symbol21.bin"
-		binclude	"misc/leftovers/code/code_65260.bin"
-		binclude	"misc/leftovers/symbols/symbol22.bin"
-		binclude	"misc/leftovers/code/code_66548.bin"
-		binclude	"misc/leftovers/symbols/symbol23.bin"
-		binclude	"misc/leftovers/code/code_67894.bin"
-		binclude	"misc/leftovers/symbols/symbol24.bin"
-		binclude	"misc/leftovers/code/code_68464.bin"
-		binclude	"misc/leftovers/symbols/symbol25.bin"
-		binclude	"misc/leftovers/code/code_69464.bin"
-		binclude	"art/uncompressed/HUD Numbers.bin"
-		binclude	"art/uncompressed/Lives Counter Numbers.bin"
-		binclude	"misc/leftovers/69EE8.bin"
-		binclude	"misc/leftovers/symbols/symbol26.bin"
-		binclude	"misc/leftovers/symbols/symbol26a.bin"
-		binclude	"misc/leftovers/code/left_6b5c4_mainloadblocks.bin"
-		binclude	"misc/leftovers/symbols/symbol27.bin"
 		even
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -27361,8 +27227,6 @@ Nem_GHZ2:	binclude	"art/nemesis/8x8 - GHZ2.nem"
 ; Maybe this could be from slightly after KCC was finalized? Who knows!
 Map128_GHZ:	binclude	"mappings/128x128/GHZ.kcc"
 		even
-; duplicate chunk end data from the above
-		dc.w 0, $7F00, $BFA, 0, 0
 Nem_TryAgain:	binclude	"art/nemesis/S1/cut-off/Ending - Try Again.nem"
 		even
 Kos_EndFlowers:	binclude	"art/kosinski/S1/Flowers at Ending.kos"
@@ -27373,12 +27237,5 @@ Nem_CreditText:	binclude	"art/nemesis/S1/Ending - Credits.nem"
 		even
 Nem_EndStH:	binclude	"art/nemesis/S1/Ending - StH Logo.nem"
 		even
-; --------------------------------------------------------------------------------------
-; ToeJam & Earl REV00 data, likely due to it once occupying the cartridge, best
-; just to remove it given it takes up ONE TENTH of the cartridge space
-; --------------------------------------------------------------------------------------
-Leftover_E1670:	binclude	"misc/leftovers/E1670.bin"
-		even
-
 		cnop	-1,2<<lastbit(*-1)
 		even
