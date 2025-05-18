@@ -1,4 +1,5 @@
-Map_Obj36_internal:	dc.w word_C836-Map_Obj36_internal
+Map_Obj36_internal:
+		dc.w word_C836-Map_Obj36_internal
 		dc.w word_C836-Map_Obj36_internal
 		dc.w word_C836-Map_Obj36_internal
 		dc.w word_C836-Map_Obj36_internal

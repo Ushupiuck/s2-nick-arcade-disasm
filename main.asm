@@ -1967,8 +1967,6 @@ Pal_S1Continue:	binclude	"palette/S1 Continue Screen.bin"
 Pal_S1Ending:	binclude	"palette/S1 Ending.bin"
 		even
 
-		nop
-
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Subroutine to perform vertical synchronization
@@ -2115,8 +2113,6 @@ CalcAngle_Zero:
 ; ===========================================================================
 AngleData:	binclude "misc/angles.bin"
 		even
-; ===========================================================================
-		nop
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; Sega logo, exact same as Sonic 1's
@@ -2388,14 +2384,6 @@ loc_3516:
 		beq.s	loc_355A
 
 loc_353A:
-	if ~~FixBugs
-		cmpi.w	#bgm__Last+1,d0
-		blo.s	loc_3546
-		cmpi.w	#sfx__First,d0
-		blo.s	LevelSelect_Loop
-	endif
-
-loc_3546:
 		bsr.w	PlaySound_Special
 		bra.s	LevelSelect_Loop
 ; ---------------------------------------------------------------------------
@@ -2472,8 +2460,7 @@ PlayLevel:
 		move.b	d0,(v_continues).w
 		move.l	#5000,(v_scorelife).w
 		move.b	#bgm_Fade,d0
-		bsr.w	PlaySound_Special
-		rts
+		bra.w	PlaySound_Special
 ; ---------------------------------------------------------------------------
 LvlSelCode_J:	dc.b btnUp, btnDn, btnDn, btnDn, btnDn, btnUp, 0, $FF	; up, down, down, down, down, up
 LvlSelCode_US:	dc.b btnUp, btnDn, btnDn, btnDn, btnDn, btnUp, 0, $FF	; up, down, down, down, down, up
@@ -2581,8 +2568,7 @@ loc_3726:
 
 loc_3736:
 		move.w	d0,(v_levselitem).w
-		bsr.w	LevelSelect_TextLoad
-		rts
+		bra.w	LevelSelect_TextLoad
 ; ---------------------------------------------------------------------------
 
 loc_3740:
@@ -2608,7 +2594,7 @@ loc_3762:
 
 loc_3772:
 		move.w	d0,(v_levselsound).w
-		bsr.w	LevelSelect_TextLoad
+		bra.w	LevelSelect_TextLoad
 
 locret_377A:
 		rts
@@ -2663,8 +2649,7 @@ LevSel_DrawSnd:
 		lsr.b	#4,d0
 		bsr.w	LevSel_ChgSnd
 		move.b	d2,d0
-		bsr.w	LevSel_ChgSnd
-		rts
+		bra.w	LevSel_ChgSnd
 ; End of function LevelSelect_TextLoad
 
 
@@ -2822,8 +2807,6 @@ loc_3AFC:
 		rts
 ; End of function UnknownSub_4
 
-; ---------------------------------------------------------------------------
-		nop
 ; ---------------------------------------------------------------------------
 MusicList:	dc.b bgm_GHZ
 		dc.b bgm_LZ
@@ -3841,7 +3824,6 @@ byte_5709:	dc.b   8,  2,  4,$FF,  2,  3,  8,$FF,  4,  2,  2,  3,  8,$FD,  4,  2
 		dc.b   2,  3,  2,$FF
 		even
 ; ---------------------------------------------------------------------------
-		nop
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -7934,7 +7916,6 @@ Map_obj11_HPZ:	binclude	"mappings/sprite/obj11_HPZ.bin"
 Map_obj11:	binclude	"mappings/sprite/obj11.bin"
 		even
 ; ===========================================================================
-		nop
 
 		include	"objects/15 Swinging Platforms.asm"
 ; ---------------------------------------------------------------------------
@@ -7994,9 +7975,8 @@ word_8648:	dc.w 4
 		dc.w $E80A, $812, $809,	   0
 		dc.w	$A,$1012,$1009,$FFE8
 		dc.w	$A,$101B,$100D,	   0
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"objects/17 Spiked Pole Helix.asm"
 Map_Obj17:	include	"mappings/sprite/S1/Spiked Pole Helix.asm"
 
@@ -8042,14 +8022,13 @@ word_8B68:	dc.w $A
 		dc.w   $2A,    8,    2,	   2
 		dc.w $F80F,  $21,  $10,$FFE0
 		dc.w $F80F,  $21,  $10,	   0
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - EHZ platforms
 ; ---------------------------------------------------------------------------
 Map_obj18_EHZ:	binclude	"mappings/sprite/obj18_EHZ.bin"
 		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"objects/1A Collapsing Platforms.asm"
 		include	"objects/S1/53 Collapsing Floors.asm"
 ; ---------------------------------------------------------------------------
@@ -8298,9 +8277,8 @@ word_9340:	dc.w $C
 		dc.w	 5, $80C, $806,	   0
 		dc.w	 5, $80C, $806,	 $10
 		dc.w	 5, $808, $804,	 $20
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"objects/1C Scenery.asm"
 ; ---------------------------------------------------------------------------
 Ani_Obj1C:	dc.w byte_9494-Ani_Obj1C
@@ -8431,9 +8409,8 @@ word_9A92:	dc.w 1
 		dc.w $F00F,  $40,  $20,$FFF0
 word_9A9C:	dc.w 1
 		dc.w $F00F,  $50,  $28,$FFF0
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"objects/28 Animals.asm"
 		include	"objects/29 Points.asm"
 ; ---------------------------------------------------------------------------
@@ -8488,9 +8465,8 @@ word_A0AA:	dc.w 2
 word_A0BC:	dc.w 2
 		dc.w $F805,   $A,    5,$FFF0
 		dc.w $F805,   $E,    7,	   0
+		even
 ; ===========================================================================
-		nop
-
 		include	"objects/S1/1F Crabmeat.asm"
 ; ===========================================================================
 ; animation script
@@ -8545,8 +8521,6 @@ Map_obj22:	binclude	"mappings/sprite/obj22.bin"
 Map_obj23:	binclude	"mappings/sprite/obj23.bin"
 		even
 ; ===========================================================================
-		nop
-
 		include	"objects/25 & 37 Rings.asm"
 		include	"objects/S1/4B Giant Ring.asm"
 		include	"objects/S1/7C Ring Flash.asm"
@@ -8643,9 +8617,8 @@ word_AE34:	dc.w 4
 		dc.w $E00F, $844, $822,	   0
 		dc.w	$F,$1044,$1022,$FFE0
 		dc.w	$F,$1844,$1822,	   0
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"objects/26 Monitor.asm"
 		include	"objects/2E Monitor Content Power-Up.asm"
 
@@ -8760,8 +8733,6 @@ Map_S1Obj0F:	binclude "mappings/sprite/S1/obj0F.bin"
 Map_Obj0E:	binclude "mappings/sprite/obj0E.bin"
 		even
 
-		nop
-
 		include	"objects/S1/2B Chopper.asm"
 ; ---------------------------------------------------------------------------
 Ani_Obj2B:	dc.w byte_B7BA-Ani_Obj2B
@@ -8777,8 +8748,8 @@ word_B7CA:	dc.w 1
 		dc.w $F00F,    0,    0,$FFF0
 word_B7D4:	dc.w 1
 		dc.w $F00F,  $10,    8,$FFF0
+		even
 ; ---------------------------------------------------------------------------
-
 		include	"objects/S1/2C Jaws.asm"
 ; ---------------------------------------------------------------------------
 Ani_Obj2C:	dc.b   0,  2,  7,  0,  1,  2,  3,$FF
@@ -8999,8 +8970,8 @@ word_C64C:	dc.w 1
 word_C656:	dc.w 1
 		dc.w $F805,$200C,$2006,$FFF8
 word_C660:	dc.w 0
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 		include	"objects/36 Spikes.asm"
 Map_Obj36:	include	"mappings/sprite/obj36.asm"
@@ -9008,8 +8979,6 @@ Map_Obj36:	include	"mappings/sprite/obj36.asm"
 
 		include	"objects/S1/3B Purple Rock.asm"
 Map_Obj3B:	include	"mappings/sprite/S1/Purple Rock.asm"
-		align 4
-
 		include	"objects/S1/3C Smashable Wall.asm"
 		include	"objects/S1/sub SmashObject.asm"
 ; ---------------------------------------------------------------------------
@@ -9059,8 +9028,9 @@ word_CAF0:	dc.w 8
 		dc.w $F005,    8,    4,	   0
 		dc.w	 5,    8,    4,	   0
 		dc.w $1005,    8,    4,	   0
+		even
 ; ---------------------------------------------------------------------------
-		nop
+
 
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
@@ -10671,7 +10641,6 @@ byte_D7FA:	dc.b   8,  8,  8,  8
 
 		include	"objects/S1/sub ChkObjectVisible.asm"
 ; ---------------------------------------------------------------------------
-		nop
 
 ; ============================================================================
 ; ----------------------------------------------------------------------------
@@ -10731,12 +10700,7 @@ loc_D8AE:
 ; RPL_Next:
 RingsManager_Main:
 		lea	(Ring_Positions).w,a1
-			if FixBugs
 		move.w	#255-1,d1			; do 255 rings
-        else
-        	; Minor bug: This does 256 rings, when it should be 255 to keep it consistent with RingsMgr_SortRings.
-		move.w	#256-1,d1			; do 256 rings
-	endif
 
 loc_D8CC:
 		move.b	(a1),d0				; is there a ring in this slot?
@@ -12141,9 +12105,8 @@ byte_F1B3:	dc.b  $F,  0,$FF
 ; sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj0D:	include	"mappings/sprite/obj0D.asm"
+		even
 ; ===========================================================================
-		nop
-
 		include	"objects/S1/40 Moto Bug.asm"
 ; ===========================================================================
 ; animation script
@@ -14901,11 +14864,8 @@ locret_10C34:
 ; End of function LoadSonicDynPLC
 
 ; ===========================================================================
-		nop
-
 JmpTo_KillSonic:					; JmpTo
 		jmp	(KillSonic).l
-
 		align 4
 
 ; ===========================================================================
@@ -16876,8 +16836,6 @@ byte_11E4E:	dc.b   3,$55,$56,$57,$58,$FF
 byte_11E54:	dc.b   2,$81,$82,$83,$84,$FF
 		even
 ; ---------------------------------------------------------------------------
-		nop
-
 KillTails:
 		jmp	(KillSonic).l
 ; ---------------------------------------------------------------------------
@@ -18178,8 +18136,6 @@ ObjHitWallLeft:
 locret_134C4:
 		rts
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"objects/79 Lamppost.asm"
 ; ---------------------------------------------------------------------------
 Map_Obj79:	dc.w word_1370A-Map_Obj79
@@ -18200,6 +18156,7 @@ word_1374E:	dc.w 4
 		dc.w $E801,$2804,$2802,	   0
 		dc.w $F803,    6,    3,$FFF8
 		dc.w $F803, $806, $803,	   0
+		even
 ; ---------------------------------------------------------------------------
 		include	"objects/S1/7D Hidden Bonuses.asm"
 ; ---------------------------------------------------------------------------
@@ -18214,9 +18171,8 @@ word_1385E:	dc.w 1
 		dc.w $F40E,   $C,    6,$FFF0
 word_13868:	dc.w 1
 		dc.w $F40E,  $18,   $C,$FFF0
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 S1Obj47:
 		moveq	#0,d0
 		move.b	obRoutine(a0),d0
@@ -18324,8 +18280,8 @@ word_139AA:	dc.w 2
 word_139BC:	dc.w 2
 		dc.w $F007,   $E,    7,$FFF0
 		dc.w $F007, $80E, $807,	   0
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 S1Obj64:
 		moveq	#0,d0
@@ -18658,16 +18614,15 @@ word_13E14:	dc.w 1
 word_13E1E:	dc.w 1
 		dc.w $F805,  $70,  $38,$FFF8		; 0
 word_13E28:	dc.w 0
+		even
 ; ---------------------------------------------------------------------------
-		nop
-
 		include	"objects/03 Collision Switcher.asm"
 ; ===========================================================================
 ; ---------------------------------------------------------------------------
 ; sprite mappings
 ; ---------------------------------------------------------------------------
 Map_Obj03:	include	"mappings/sprite/obj03.asm"
-
+		even
 ; ===========================================================================
 
 Obj0B:
@@ -18766,8 +18721,8 @@ word_142C6:	dc.w 1
 		dc.w	$F,$1015,$100A,$FFF0		; 0
 word_142D0:	dc.w 1
 		dc.w $100C,$1011,$1008,$FFF0		; 0
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 Obj0C:
 		moveq	#0,d0
@@ -18856,8 +18811,8 @@ loc_143B2:
 Map_Obj0C:	dc.w word_143C8-Map_Obj0C
 word_143C8:	dc.w 1
 		dc.w $F80D,    0,    0,$FFF0
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 j_CalcSine:
 		jmp	(CalcSine).l
@@ -18899,8 +18854,8 @@ Map_Obj12:	dc.w word_14444-Map_Obj12
 word_14444:	dc.w 2
 		dc.w $F00F,    0,    0,$FFE0
 		dc.w $F00F,  $10,    8,	   0
+		even
 ; ---------------------------------------------------------------------------
-		nop
 ;----------------------------------------------------
 ; Object 13 - HPZ waterfall
 ;----------------------------------------------------
@@ -19178,6 +19133,7 @@ word_1494E:	dc.w 4
 		dc.w	$F,    0,    0,$FFF0		; 4
 		dc.w $200F,    0,    0,$FFF0		; 8
 		dc.w $400F,    0,    0,$FFF0		; 12
+		even
 ; ---------------------------------------------------------------------------
 		include	"objects/06 EHZ Spiral.asm"
 ; ---------------------------------------------------------------------------
@@ -19222,8 +19178,7 @@ Obj06_PlayerDeltaYArray:dc.b  $20, $20,	$20, $20, $20, $20, $20, $20, $20, $20,	
 		dc.b  $1D, $1E,	$1E, $1E, $1E, $1E, $1E, $1E, $1F, $1F,	$1F, $1F, $1F, $1F, $1F, $1F ; 368
 		dc.b  $1F, $1F,	$20, $20, $20, $20, $20, $20, $20, $20,	$20, $20, $20, $20, $20, $20 ; 384
 		dc.b  $20, $20,	$20, $20, $20, $20, $20, $20, $20, $20,	$20, $20, $20, $20, $20, $20 ; 400
-; ---------------------------------------------------------------------------
-		nop
+		even
 ;----------------------------------------------------
 ; Object 14 - HTZ see-saw
 ;----------------------------------------------------
@@ -19475,7 +19430,7 @@ loc_14F30:
 		subi.w	#$2F,d0
 		cmp.w	obY(a0),d0
 		bgt.s	locret_14F4C
-		bsr.w	j_ObjectMoveAndFall
+		bra.w	j_ObjectMoveAndFall
 
 locret_14F4C:
 		rts
@@ -19559,6 +19514,7 @@ byte_1502F:	dc.b	5,   5,	  5,   5,   5,	 5,   5	; 0
 		dc.b	5,   5,	  5,   5,   5,	 5,   5	; 28
 		dc.b	5,   5,	  5,   5,   5,	 5,   5	; 35
 		dc.b	5,   5,	  5,   5,   5,	 5,   0	; 42
+		even
 ; -------------------------------------------------------------------------------
 ; sprite mappings
 ; -------------------------------------------------------------------------------
@@ -19567,8 +19523,8 @@ Map_obj14:	binclude	"mappings/sprite/obj14_a.bin"
 ; sprite mappings
 ; -------------------------------------------------------------------------------
 Map_obj14b:	binclude	"mappings/sprite/obj14_b.bin"
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 j_ObjectMoveAndFall:
 		jmp	(ObjectMoveAndFall).l
@@ -19576,7 +19532,7 @@ j_ObjectMoveAndFall:
 		align 4
 ;----------------------------------------------------
 ; Object 16 - the HTZ platform that goes down diagonally
-;	      and stops	after a	while (in final, it falls)
+; and stops after a while (in the final, it falls)
 ;----------------------------------------------------
 
 Obj16:
@@ -19594,12 +19550,7 @@ Obj16_Init:
 		move.l	#Map_Obj16,obMap(a0)
 		move.w	#make_art_tile(ArtTile_HtzZipline,2,0),obGfx(a0)
 		bsr.w	Adjust2PArtPointer
-	if FixBugs
 		ori.b	#4,obRender(a0)
-	else
-		; Bug: This does not correctly flip the object
-		move.b	#4,obRender(a0)
-	endif
 		move.b	#$20,obActWid(a0)
 		move.b	#0,obFrame(a0)
 		move.b	#1,obPriority(a0)
@@ -19642,14 +19593,12 @@ Obj16_InitMove:
 		beq.s	locret_151BE
 		addq.b	#1,obSubtype(a0)
 		move.w	#$200,obVelX(a0)
-	if FixBugs
 		; This fixes issues with the object being flipped horizontally
 		btst	#0,obStatus(a0)
 		beq.s	.facingright
 		neg.w	obVelX(a0)
-		
+
 .facingright:
-	endif
 		move.w	#$100,obVelY(a0)
 		move.w	#$A0,objoff_34(a0)
 
@@ -19671,8 +19620,8 @@ Obj16_NoMove:
 		rts
 ; ---------------------------------------------------------------------------
 Map_Obj16:	include	"mappings/sprite/obj16.asm"
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 loc_152A4:
 		jmp	(DisplaySprite).l
@@ -19910,6 +19859,7 @@ Map_Obj19:	dc.w word_154AE-Map_Obj19
 word_154AE:	dc.w 2
 		dc.w $F00F,    0,    0,$FFE0		; 0
 		dc.w $F00F, $800, $800,	   0		; 4
+		even
 ; ---------------------------------------------------------------------------
 
 loc_154C0:
@@ -19970,6 +19920,7 @@ word_1565E:	dc.w 6
 		dc.w $F80D,    8,    4,	   0		; 12
 		dc.w $F80D,  $10,    8,	 $20		; 16
 		dc.w $F80D,    8,    4,	 $40		; 20
+		even
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
 ; Object 49 - EHZ waterfalls
@@ -20076,6 +20027,7 @@ word_15816:	dc.w $A
 		dc.w $200F,    8,    4,	   0		; 28
 		dc.w $400F,    8,    4,$FFE0		; 32
 		dc.w $400F,    8,    4,	   0		; 36
+		even
 ; ---------------------------------------------------------------------------
 
 loc_15868:
@@ -20280,8 +20232,7 @@ word_15B14:	dc.w 4
 		dc.w $F005,    4,    2,	   0		; 4
 		dc.w	 9,  $28,  $14,	   0		; 8
 		dc.w $FB01,  $30,  $18,	 $1A		; 12
-		align 4
-
+		even
 loc_15B38:
 		jmp	(MarkObjGone).l
 ; ---------------------------------------------------------------------------
@@ -20472,8 +20423,7 @@ word_15D7A:	dc.w 1
 		dc.w $F00F,  $20,  $10,$FFF0		; 0
 word_15D84:	dc.w 1
 		dc.w $F00F,  $30,  $18,$FFF0		; 0
-		align 4
-
+		even
 loc_15D90:
 		jmp	(MarkObjGone).l
 ; ---------------------------------------------------------------------------
@@ -20596,8 +20546,8 @@ byte_15EBB:	dc.b   9,  0,  1,  2,  1,$FF,  0
 ; Sprite mappings - Redz (dinosaur badnik) from HPZ
 ; ---------------------------------------------------------------------------
 Map_obj4F:	binclude	"mappings/sprite/obj4F.bin"
-		align 4
-
+		even
+; ---------------------------------------------------------------------------
 loc_15EE8:
 		jmp	(DisplaySprite).l
 ; ---------------------------------------------------------------------------
@@ -20716,23 +20666,20 @@ loc_16046:
 		bsr.w	j_ObjectMove_4
 		bsr.w	sub_162DE
 		bsr.w	sub_16184
-		bsr.w	sub_1611C
-		rts
+		bra.w	sub_1611C
 ; ---------------------------------------------------------------------------
 
 loc_16058:
 		bsr.w	j_ObjectMove_4
 		bsr.w	sub_162DE
-		bsr.w	sub_161A6
-		rts
+		bra.w	sub_161A6
 ; ---------------------------------------------------------------------------
 
 loc_16066:
 		bsr.w	j_ObjectMoveAndFall_2
 		bsr.w	sub_162DE
 		bsr.w	sub_16078
-		bsr.w	sub_160F4
-		rts
+		bra.w	sub_160F4
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -21136,6 +21083,7 @@ word_164FA:	dc.w 5
 		dc.w $F805,  $1C,   $E,$FFF8		; 8
 		dc.w $F801,  $22,  $11,	   8		; 12
 		dc.w  $805,  $24,  $12,$FFF8		; 16
+		even
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
 ; Object 51 - Aquis badnik from HPZ
@@ -21203,8 +21151,7 @@ loc_165D4:
 		bsr.w	sub_162DE
 		bsr.w	loc_16626
 		bsr.w	loc_16708
-		bsr.w	loc_16678
-		rts
+		bra.w	loc_16678
 ; ---------------------------------------------------------------------------
 
 loc_165EA:
@@ -21212,8 +21159,7 @@ loc_165EA:
 		bsr.w	sub_162DE
 		bsr.w	loc_16626
 		bsr.w	loc_16708
-		bsr.w	loc_16600
-		rts
+		bra.w	loc_16600
 ; ---------------------------------------------------------------------------
 
 loc_16600:
@@ -21584,22 +21530,16 @@ Obj4B_ShootProjectile:
 		move.b	#2,obAnim(a1)
 		move.w	obX(a0),obX(a1)
 		move.w	obY(a0),obY(a1)
-	if FixBugs
 		move.w	#13,d0				; absolute horizontal offset for stinger
-	endif
 		move.w	#$180,obVelY(a1)
 		move.w	#-$180,obVelX(a1)
 		btst	#0,obRender(a1)			; is object facing left?
 		beq.s	locret_169D8			; if not, branch
 		neg.w	obVelX(a1)			; move in other direction
-	if FixBugs
 		neg.w	d0				; make offset negative
-	endif
 
 locret_169D8:
-	if FixBugs
 		add.w	d0,obX(a1)			; align horizontally with stinger
-	endif
 		rts
 ; ===========================================================================
 ; animation script
@@ -21612,11 +21552,12 @@ byte_169E2:	dc.b  $F,  0,$FF
 byte_169E5:	dc.b   2,  3,  4,$FF
 byte_169E9:	dc.b   3,  5,  6,$FF
 byte_169ED:	dc.b   9,  1,  1,  1,  1,  1,$FD,  0,  0
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj4B:	binclude	"mappings/sprite/obj4B.bin"
-		align 4
+		even
 loc_16A74:
 		jmp	(DeleteObject).l
 
@@ -21838,6 +21779,7 @@ word_16D1C:	dc.w 1
 		dc.w $F201,  $36,  $1B,$FFF0		; 0
 word_16D26:	dc.w 1
 		dc.w $F201,  $38,  $1C,$FFF0		; 0
+		even
 ; ---------------------------------------------------------------------------
 
 loc_16D30:
@@ -21877,12 +21819,7 @@ Obj4C_Index:	dc.w Obj4C_Init-Obj4C_Index
 
 Obj4C_Init:
 		move.l	#Map_Obj4C,obMap(a0)
-	if FixBugs
 		move.w	#make_art_tile(ArtTile_BBat,0,0),obGfx(a0)
-	else
-		; This uses a very awkward palette line which makes the flames look very yellow.
-		move.w	#make_art_tile(ArtTile_BBat,1,0),obGfx(a0)
-	endif
 		ori.b	#4,obRender(a0)
 		move.b	#$A,obColType(a0)
 		move.b	#4,obPriority(a0)
@@ -21951,8 +21888,6 @@ loc_16E10:
 		lea	(Ani_Obj4C).l,a1
 		bsr.w	j_AnimateSprite_6
 		bra.w	loc_171C4
-; ---------------------------------------------------------------------------
-		rts
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -22208,7 +22143,7 @@ word_171A8:	dc.w 3
 		dc.w $F007,  $32,  $19,$FFF8		; 0
 		dc.w $F805, $828, $814,$FFEC		; 4
 		dc.w $F805, $824, $812,	   4		; 8
-		align 4
+		even
 
 loc_171C4:
 		jmp	(MarkObjGone).l
@@ -22414,6 +22349,7 @@ word_17496:	dc.w 4
 		dc.w $F805,  $18,   $C,	   4		; 4
 		dc.w	 1,  $1E,   $F,	   4		; 8
 		dc.w	 5,  $28,  $14,	  $C		; 12
+		even
 ; ---------------------------------------------------------------------------
 
 loc_174B8:
@@ -22445,7 +22381,7 @@ byte_1757A:	dc.b   7,  0,$FF
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj53:	binclude	"mappings/sprite/obj53.bin"
-		align 4
+		even
 ; ===========================================================================
 
 loc_175B8:
@@ -22566,7 +22502,7 @@ loc_17700:
 		asl.w	#2,d0
 		move.w	d0,obVelX(a0)
 		st	objoff_35(a0)
-		bsr.w	sub_17714
+		bra.w	sub_17714
 
 locret_17712:
 		rts
@@ -23379,6 +23315,7 @@ word_1818E:	dc.w 3
 		dc.w $F00F,$8000,$8000,$FFD0		; 0
 		dc.w $F00F,$8010,$8008,$FFF0		; 4
 		dc.w $F00F,$8020,$8010,	 $10		; 8
+		even
 ; ---------------------------------------------------------------------------
 
 loc_181A8:
@@ -23689,8 +23626,8 @@ word_185B0:	dc.w 4
 		dc.w $E80D,  $38,  $1C,$FFF0		; 4
 		dc.w $E805,  $24,  $12,	 $10		; 8
 		dc.w $D805,  $20,  $10,	   2		; 12
+		even
 ; ---------------------------------------------------------------------------
-		nop
 
 loc_185D4:
 		jmp	(DisplaySprite).l
@@ -23732,12 +23669,7 @@ Obj8A_Init:
 		bne.s	Obj8A_Display			; if not, branch
 
 ; Obj8A_SonicTeam:
-	if FixBugs
 		move.w	#make_art_tile(ArtTile_Sonic_Team_Font,0,0),obGfx(a0)
-	else
-		; Bug: This is using the incorrect address of VRAM!
-		move.w	#make_art_tile(ArtTile_Title_Sonic,0,0),obGfx(a0)
-	endif
 		bsr.w	j_Adjust2PArtPointer_4
 		move.b	#$A,obFrame(a0)
 		tst.b	(f_creditscheat).w		; is the Sonic 1 hidden credits cheat activated?
@@ -23756,8 +23688,8 @@ Obj8A_Display:
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj8A:	binclude	"mappings/sprite/obj8A.bin"
+		even
 ; ===========================================================================
-		nop
 
 j_Adjust2PArtPointer_4:					; JmpTo
 		jmp	(Adjust2PArtPointer).l
@@ -24177,6 +24109,7 @@ word_197C2:	dc.w 2
 word_197D4:	dc.w 1
 		dc.w $F007,$206D,$2036,$FFF8
 word_197DE:	dc.w 0
+		even
 ; ---------------------------------------------------------------------------
 
 j_Adjust2PArtPointer_6:
@@ -24587,7 +24520,6 @@ Touch_E1:
 		addq.b	#1,obColProp(a1)
 		rts
 ; ---------------------------------------------------------------------------
-		nop
 
 j_Sonic_ResetOnFloor:
 		jmp	(Sonic_ResetOnFloor).l
@@ -24843,7 +24775,7 @@ S1SS_WaRiVramSet:dc.w $142,$6142,$142,$142,$142,$142,$142,$6142
 		dc.w $4142,$2142,$4142,$4142,$4142,$4142,$4142,$2142
 		dc.w $6142,$4142,$6142,$6142,$6142,$6142,$6142,$4142
 		dc.w $6142,$4142,$6142,$6142,$6142,$6142,$6142,$4142
-
+		even
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -24999,7 +24931,7 @@ loc_1A006:
 		clr.l	4(a0)
 		move.b	#4,(v_objspace+obRoutine).w
 		move.w	#sfx_SSGoal,d0
-		jsr	(PlaySound_Special).l
+		jmp	(PlaySound_Special).l
 
 locret_1A03E:
 		rts
@@ -25036,7 +24968,7 @@ S1SS_StartLoc:	dc.w  $3D0, $2E0
 		dc.w  $3AD, $2E0
 		dc.w  $340, $6B8
 		dc.w  $49B, $358
-
+		even
 ; =============== S U B	R O U T	I N E =======================================
 
 
@@ -25116,30 +25048,35 @@ loc_1A162:
 S1SS_MapIndex:
 		include	"_inc/Special Stage Mappings & VRAM Pointers.asm"
 S1SS_MapIndex_End:
+		even
 ; ===========================================================================
 ; Rather humourously, these sprite mappings are stored in the Sonic 1 format
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - 'R'
 ; ---------------------------------------------------------------------------
 Map_SS_R:	include	"mappings/sprite/S1/SS R Block.asm"
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Glass
 ; ---------------------------------------------------------------------------
 Map_SS_Glass:	include	"mappings/sprite/S1/SS Glass Block.asm"
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - 'Up'
 ; ---------------------------------------------------------------------------
 Map_SS_Up:	include	"mappings/sprite/S1/SS UP Block.asm"
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - 'Down'
 ; ---------------------------------------------------------------------------
 Map_SS_Down:	include	"mappings/sprite/S1/SS DOWN Block.asm"
+		even
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Chaos Emeralds
 ; ---------------------------------------------------------------------------
 		include	"mappings/sprite/S1/SS Chaos Emeralds.asm"
+		even
 ; ===========================================================================
-		nop
 
 		include	"objects/S1/09 Sonic in Special Stage.asm"
 ; ===========================================================================
@@ -25173,8 +25110,6 @@ AniArt_Load:
 		lea	DynArtCue_Index(pc,d1.w),a2
 		move.w	DynArtCue_Index(pc,d0.w),d0
 		jmp	DynArtCue_Index(pc,d0.w)
-; ---------------------------------------------------------------------------
-		rts
 ; End of function AniArt_Load
 
 ; ---------------------------------------------------------------------------
@@ -25548,20 +25483,11 @@ locret_1AD1A:
 ; loc_1AD1C:
 LoadLevelBlocks_2P:
 		move.w	(a0)+,d0
-	if FixBugs
 		move.w	d0,d2
 		andi.w	#nontile_mask,d0	; d0 holds the preserved non-tile data
 		andi.w	#tile_mask,d2		; d2 holds the tile index
 		lsr.w	#1,d2			; half tile index
 		or.w	d2,d0			; put them back together
-	else
-		; Bug: 'd1', the loop counter, is overwritten with VRAM data.
-		move.w	d0,d1
-		andi.w	#nontile_mask,d0	; d0 holds the preserved non-tile data
-		andi.w	#tile_mask,d1		; d1 holds the tile index (overwrites loop counter!)
-		lsr.w	#1,d1			; half tile index
-		or.w	d1,d0			; put them back together
-	endif
 		move.w	d0,(a1)+
 		dbf	d1,LoadLevelBlocks_2P
 		rts
@@ -25650,7 +25576,7 @@ APM_None:
 APM_None_End:
 
 APM_Unk:	
-		dc.w $1800-$B80 ; Bug: This should be $1800-$138
+		dc.w $1800-$138
 		dc.w bytesToWcnt($138)
 		dc.w make_block_tile($3A0+$1,0,0,2,0),make_block_tile($3A0+$2,0,0,2,0)
 		dc.w make_block_tile($3A0+$3,0,0,2,0),make_block_tile($3A0+$4,0,0,2,0)
@@ -25916,7 +25842,7 @@ loc_1B286:
 		bne.s	loc_1B2E2
 		lea	(v_time).w,a1
 		cmpi.l	#9<<16|59<<8|59,(a1)+		; if the timer has passed 9:59...
-		nop					; ...do nothing since this has been nopped out
+		beq.s	TimeOver			; ...Branch & kill the characters
 		addq.b	#1,-(a1)
 		cmpi.b	#60,(a1)
 		blo.s	loc_1B2E2
@@ -25956,14 +25882,14 @@ loc_1B2F0:
 		bsr.w	HUD_TimeRingBonus
 		moveq	#0,d1
 		move.w	(v_ringbonus).w,d1
-		bsr.w	HUD_TimeRingBonus
+		bra.w	HUD_TimeRingBonus
 
 locret_1B318:
 		rts
 ; ===========================================================================
 ; kills the player if the time has reached 9:59, except now it's unused due
 ; to its "beq" command being noped out above
-S1TimeOver:
+TimeOver:
 		clr.b	(f_timecount).w
 		lea	(v_player).w,a0
 		movea.l	a0,a2
@@ -26006,7 +25932,7 @@ loc_1B372:
 		bsr.w	HUD_TimeRingBonus
 		moveq	#0,d1
 		move.w	(v_ringbonus).w,d1
-		bsr.w	HUD_TimeRingBonus
+		bra.w	HUD_TimeRingBonus
 
 locret_1B39A:
 		rts
@@ -26434,7 +26360,6 @@ Art_HUD:	binclude	"art/uncompressed/HUD Numbers.bin"
 Art_LivesNums:	binclude	"art/uncompressed/Lives Counter Numbers.bin"
 		even
 ; ---------------------------------------------------------------------------
-		nop
 
 j_Adjust2PArtPointer_8:
 		jmp	(Adjust2PArtPointer).l
@@ -26472,9 +26397,9 @@ Debug_Init:
 ; Debug_CheckSS:
 		cmpi.b	#GameModeID_SpecialStage,(v_gamemode).w ; is this the Special Stage?
 		bne.s	loc_1BB04			; if not, branch
-		;move.b	#7-1,(Current_Zone).w		; sets the debug object list and resets Special Stage rotation
-		;move.w	#0,(v_ssrotate).w
-		;move.w	#0,(v_ssangle).w
+		move.b	#7-1,(Current_Zone).w		; sets the debug object list and resets Special Stage rotation
+		move.w	#0,(v_ssrotate).w
+		move.w	#0,(v_ssangle).w
 		moveq	#6,d0				; force zone 6's debug object list (was the ending in S1)
 		bra.s	loc_1BB0A
 ; ===========================================================================
@@ -26536,7 +26461,7 @@ Debug_ContinueMoving:
 		bne.s	Debug_TimerNotOver
 		move.b	#1,(Debug_Accel_Timer).w
 		addq.b	#1,(Debug_Speed).w
-		;cmpi.b	#-1,(Debug_Speed).w		; this effectively resets the Debug movement speed when it reaches 255
+		cmpi.b	#-1,(Debug_Speed).w		; this effectively resets the Debug movement speed when it reaches 255
 		bne.s	Debug_Move
 		move.b	#-1,(Debug_Speed).w
 ; loc_1BB9E:
@@ -26650,10 +26575,10 @@ loc_1BC98:
 		cmpi.b	#GameModeID_SpecialStage,(v_gamemode).w ; is this the Special Stage?
 		bne.s	locret_1bhsA			; if not, branch
 
-		;clr.w	(v_ssangle).w			; again, this resets the Special Stage rotation
-		;move.w	#$40,(v_ssrotate).w		; and Sonic's art for whatever reason
-		;move.l	#Map_Sonic,(v_player+obMap).w
-		;move.w	#make_art_tile(ArtTile_Sonic,0,0),(v_player+obGfx).w
+		clr.w	(v_ssangle).w			; again, this resets the Special Stage rotation
+		move.w	#$40,(v_ssrotate).w		; and Sonic's art for whatever reason
+		move.l	#Map_Sonic,(v_player+obMap).w
+		move.w	#make_art_tile(ArtTile_Sonic,0,0),(v_player+obGfx).w
 
 		move.b	#AniIDSonAni_Roll,(v_player+obAnim).w
 		bset	#2,(v_player+obStatus).w
@@ -26674,9 +26599,8 @@ LoadDebugObjectSprite:
 		move.l	(a2,d0.w),obMap(a0)
 		move.w	6(a2,d0.w),obGfx(a0)
 		move.b	5(a2,d0.w),obFrame(a0)
-		;move.b	4(a2,d0.w),obSubtype(a0)	; this does... something with the object's subtype
-		bsr.w	j_Adjust2PArtPointer_1
-		rts
+		move.b	4(a2,d0.w),obSubtype(a0)	; this does... something with the object's subtype
+		bra.w	j_Adjust2PArtPointer_1
 ; End of function Debug_ShowItem
 
 ; ===========================================================================
@@ -27143,7 +27067,6 @@ Leftover_50A9C:
 		binclude	"misc/leftovers/code/code_69464.bin"
 		binclude	"art/uncompressed/HUD Numbers.bin"
 		binclude	"art/uncompressed/Lives Counter Numbers.bin"
-		nop
 		binclude	"misc/leftovers/69EE8.bin"
 		binclude	"misc/leftovers/symbols/symbol26.bin"
 		binclude	"misc/leftovers/symbols/symbol26a.bin"
@@ -27162,7 +27085,7 @@ Leftover_50A9C:
 ; This must be aligned to a bank in order to avoid issues with the DMA.
 ; But because all of the art is placed after the sound driver which already aligns
 ; with the bank, this fixes itself. Uncomment the line below if you want to ensure DMA safety.
-;	align $8000
+	align $8000
 Art_Sonic:	binclude	"art/uncompressed/Sonic's art.bin"
 		even
 Map_Sonic:	include	"mappings/sprite/Sonic.asm"
