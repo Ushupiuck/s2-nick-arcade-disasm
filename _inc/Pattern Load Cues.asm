@@ -31,7 +31,7 @@ ptr_PLC_GameOver:	dc.w PLC_GameOver-ArtLoadCues
 PLC_Levels:
 ptr_PLC_GHZ:		dc.w PLC_GHZ-ArtLoadCues
 ptr_PLC_GHZ2:		dc.w PLC_GHZ2-ArtLoadCues
-ptr_PLC_LZ:			dc.w PLC_CPZ-ArtLoadCues
+ptr_PLC_LZ:		dc.w PLC_CPZ-ArtLoadCues
 ptr_PLC_LZ2:		dc.w PLC_CPZ2-ArtLoadCues
 ptr_PLC_CPZ:		dc.w PLC_CPZ-ArtLoadCues
 ptr_PLC_CPZ2:		dc.w PLC_CPZ2-ArtLoadCues
@@ -55,19 +55,11 @@ ptr_PLC_EHZAnimals:	dc.w PLC_EHZAnimals-ArtLoadCues
 ptr_PLC_HPZAnimals:	dc.w PLC_HPZAnimals-ArtLoadCues
 ptr_PLC_HTZAnimals:	dc.w PLC_HTZAnimals-ArtLoadCues
 
-	if FixBugs
 ptr_PLC_SSResult:	dc.w PLC_S1SpecialStage-ArtLoadCues
 ptr_PLC_Ending:		dc.w PLC_S1SpecialStage-ArtLoadCues
 ptr_PLC_TryAgain:	dc.w PLC_S1SpecialStage-ArtLoadCues
 ptr_PLC_EggmanSBZ2:	dc.w PLC_S1SpecialStage-ArtLoadCues
 ptr_PLC_FZBoss:		dc.w PLC_S1SpecialStage-ArtLoadCues
-	else
-ptr_PLC_SSResult:	dc.w $1C318-ArtLoadCues
-ptr_PLC_Ending:		dc.w $1C31A-ArtLoadCues
-ptr_PLC_TryAgain:	dc.w $1C31C-ArtLoadCues
-ptr_PLC_EggmanSBZ2:	dc.w $1C31E-ArtLoadCues
-ptr_PLC_FZBoss:		dc.w $1C320-ArtLoadCues
-	endif
 
 plcm:	macro gfx,vram
 	dc.l gfx
@@ -272,11 +264,7 @@ PLC_Signpost_End:
 ; --------------------------------------------------------------------------------------
 ; PLC_Invalid:
 PLC_S1SpecialStage:
-	if FixBugs
 		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)-1
-	else
-		dc.w ((PLC_S1SpecialStage_End-PLC_S1SpecialStage)/6)+$10
-	endif
 PLC_S1SpecialStage_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
