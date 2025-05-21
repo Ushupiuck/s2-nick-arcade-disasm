@@ -16,7 +16,6 @@ Obj04_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj04,obMap(a0)
 		move.w	#make_art_tile(ArtTile_Water_Surface,0,1),obGfx(a0)
-		bsr.w	j_Adjust2PArtPointer_0
 		move.b	#4,obRender(a0)
 		move.b	#$80,obActWid(a0)
 		move.w	obX(a0),objoff_30(a0)
