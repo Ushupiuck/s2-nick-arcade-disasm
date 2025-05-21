@@ -26,12 +26,7 @@ Debug_GHZ:	dc.w (Debug_GHZ_End-Debug_GHZ-2)/8
 	dbug 	Map_obj41_GHZ,	id_Obj41,	0,	0,	make_art_tile(ArtTile_S1_Spring_Horizontal,0,0)
 	dbug 	Map_obj42,	id_Obj42,	0,	0,	make_art_tile(ArtTile_Newtron,1,0)
 	dbug 	Map_obj44,	id_Obj44,	0,	0,	make_art_tile(ArtTile_GHZ_Edge_Wall,2,0)
-	if FixBugs
 	dbug 	Map_Obj79,	id_Obj79,	1,	0,	make_art_tile(ArtTile_Lamppost,1,0)
-	else
-	; this is bugged, the VRAM should point to ArtTile_Lamppost
-	dbug 	Map_Obj79,	id_Obj79,	1,	0,	make_art_tile(ArtTile_Ring,1,0)
-	endif
 	dbug 	Map_Obj03,	id_Obj03,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 Debug_GHZ_End:
 
@@ -40,12 +35,7 @@ Debug_CPZ:	dc.w (Debug_CPZ_End-Debug_CPZ-2)/8
 	dbug 	Map_Ring,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
 	dbug 	Map_obj41_GHZ,	id_Obj41,	0,	0,	make_art_tile(ArtTile_S1_Spring_Horizontal,0,0)
-	if FixBugs
 	dbug 	Map_Obj03,	id_Obj03,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
-	else
-	; this is bugged, the VRAM is 100 bytes off from ArtTile_Ring, and isn't using the correct palette line
-	dbug 	Map_Obj03,	id_Obj03,	0,	0,	make_art_tile(ArtTile_Ring+$100,0,0)
-	endif
 	dbug 	Map_Obj0B,	id_Obj0B,	0,	0,	make_art_tile(ArtTile_Level,3,1)
 	dbug 	Map_Obj0C,	id_Obj0C,	0,	0,	make_art_tile($418,3,1)
 	dbug 	Map_Obj15_CPZ,	id_Obj15,	8,	0,	make_art_tile($418,1,0)
@@ -121,24 +111,9 @@ Debug_HPZ:	dc.w (Debug_HPZ_End-Debug_HPZ-2)/8
 ;		mappings	object		subtype	frame	VRAM setting
 	dbug 	Map_Ring,	id_Obj25,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_Obj26,	id_Obj26,	0,	0,	make_art_tile(ArtTile_Monitor,0,0)
-	if FixBugs
 	dbug 	Map_Obj1C_01,	id_Obj1C,	$21,	3,	make_art_tile($35A,3,1)
-	else
-	; this is bugged, it's not using the right VRAM location
-	dbug 	Map_Obj1C_01,	id_Obj1C,	$21,	3,	make_art_tile($485,3,1)
-	endif
-	if FixBugs
 	dbug 	Map_Obj13,	id_Obj13,	4,	4,	make_art_tile(ArtTile_HPZ_Waterfall,3,1)
-	else
-	; this is bugged, it's not using the right VRAM location
-	dbug 	Map_Obj13,	id_Obj13,	4,	4,	make_art_tile($415,3,1)
-	endif
-	if FixBugs
 	dbug 	Map_Obj1A_HPZ,	id_Obj1A,	0,	0,	make_art_tile($34A,2,0)
-	else
-	; this is bugged, it's not using the right VRAM location
-	dbug 	Map_Obj1A_HPZ,	id_Obj1A,	0,	0,	make_art_tile($475,2,0)
-	endif
 	dbug 	Map_Obj03,	id_Obj03,	0,	0,	make_art_tile(ArtTile_Ring,1,0)
 	dbug 	Map_obj4F,	id_Obj4F,	0,	0,	make_art_tile(ArtTile_Redz,0,0)
 	dbug 	Map_Obj52,	id_Obj52,	0,	0,	make_art_tile(ArtTile_BFish,1,0)
