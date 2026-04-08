@@ -120,7 +120,7 @@ Vectors:
 		dc.b "      HEDGEHOG 2"
 		dc.b "                "
 		dc.b "GM 00004049-01"		; Version (leftover from Sonic 1)
-Checksum:	dc.w $AFC7				; Checksum (patched later if incorrect)
+Checksum:	dc.w $AFC7				; Checksum (leftover from Sonic 1)
 		dc.b "J               "		; I/O support
 		dc.l StartOfRom				; Start address of ROM
 ROMEndLoc:	dc.l S1_EndOfRom-1		; End address of ROM (leftover from Sonic 1)
@@ -3474,9 +3474,9 @@ Demo_CPZ:	binclude	"demodata/Intro - CPZ.bin"
 		even
 Demo_S1GHZ:	binclude	"demodata/S1/Intro - GHZ.bin"
 		even
-		binclude	"demodata/S1/Intro - MZ.bin"
+Demo_S1MZ:	binclude	"demodata/S1/Intro - MZ.bin"
 		even
-		binclude	"demodata/S1/Intro - SYZ.bin"
+Demo_S1SYZ:	binclude	"demodata/S1/Intro - SYZ.bin"
 		even
 Demo_S1SS:	binclude	"demodata/S1/Intro - Special Stage.bin"
 		even
@@ -4047,13 +4047,21 @@ LevelSizeArray:
 ; ===========================================================================
 S1EndingStartLoc:
 		binclude	"startpos/S1/ghz1 (Credits demo 1).bin"
+		even
 		binclude	"startpos/S1/mz2 (Credits demo).bin"
+		even
 		binclude	"startpos/S1/syz3 (Credits demo).bin"
+		even
 		binclude	"startpos/S1/lz3 (Credits demo).bin"
+		even
 		binclude	"startpos/S1/slz3 (Credits demo).bin"
+		even
 		binclude	"startpos/S1/sbz1 (Credits demo).bin"
+		even
 		binclude	"startpos/S1/sbz2 (Credits demo).bin"
+		even
 		binclude	"startpos/S1/ghz1 (Credits demo 2).bin"
+		even
 ; ===========================================================================
 
 LevelSize_CheckLamp:
@@ -4119,33 +4127,61 @@ loc_590A:
 
 StartLocArray:
 		binclude	"startpos/S1/ghz1.bin"	; GHZ1
+		even
 		binclude	"startpos/S1/ghz2.bin"	; GHZ2
+		even
 		binclude	"startpos/S1/ghz3.bin"	; GHZ3
+		even
 		dc.w   $80,  $A8			; GHZ4
+		even
 		binclude	"startpos/S1/lz1.bin"	; LZ1
+		even
 		binclude	"startpos/S1/lz2.bin"	; LZ2
+		even
 		binclude	"startpos/S1/lz3.bin"	; LZ3
+		even
 		binclude	"startpos/S1/sbz3.bin"	; SBZ3 (LZ4)
+		even
 		binclude	"startpos/CPZ_1.bin"	; CPZ1
+		even
 		binclude	"startpos/S1/mz2.bin"	; CPZ2 (MZ2)
+		even
 		binclude	"startpos/S1/mz3.bin"	; CPZ3 (MZ3)
+		even
 		dc.w   $80,  $A8			; CPZ4
+		even
 		binclude	"startpos/EHZ_1.bin"	; EHZ1
+		even
 		binclude	"startpos/EHZ_2.bin"	; EHZ2
+		even
 		binclude	"startpos/EHZ_3.bin"	; EHZ3
+		even
 		dc.w   $80,  $A8			; EHZ4
+		even
 		binclude	"startpos/HPZ_1.bin"	; HPZ1
+		even
 		binclude	"startpos/S1/syz2.bin"	; HPZ2 (SYZ2)
+		even
 		binclude	"startpos/S1/syz3.bin"	; HPZ3 (SYZ3)
+		even
 		dc.w   $80,  $A8			; HPZ4
+		even
 		binclude	"startpos/HTZ_1.bin"	; HTZ1
+		even
 		binclude	"startpos/HTZ_2.bin"	; HTZ2
+		even
 		binclude	"startpos/S1/fz.bin"	; HTZ3 (FZ)
+		even
 		dc.w   $80,  $A8			; HTZ4
+		even
 		binclude	"startpos/S1/end1.bin"	; S1 Ending 1
+		even
 		binclude	"startpos/S1/end2.bin"	; S1 Ending 2
+		even
 		dc.w   $80,  $A8			; S1 Ending 3
+		even
 		dc.w   $80,  $A8			; S1 Ending 4
+		even
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -9354,6 +9390,7 @@ byte_E999:	dc.b   0,  8,  7,  7,  9,  9,  9,  9
 ; Sprite mappings - GHZ springs
 ; ----------------------------------------------------------------------------
 Map_obj41_GHZ:	binclude	"mappings/sprite/obj41_GHZ.bin"
+		even
 ; ----------------------------------------------------------------------------
 ; Primary sprite mappings for springs
 ; ----------------------------------------------------------------------------
@@ -11128,7 +11165,7 @@ word_142D0:	dc.w 1
 		jmpTos	; Empty
 ; ===========================================================================
 
-		include	"obj/0C.asm"
+		include	"obj/0C Small Floating Platform.asm"
 Map_Obj0C:	include	"mappings/sprite/obj0C.asm"
 
 		jmpTos	JmpTo_CalcSine
@@ -11218,10 +11255,12 @@ byte_1502F:
 ; sprite mappings
 ; -------------------------------------------------------------------------------
 Map_obj14:	binclude	"mappings/sprite/obj14_a.bin"
+		even
 ; -------------------------------------------------------------------------------
 ; sprite mappings
 ; -------------------------------------------------------------------------------
 Map_obj14b:	binclude	"mappings/sprite/obj14_b.bin"
+		even
 
 		jmpTos	JmpTo_ObjectMoveAndFall
 ; ===========================================================================
@@ -11398,6 +11437,7 @@ byte_15EBB:	dc.b   9,  0,  1,  2,  1,$FF
 ; Sprite mappings - Redz (dinosaur badnik) from HPZ
 ; ---------------------------------------------------------------------------
 Map_obj4F:	binclude	"mappings/sprite/obj4F.bin"
+		even
 
 		jmpTos0	JmpTo4_DisplaySprite,JmpTo4_DeleteObject,JmpTo3_AnimateSprite,JmpTo3_ObjectMoveAndFall,JmpTo4_ObjectMove
 ; ===========================================================================
@@ -11505,6 +11545,7 @@ byte_169ED:	dc.b   9,  1,  1,  1,  1,  1,$FD,  0
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj4B:	binclude	"mappings/sprite/obj4B.bin"
+		even
 
 		jmpTos0	JmpTo6_DeleteObject,JmpTo_FindNextFreeObj,JmpTo5_AnimateSprite,JmpTo_Adjust2PArtPointer2,JmpTo_MarkObjGone_P1,JmpTo2_Adjust2PArtPointer,JmpTo6_ObjectMove
 ; ===========================================================================
@@ -11669,6 +11710,7 @@ byte_1757A:	dc.b   7,  0,$FF
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_obj53:	binclude	"mappings/sprite/obj53.bin"
+		even
 
 		jmpTos0	JmpTo7_MarkObjGone,JmpTo9_AnimateSprite,JmpTo3_Adjust2PArtPointer,JmpTo9_ObjectMove
 ; ===========================================================================
@@ -12845,34 +12887,34 @@ AnimCue_HPZ:	zoneanimstart
 ; According to leftover resizing code, this was meant for the
 ; Chemical Plant Zone boss, which symbol tables refer to as "vaccume".
 AnimCue_CPZ_Boss:	zoneanimstart
-		; ?
-		zoneanimdecl 7, Art_UnkZone_1, ArtTile_Art_UnkZone_1, 2, 4
+		; Lights
+		zoneanimdecl 7, Art_CPZ_Lights, ArtTile_CPZ_Lights, 2, 4
 		dc.b   0
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl 7, Art_UnkZone_2, ArtTile_Art_UnkZone_2, 3, 8
+		; Conveyor
+		zoneanimdecl 7, Art_CPZ_Conveyor, ArtTile_CPZ_Conveyor, 3, 8
 		dc.b   0
 		dc.b   8
 		dc.b $10
 		dc.b   0
 		even
-		; ?
-		zoneanimdecl 7, Art_UnkZone_3, ArtTile_Art_UnkZone_3, 4, 2
+		; Pistons
+		zoneanimdecl 7, Art_CPZ_Pistons, ArtTile_CPZ_Pistons, 4, 2
 		dc.b   0
 		dc.b   2
 		dc.b   0
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl $B, Art_UnkZone_4, ArtTile_Art_UnkZone_4, 4, 2
+		; Pressure Metre
+		zoneanimdecl $B, Art_CPZ_Metre, ArtTile_CPZ_Metre, 4, 2
 		dc.b   0
 		dc.b   2
 		dc.b   4
 		dc.b   2
 		even
-		; ?
-		zoneanimdecl $F, Art_UnkZone_5, ArtTile_Art_UnkZone_5, $A, 1
+		; Cross and Circle
+		zoneanimdecl $F, Art_CPZ_Cross_Circle, ArtTile_CPZ_Cross_Circle, $A, 1
 		dc.b   0
 		dc.b   0
 		dc.b   1
@@ -12884,15 +12926,15 @@ AnimCue_CPZ_Boss:	zoneanimstart
 		dc.b   5
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl 3, Art_UnkZone_6, ArtTile_Art_UnkZone_6, 4, 4
+		; Propeller
+		zoneanimdecl 3, Art_CPZ_Propeller, ArtTile_CPZ_Propeller, 4, 4
 		dc.b   0
 		dc.b   4
 		dc.b   8
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl 7, Art_UnkZone_7, ArtTile_Art_UnkZone_7, 6, 3
+		; Surface Liquid
+		zoneanimdecl 7, Art_CPZ_Liquid, ArtTile_CPZ_Liquid, 6, 3
 		dc.b   0
 		dc.b   3
 		dc.b   6
@@ -12900,8 +12942,8 @@ AnimCue_CPZ_Boss:	zoneanimstart
 		dc.b  $C
 		dc.b  $F
 		even
-		; ?
-		zoneanimdecl 7, Art_UnkZone_8, ArtTile_Art_UnkZone_8, 4, 1
+		; Conveyor
+		zoneanimdecl 7, Art_CPZ_Conveyor_2, ArtTile_CPZ_Conveyor_2, 4, 1
 		dc.b   0
 		dc.b   1
 		dc.b   2
@@ -13402,7 +13444,9 @@ AddPoints:
 		include	"_Include/HUD Update.asm"
 
 Art_HUD:	binclude	"art/uncompressed/HUD Numbers.bin"
+		even
 Art_LivesNums:	binclude	"art/uncompressed/Lives Counter Numbers.bin"
+		even
 
 		jmpTos	JmpTo9_Adjust2PArtPointer
 ; ===========================================================================
@@ -13480,20 +13524,35 @@ S1SS_6:	binclude	"sslayout/6 (JP1).eni"
 ; Animated uncompressed graphics
 ; ---------------------------------------------------------------------------
 Art_Flowers1:	binclude	"art/uncompressed/EHZ and HTZ flowers - 1.bin"
+		even
 Art_Flowers2:	binclude	"art/uncompressed/EHZ and HTZ flowers - 2.bin"
+		even
 Art_Flowers3:	binclude	"art/uncompressed/EHZ and HTZ flowers - 3.bin"
+		even
 Art_Flowers4:	binclude	"art/uncompressed/EHZ and HTZ flowers - 4.bin"
+		even
 Art_EHZPulseBall:	binclude	"art/uncompressed/Pulsing ball against checkered background (EHZ).bin"
+		even
 Art_HPZUnusedBg:	binclude	"art/uncompressed/HPZ unused background.bin"
+		even
 Art_HPZPulseOrb:	binclude	"art/uncompressed/Pulsing orb (HPZ).bin"
-Art_UnkZone_1:	binclude	"art/uncompressed/Unknown Zone - 1.bin"
-Art_UnkZone_2:	binclude	"art/uncompressed/Unknown Zone - 2.bin"
-Art_UnkZone_3:	binclude	"art/uncompressed/Unknown Zone - 3.bin"
-Art_UnkZone_4:	binclude	"art/uncompressed/Unknown Zone - 4.bin"
-Art_UnkZone_5:	binclude	"art/uncompressed/Unknown Zone - 5.bin"
-Art_UnkZone_6:	binclude	"art/uncompressed/Unknown Zone - 6.bin"
-Art_UnkZone_7:	binclude	"art/uncompressed/Unknown Zone - 7.bin"
-Art_UnkZone_8:	binclude	"art/uncompressed/Unknown Zone - 8.bin"
+		even
+Art_CPZ_Lights:	binclude	"art/uncompressed/CPZ Lights.bin"
+		even
+Art_CPZ_Conveyor:	binclude	"art/uncompressed/CPZ Conveyor.bin"
+		even
+Art_CPZ_Pistons:	binclude	"art/uncompressed/CPZ Pistons.bin"
+		even
+Art_CPZ_Metre:	binclude	"art/uncompressed/CPZ Metre.bin"
+		even
+Art_CPZ_Cross_Circle:	binclude	"art/uncompressed/CPZ Cross and Circle.bin"
+		even
+Art_CPZ_Propeller:	binclude	"art/uncompressed/CPZ Propeller.bin"
+		even
+Art_CPZ_Liquid:	binclude	"art/uncompressed/CPZ Liquid.bin"
+		even
+Art_CPZ_Conveyor_2:	binclude	"art/uncompressed/CPZ Conveyor 2.bin"
+		even
 
 ; ---------------------------------------------------------------------------
 ; Level layout index
@@ -13565,6 +13624,7 @@ Level_HPZBg:	binclude	"level/layout/HPZ_BG.bin"
 Level_Null:	dc.l	0
 
 Art_BigRing:	binclude	"art/uncompressed/Giant Ring.bin"
+		even
 		align 4
 
 ; --------------------------------------------------------------------------------------
@@ -13572,46 +13632,55 @@ Art_BigRing:	binclude	"art/uncompressed/Giant Ring.bin"
 ; --------------------------------------------------------------------------------------
 		binclude	"leftovers/level/layout/HTZ_2.bin"
 		even
-		binclude	"level/layout/HTZ_BG.bin"
+Level_HTZBg_PB:	binclude	"level/layout/HTZ_BG.bin"
 		even
-		binclude	"level/layout/CPZ_1.bin"
+Level_CPZ1_PB:	binclude	"level/layout/CPZ_1.bin"
 		even
-		binclude	"level/layout/HPZ_1.bin"
+Level_HPZ1_PB:	binclude	"level/layout/HPZ_1.bin"
 		even
-		binclude	"level/layout/CPZ_BG.bin"
+Level_CPZBg_PB:	binclude	"level/layout/CPZ_BG.bin"
 		even
-		binclude	"level/layout/HPZ_BG.bin"
+Level_HPZBg_PB:	binclude	"level/layout/HPZ_BG.bin"
 		even
-		dc.l	0
+Level_Null_PB:	dc.l	0
 
 ;----------------------------------------------------
 ; A duplicate copy of the big ring art
 ;----------------------------------------------------
-		binclude	"art/uncompressed/Giant Ring.bin"
+Art_BigRing_PB:	binclude	"art/uncompressed/Giant Ring.bin"
+		even
 		align 4
 		; cut-off piece of uncompressed giant ring art
 		dc.w	$EEEE,$EEEE
 		binclude	"leftovers/art/uncompressed/Giant Ring.bin"
+		even
 
 ; --------------------------------------------------------------------------------------
 ; level mappings	(16x16 and 256x256)
 ; --------------------------------------------------------------------------------------
 		binclude	"leftovers/mappings/16x16/2EB00.unc"
+		even
 		binclude	"leftovers/mappings/256x256/2EC00.unc"
+		even
 
 ; --------------------------------------------------------------------------------------
 ; leftover art - full 128 character ASCII table
 ; --------------------------------------------------------------------------------------
 		binclude	"art/uncompressed/leftovers/128 char ASCII.bin"
+		even
 
 ; --------------------------------------------------------------------------------------
 ; Leftover level mappings and palettes from a previous build
 ; --------------------------------------------------------------------------------------
 		binclude	"leftovers/mappings/256x256/31000.unc"
+		even
 		binclude	"leftovers/32000.bin"
+		even
 		dc.l	0
 		binclude	"leftovers/mappings/16x16/36004.unc"
+		even
 		binclude	"leftovers/mappings/256x256/364D4.unc"
+		even
 
 ; ---------------------------------------------------------------------------
 ; Sprite locations index
@@ -13714,7 +13783,7 @@ ObjPos_HTZ1:	binclude	"level/objects/HTZ_1.bin"
 		even
 ObjPos_HTZ2:	binclude	"level/objects/HTZ_2.bin"
 		even
-ObjPos_HTZ3:	binclude	"level/objects/HTZ_3.bin"
+ObjPos_HTZ3:	binclude	"level/objects/S1/fz.bin"
 		even
 ObjPos_S1SBZ1pf1:
 		binclude	"level/objects/S1/sbz1pf1.bin"
@@ -13828,8 +13897,10 @@ RingPos_CPZ1:	binclude	"level/rings/CPZ_1.bin"
 
 ; 0x50A9C
 		binclude	"leftovers/50A9C.bin"
+		even
 
 		binclude	"leftovers/symbols/symbol3.bin"
+		even
 
 	phase $1412C
 		include	"leftovers/obj/14 HTZ Seesaw.asm"
@@ -13857,15 +13928,18 @@ byte_144BB:
 ; sprite mappings
 ; -------------------------------------------------------------------------------
 Map_Obj14_PB:	binclude	"mappings/sprite/obj14_a.bin"
+		even
 ; -------------------------------------------------------------------------------
 ; sprite mappings
 ; -------------------------------------------------------------------------------
 Map_Obj14b_PB:	binclude	"mappings/sprite/obj14_b.bin"
+		even
 
 		jmpTos	; Empty
 	dephase
 
 		binclude	"leftovers/symbols/symbol4.bin"
+		even
 
 	phase $157E0
 		include	"leftovers/obj/4B Buzzer.asm"
@@ -13885,9 +13959,11 @@ byte_15A2B:	dc.b   9,  1,  1,  1,  1,  1,$FD,  0
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_Obj4B_PB:	binclude	"mappings/sprite/obj4B.bin"
+		even
 	dephase
 
 		binclude	"leftovers/symbols/symbol5.bin"
+		even
 
 	phase $14F5C
 		include	"leftovers/obj/50 Aquis.asm"
@@ -13975,6 +14051,7 @@ Map_Obj50_PB:	dc.w .word_163F2-Map_Obj50_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol6.bin"
+		even
 
 	phase $14DF8
 		include	"leftovers/obj/4F Redz.asm"
@@ -13989,6 +14066,7 @@ Ani_Obj4F_PB:	dc.w .byte_15EB8-Ani_Obj4F_PB
 ; Sprite mappings - Redz (dinosaur badnik) from HPZ
 ; ---------------------------------------------------------------------------
 Map_Obj4F_PB:	binclude	"mappings/sprite/obj4F.bin"
+		even
 
 		jmpTos0	; Empty
 	dephase
@@ -14010,11 +14088,13 @@ Ani_Obj53_PB:	dc.w .byte_17572-Ani_Obj53_PB
 ; Sprite mappings
 ; ---------------------------------------------------------------------------
 Map_Obj53_PB:	binclude	"mappings/sprite/obj53.bin"
+		even
 
 		jmpTos0	; Empty
 	dephase
 
 		binclude	"leftovers/symbols/symbol8.bin"
+		even
 
 	phase $16200
 		include	"leftovers/obj/4E Gator.asm"
@@ -14103,6 +14183,7 @@ Map_Obj4E_PB:	dc.w .word_17320-Map_Obj4E_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol9.bin"
+		even
 
 	phase $15D78
 		include	"leftovers/obj/4C BBat.asm"
@@ -14204,6 +14285,7 @@ Map_Obj4C_PB:	dc.w .word_1700C-Map_Obj4C_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol10.bin"
+		even
 
 	phase $15AC8
 		include	"leftovers/obj/4A Octus.asm"
@@ -14249,6 +14331,7 @@ Map_Obj4A_PB:	dc.w .word_16CB2-Map_Obj4A_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol11.bin"
+		even
 
 	phase $16890
 		include	"leftovers/obj/57 EHZ Boss (Part 3).asm"
@@ -14340,6 +14423,7 @@ Map_Obj58a_PB:	dc.w .word_1812E-Map_Obj58a_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol12.bin"
+		even
 
 	phase $165F8
 		include	"leftovers/obj/54 Snail.asm"
@@ -14367,6 +14451,7 @@ Map_Obj54_PB:	dc.w	.internal_0006-Map_Obj54_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol13.bin"
+		even
 
 	phase $17CC4
 		include	"leftovers/obj/S1/3D Boss - Green Hill (part 1).asm"
@@ -14540,6 +14625,7 @@ Map_BossItems_PB:	dc.w .word_19458-Map_BossItems_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol14.bin"
+		even
 
 	phase $175A8
 		include	"leftovers/obj/S1/8A Credits.asm"
@@ -14778,6 +14864,7 @@ Map_Cred_PB_0602:	dc.w $11
 	dephase
 
 		binclude	"leftovers/symbols/symbol15.bin"
+		even
 
 	phase $17194
 		include	"leftovers/obj/55 EHZ Boss (Part 1).asm"
@@ -14854,6 +14941,7 @@ Map_Obj55_PB:	dc.w .word_1856C-Map_Obj55_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol16.bin"
+		even
 
 		dc.w   $26,  $13,$FFA8
 		dc.w $D005,  $32,  $19,$FFB8
@@ -14956,6 +15044,7 @@ Map_Obj55_PB:	dc.w .word_1856C-Map_Obj55_PB
 		jmpTos	; Empty
 
 		binclude	"leftovers/symbols/symbol17.bin"
+		even
 
 	phase $1718C
 		include	"leftovers/obj/55 EHZ Boss (Part 1) (Earlier).asm"
@@ -15032,13 +15121,17 @@ Map_Obj55_PB2:	dc.w .word_1856C-Map_Obj55_PB2
 	dephase
 
 		binclude	"leftovers/symbols/symbol18.bin"
+		even
 
 ; ---------------------------------------------------------------------------
 ; Leftover source code of Debug Mode
 ; ---------------------------------------------------------------------------
 		binclude	"leftovers/source code/Debug Mode.txt"
+		even
 		binclude	"leftovers/tilemaps/Title Emblem.eni"
+		even
 		binclude	"leftovers/tilemaps/Title Background.eni"
+		even
 		binclude	"leftovers/art/nemesis/8x8 - Title.nem"
 		binclude	"leftovers/symbols/symbol19.bin"
 
@@ -15049,6 +15142,7 @@ Map_Obj55_PB2:	dc.w .word_1856C-Map_Obj55_PB2
 	dephase
 
 		binclude	"leftovers/symbols/symbol20.bin"
+		even
 
 	phase $184AC
 		include	"leftovers/obj/S1/3E Prison Capsule.asm"
@@ -15094,6 +15188,7 @@ Map_Pri_PB:	dc.w .word_19742-Map_Pri_PB
 	dephase
 
 		binclude	"leftovers/symbols/symbol21.bin"
+		even
 
 	phase $18B48
 ; =============== S U B	R O U T	I N E =======================================
@@ -15691,6 +15786,7 @@ byte_1B97E_PB:	dc.b 1
 	dephase
 
 		binclude	"leftovers/symbols/symbol22.bin"
+		even
 
 	phase $19A2C
 ; ===========================================================================
@@ -15903,34 +15999,34 @@ AnimCue_HPZ_PB:	zoneanimstart
 ; According to leftover resizing code, this was meant for the
 ; Chemical Plant Zone boss, which symbol tables refer to as "vaccume".
 AnimCue_CPZ_Boss_PB:	zoneanimstart
-		; ?
-		zoneanimdecl 7, $27798, ArtTile_Art_UnkZone_1, 2, 4	;	Art_UnkZone_1
+		; Lights
+		zoneanimdecl 7, $27798, ArtTile_CPZ_Lights, 2, 4	;	Art_CPZ_Lights
 		dc.b   0
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl 7, $27898, ArtTile_Art_UnkZone_2, 3, 8	;	Art_UnkZone_2
+		; Conveyor
+		zoneanimdecl 7, $27898, ArtTile_CPZ_Conveyor, 3, 8	;	Art_CPZ_Conveyor
 		dc.b   0
 		dc.b   8
 		dc.b $10
 		dc.b   0
 		even
-		; ?
-		zoneanimdecl 7, $27B98, ArtTile_Art_UnkZone_3, 4, 2	;	Art_UnkZone_3
+		; Pistons
+		zoneanimdecl 7, $27B98, ArtTile_CPZ_Pistons, 4, 2	;	Art_CPZ_Pistons
 		dc.b   0
 		dc.b   2
 		dc.b   0
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl $B, $27C58, ArtTile_Art_UnkZone_4, 4, 2	;	Art_UnkZone_4
+		; Pressure Metre
+		zoneanimdecl $B, $27C58, ArtTile_CPZ_Metre, 4, 2	;	Art_CPZ_Metre
 		dc.b   0
 		dc.b   2
 		dc.b   4
 		dc.b   2
 		even
-		; ?
-		zoneanimdecl $F, $27D18, ArtTile_Art_UnkZone_5, $A, 1	;	Art_UnkZone_5
+		; Cross and Circle
+		zoneanimdecl $F, $27D18, ArtTile_CPZ_Cross_Circle, $A, 1	;	Art_CPZ_Cross_Circle
 		dc.b   0
 		dc.b   0
 		dc.b   1
@@ -15942,15 +16038,15 @@ AnimCue_CPZ_Boss_PB:	zoneanimstart
 		dc.b   5
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl 3, $27DD8, ArtTile_Art_UnkZone_6, 4, 4	;	Art_UnkZone_6
+		; Propeller
+		zoneanimdecl 3, $27DD8, ArtTile_CPZ_Propeller, 4, 4	;	Art_CPZ_Propeller
 		dc.b   0
 		dc.b   4
 		dc.b   8
 		dc.b   4
 		even
-		; ?
-		zoneanimdecl 7, $27F58, ArtTile_Art_UnkZone_7, 6, 3	;	Art_UnkZone_7
+		; Surface Liquid
+		zoneanimdecl 7, $27F58, ArtTile_CPZ_Liquid, 6, 3	;	Art_CPZ_Liquid
 		dc.b   0
 		dc.b   3
 		dc.b   6
@@ -15958,8 +16054,8 @@ AnimCue_CPZ_Boss_PB:	zoneanimstart
 		dc.b  $C
 		dc.b  $F
 		even
-		; ?
-		zoneanimdecl 7, $28198, ArtTile_Art_UnkZone_8, 4, 1	;	Art_UnkZone_8
+		; Conveyor
+		zoneanimdecl 7, $28198, ArtTile_CPZ_Conveyor_2, 4, 1	;	Art_CPZ_Conveyor_2
 		dc.b   0
 		dc.b   1
 		dc.b   2
@@ -16270,62 +16366,62 @@ APM_Unk_PB_End:
 APM_CPZ_PB:
 		dc.w (Block_Table_End-Block_Table)-$F8
 		dc.w bytesToWcnt($E0)
-		dc.w $448F,$43D2
-		dc.w $43D3,$43D2
-		dc.w $43D4,$43D5
-		dc.w $4480,$4481
-		dc.w $4BD5,$4BD4
-		dc.w $4482,$4483
-		dc.w $4484,$4485
-		dc.w $4486,$4487
-		dc.w $4488,$4489
-		dc.w $448A,$448B
-		dc.w $E48C,$E48D
-		dc.w $E3DE,$E3DF
-		dc.w $4498,$4C98
-		dc.w $4498,$4C98
-		dc.w $43E1,$448D
-		dc.w $43E1,$43DF
-		dc.w $448C,$448D
-		dc.w $43DE,$43DF
-		dc.w $E3D4,$E3D5
-		dc.w $E480,$E481
-		dc.w $EBD5,$EBD4
-		dc.w $E482,$E483
-		dc.w $E484,$E485
-		dc.w $E486,$E487
-		dc.w $E48C,$E48D
-		dc.w $E3DE,$E3DF
-		dc.w $E3E2,$E48E
-		dc.w $E3E4,$EBD3
-		dc.w $E48F,$E3D2
-		dc.w $E3D3,$E3D2
-		dc.w $E3E5,$E3E6
-		dc.w $E3E7,$E490
-		dc.w $E3E7,$F490
-		dc.w $E3E5,$E3E6
-		dc.w $E3E5,$E3E6
-		dc.w $E3E9,$E48E
-		dc.w $EBE6,$E3EA
-		dc.w $E48F,$E3E9
-		dc.w $E491,$E492
-		dc.w $E3D0,$E3ED
-		dc.w $E493,$E494
-		dc.w $EBED,$E3D0
-		dc.w $E488,$E489
-		dc.w $E48A,$E48B
-		dc.w $43E2,$448E
-		dc.w $43E4,$4BD3
-		dc.w $E495,$E496
-		dc.w $E3F2,$E3F2
-		dc.w $E497,$E3F3
-		dc.w $E3F2,$E3F4
-		dc.w $43E5,$43E6
-		dc.w $43E9,$448E
-		dc.w $4BE6,$43EA
-		dc.w $448F,$43E9
-		dc.w $E3E1,$E48D
-		dc.w $E3E1,$E3DF
+		dc.w make_block_tile(ArtTile_CPZ_Metre+$1,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$2,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$3,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$2,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$4,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$5,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Lights+$0,0,0,2,0),make_block_tile(ArtTile_CPZ_Lights+$1,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$5,1,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$4,1,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Lights+$2,0,0,2,0),make_block_tile(ArtTile_CPZ_Lights+$3,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$0,0,0,2,0),make_block_tile(ArtTile_CPZ_Conveyor+$1,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$2,0,0,2,0),make_block_tile(ArtTile_CPZ_Conveyor+$3,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$4,0,0,2,0),make_block_tile(ArtTile_CPZ_Conveyor+$5,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$6,0,0,2,0),make_block_tile(ArtTile_CPZ_Conveyor+$7,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Pistons+$0,0,0,3,1),make_block_tile(ArtTile_CPZ_Pistons+$1,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$E,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$F,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor_2+$0,0,0,2,0),make_block_tile(ArtTile_CPZ_Conveyor_2+$0,1,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor_2+$0,0,0,2,0),make_block_tile(ArtTile_CPZ_Conveyor_2+$0,1,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$11,0,0,2,0),make_block_tile(ArtTile_CPZ_Pistons+$1,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$11,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$F,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Pistons+$0,0,0,2,0),make_block_tile(ArtTile_CPZ_Pistons+$1,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$E,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$F,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$4,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$5,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Lights+$0,0,0,3,1),make_block_tile(ArtTile_CPZ_Lights+$1,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$5,1,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$4,1,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Lights+$2,0,0,3,1),make_block_tile(ArtTile_CPZ_Lights+$3,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$0,0,0,3,1),make_block_tile(ArtTile_CPZ_Conveyor+$1,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$2,0,0,3,1),make_block_tile(ArtTile_CPZ_Conveyor+$3,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Pistons+$0,0,0,3,1),make_block_tile(ArtTile_CPZ_Pistons+$1,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$E,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$F,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$12,0,0,3,1),make_block_tile(ArtTile_CPZ_Metre+$0,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$14,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$3,1,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Metre+$1,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$2,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$3,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$2,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$15,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$16,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$17,0,0,3,1),make_block_tile(ArtTile_CPZ_Cross_Circle+$0,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$17,0,0,3,1),make_block_tile(ArtTile_CPZ_Cross_Circle+$0,0,1,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$15,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$16,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$15,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$16,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$19,0,0,3,1),make_block_tile(ArtTile_CPZ_Metre+$0,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$16,1,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$1A,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Metre+$1,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$19,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Propeller+$0,0,0,3,1),make_block_tile(ArtTile_CPZ_Propeller+$1,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$0,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$1D,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Propeller+$2,0,0,3,1),make_block_tile(ArtTile_CPZ_Propeller+$3,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$1D,1,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$0,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$4,0,0,3,1),make_block_tile(ArtTile_CPZ_Conveyor+$5,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Conveyor+$6,0,0,3,1),make_block_tile(ArtTile_CPZ_Conveyor+$7,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$12,0,0,2,0),make_block_tile(ArtTile_CPZ_Metre+$0,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$14,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$3,1,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Liquid+$0,0,0,3,1),make_block_tile(ArtTile_CPZ_Liquid+$1,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$22,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$22,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Liquid+$2,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$23,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$22,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$24,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$15,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$16,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$19,0,0,2,0),make_block_tile(ArtTile_CPZ_Metre+$0,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$16,1,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$1A,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Metre+$1,0,0,2,0),make_block_tile(ArtTile_CPZ_Buildings+$19,0,0,2,0)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$11,0,0,3,1),make_block_tile(ArtTile_CPZ_Pistons+$1,0,0,3,1)
+		dc.w make_block_tile(ArtTile_CPZ_Buildings+$11,0,0,3,1),make_block_tile(ArtTile_CPZ_Buildings+$F,0,0,3,1)
 APM_CPZ_PB_End:
 
 APM_HPZ_PB:	begin_animpat
@@ -16424,6 +16520,7 @@ APM_HPZ_PB_End:
 	dephase
 
 		binclude	"leftovers/symbols/symbol23.bin"
+		even
 
 	phase $19A22
 		include	"leftovers/obj/S1/09 Sonic in Special Stage.asm"
@@ -16432,6 +16529,7 @@ APM_HPZ_PB_End:
 	dephase
 
 		binclude	"leftovers/symbols/symbol24.bin"
+		even
 
 	phase $1AB00
 		include	"leftovers/obj/DebugMode.asm"
@@ -16441,7 +16539,8 @@ APM_HPZ_PB_End:
 	dephase
 
 		binclude	"leftovers/symbols/symbol25.bin"
-;		binclude	"leftovers/code/code_69464.bin"
+		even
+
 	phase $1A074
 		include	"leftovers/obj/21 HUD.asm"
 ; ===========================================================================
@@ -16534,19 +16633,24 @@ AddPoints_PB:
 		include	"leftovers/_Include/HUD Update.asm"
 
 Art_HUD_PB:	binclude	"art/uncompressed/HUD Numbers.bin"
+		even
 Art_LivesNums_PB:	binclude	"art/uncompressed/Lives Counter Numbers.bin"
+		even
 
 		jmpTos	; Empty
 	dephase
 
 		binclude	"leftovers/symbols/symbol26.bin"
+		even
 		binclude	"leftovers/symbols/symbol26a.bin"
+		even
 
 	phase $1C056
 		include	"leftovers/_Include/LevelHeaders.asm"
 		include	"leftovers/_Include/Pattern Load Cues.asm"
 
 		binclude	"leftovers/art/uncompressed/cut-off/1C318.bin"
+		even
 	dephase
 
 		binclude	"leftovers/symbols/symbol27.bin"
@@ -16558,6 +16662,7 @@ Art_LivesNums_PB:	binclude	"art/uncompressed/Lives Counter Numbers.bin"
 ; Same as Sonic 1's, down to its location in the ROM
 ; ---------------------------------------------------------------------------
 		include	"s1.sounddriver.asm"
+		even
 
 ; ---------------------------------------------------------------------------
 ; Uncompressed graphics - Sonic and Tails
@@ -16571,14 +16676,17 @@ Art_LivesNums_PB:	binclude	"art/uncompressed/Lives Counter Numbers.bin"
 	align $8000
 	endif
 Art_Sonic:	binclude	"art/uncompressed/Sonic's art.bin"
+		even
 Map_Sonic:	include	"mappings/sprite/Sonic.asm"
 Art_Tails:	binclude	"art/uncompressed/Tails' art.bin"
+		even
 SonicDynPLC:	include	"mappings/spriteDPLC/Sonic.asm"
 Nem_Shield:	binclude	"art/nemesis/Shield.nem"
 		even
 Nem_Stars:	binclude	"art/nemesis/Stars.nem"
 		even
 Art_SplashDust:	binclude	"art/uncompressed/Dust and water splash.bin"
+		even
 Map_Tails:	include	"mappings/sprite/Tails.asm"
 TailsDynPLC:	include	"mappings/spriteDPLC/Tails.asm"
 
@@ -16838,29 +16946,37 @@ Nem_Squirrel:	binclude	"art/nemesis/S1/Animal Squirrel.nem"
 ; ---------------------------------------------------------------------------
 Map16_EHZ:	binclude	"mappings/16x16/EHZ.unc"
 Map16_EHZ_End:
+		even
 Nem_EHZ:binclude	"art/nemesis/8x8 - EHZ.nem"
 		even
 Map16_HTZ:	binclude	"mappings/16x16/HTZ.unc"
 Map16_HTZ_End:
+		even
 Nem_HTZ:	binclude	"art/nemesis/8x8 - HTZ.nem"
 		even
 Nem_HTZ_AniPlaceholders:	binclude	"art/nemesis/HTZ Ani Placeholders.nem"
 		even
 Map128_EHZ:	binclude	"mappings/128x128/EHZ_HTZ.unc"
+		even
 Map16_HPZ:	binclude	"mappings/16x16/HPZ.unc"
 Map16_HPZ_End:
+		even
 Nem_HPZ:binclude	"art/nemesis/8x8 - HPZ.nem"
 		even
 Map128_HPZ:	binclude	"mappings/128x128/HPZ.unc"
+		even
 Map16_CPZ:	binclude	"mappings/16x16/CPZ.unc"
 Map16_CPZ_End:
+		even
 Nem_CPZ:	binclude	"art/nemesis/8x8 - CPZ.nem"
 		even
 Nem_CPZ_Buildings:	binclude	"art/nemesis/CPZ Buildings.nem"
 		even
 Map128_CPZ:	binclude	"mappings/128x128/CPZ.unc"
+		even
 Map16_GHZ:	binclude	"mappings/16x16/GHZ.unc"
 Map16_GHZ_End:
+		even
 Nem_GHZ:	binclude	"art/nemesis/8x8 - GHZ.nem"
 		even
 Nem_GHZ2:	binclude	"art/nemesis/8x8 - GHZ2.nem"
