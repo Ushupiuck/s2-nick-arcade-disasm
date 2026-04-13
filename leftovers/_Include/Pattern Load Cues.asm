@@ -102,7 +102,7 @@ PLC_GameOver_PB_End:
 PLC_GHZ_PB:	dc.w ((PLC_GHZ_PB_End-PLC_GHZ_PB)/6)-1
 		plcm	$D5DB2, ArtTile_Level	;	Nem_GHZ
 		plcm	$AC90E, ArtTile_Chopper	;	Nem_Chopper
-		plcm	$A692E, ArtTile_Spikes_GHZ	;	Nem_VSpikes
+		plcm	$A692E, ArtTile_S1_Spikes	;	Nem_VSpikes
 		plcm	$AF902, ArtTile_S1_Spring_Horizontal	;	Nem_HSpring
 		plcm	$AFA04, ArtTile_S1_Spring_Vertical	;	Nem_VSpring
 		plcm	$A394E, ArtTile_GHZ_Bridge	;	Nem_GHZ_Bridge
@@ -126,7 +126,7 @@ PLC_CPZ_PB:	dc.w ((PLC_CPZ_PB_End-PLC_CPZ_PB)/6)-1
 		plcm	$CCD56, ArtTile_CPZ_Buildings	;	Nem_CPZ_Buildings
 		plcm	$A57E4, ArtTile_CPZ_Platform	;	Nem_CPZ_FloatingPlatform
 		plcm	$A5904, $418	;	dai0dcg
-		plcm	$A5BF0, $440	;	nami0dcg
+		plcm	$A5BF0, $440	;	Nem_WaterSurface
 PLC_CPZ_PB_End:
 ; --------------------------------------------------------------------------------------
 ; PATTERN LOAD REQUEST LIST
@@ -186,7 +186,7 @@ PLC_HPZ2_PB_End:
 ; Chemical Plant Zone secondary
 ; --------------------------------------------------------------------------------------
 PLC_CPZ2_PB:	dc.w ((PLC_CPZ2_PB_End-PLC_CPZ2_PB)/6)-1
-		plcm	$A692E, ArtTile_Spikes_GHZ	;	Nem_VSpikes
+		plcm	$A692E, ArtTile_S1_Spikes	;	Nem_VSpikes
 		plcm	$AF902, ArtTile_S1_Spring_Horizontal	;	Nem_HSpring
 		plcm	$AFA04, ArtTile_S1_Spring_Vertical	;	Nem_VSpring
 PLC_CPZ2_PB_End:
