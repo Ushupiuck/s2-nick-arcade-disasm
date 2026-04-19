@@ -16,7 +16,6 @@ Obj0C_Init:
 		addq.b	#2,obRoutine(a0)
 		move.l	#Map_Obj0C,obMap(a0)
 		move.w	#make_art_tile(ArtTile_CPZ_Float_Platform,3,1),obGfx(a0)
-		bsr.w	Adjust2PArtPointer
 		ori.b	#4,obRender(a0)
 		move.b	#16,obActWid(a0)
 		move.b	#4,obPriority(a0)
@@ -53,7 +52,7 @@ Obj0C_Main:
 loc_1436E:
 		addq.b	#1,objoff_3D(a0)
 		move.b	d1,d0
-		jsrto	JmpTo_CalcSine
+		jsr	(CalcSine).l
 		addi.w	#8,d0
 		asr.w	#6,d0
 		subi.w	#$10,d0
@@ -72,7 +71,7 @@ loc_1439C:
 		addq.b	#1,objoff_3C(a0)
 
 loc_143A0:
-		jsrto	JmpTo_CalcSine
+		jsr	(CalcSine).l
 		addi.w	#8,d1
 		asr.w	#4,d1
 		add.w	objoff_3A(a0),d1
