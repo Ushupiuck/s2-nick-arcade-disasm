@@ -1,5 +1,5 @@
 ; ---------------------------------------------------------------------------
-; Object 0F - Mappings test?
+; Object 0F - Two Player Sprite Piece Test Object
 ; ---------------------------------------------------------------------------
 
 Obj0F:
@@ -27,7 +27,7 @@ Obj0F_Cycle:
 		btst	#bitC,d0			; has C been pressed?
 		beq.s	Obj0F_Toggle		; if not, branch
 		addq.b	#1,obFrame(a0)		; increment mappings
-		andi.b	#$F,obFrame(a0)		; if above $F, reset
+		andi.b	#15,obFrame(a0)		; if above 16, reset
 
 Obj0F_Toggle:
 		btst	#bitB,d0			; has B been pressed?
